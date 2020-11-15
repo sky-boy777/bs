@@ -1,0 +1,55 @@
+/* 公共样式 */
+.red{ color: red; }
+/* 公共样式 */
+
+.icon{
+    line-height: 50px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+/* 用户头像 */
+.icon img{
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+/* 导航栏 */
+.navbar-default {
+    background-color: #09F;
+    color: #ffffff;
+  }
+  .navbar-default .navbar-nav>li>a{ color: #ffffff; }
+  .navbar-default .navbar-brand { color: #ffffff; }
+  .navbar-default .navbar-nav>li:hover{ 
+      background-color: rgb(69, 176, 248);
+    }
+.navbar-default .navbar-nav>li>a:hover{ color: #ffffff; }
+
+/* 未登录 */
+.login>a{ display: inline !important; line-height: 50px; }
+
+/* 已登录：用户头像下拉菜单 */
+.ul_down{
+    position: absolute;
+    padding: 0px 5px;
+    z-index: 9999;
+    display: none;
+    background-color: rgb(55, 167, 241);
+}
+a:hover {text-decoration:none !important;}
+.ul_down>a{ color: #ffffff;}
+.ul_down>a>li:hover{
+    background-color: rgb(69, 176, 248); 
+}
+.li:hover ul{
+    display: block;
+}
+
+/* 底部 */
+.bottom {
+    padding: 5px;
+    background-color: #09F;
+    color: #ffffff;
+    text-align: center;
+}
