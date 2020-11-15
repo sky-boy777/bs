@@ -28,12 +28,11 @@
             <div class="collapse navbar-collapse" id="nav-div">
                 <ul class="nav navbar-nav">
                     <li><a href="#">首页</a></li>
-                    <li><a href="#">公告</a></li>
+                    <li><a href="#">公告信息</a></li>
                     <li><a href="#">游客动态</a></li>
-                    <li><a href="#">首页</a></li>
                 </ul>
-                <!--搜索框开始-->
                 {% block search %}
+                  <!--搜索框开始-->
                 <form class="navbar-form navbar-right" method="post" action="">
                     <div class="form-group">
                         <input type="text"class="form-control" placeholder="搜">
@@ -42,8 +41,8 @@
                         <span class="glyphicon glyphicon-search"></span>
                     </button>
                 </form>
-            {% endblock search %}
                 <!-- 搜索框结束 -->
+                {% endblock search %}
 
                 <!-- 用户头像 -->
                 <ul class="nav navbar-right">
@@ -51,6 +50,7 @@
                         <div class="icon"><a href="javascript:;"><img src="/static/images/icon/icon.jpg" alt="头像"></a> 张三<div>
                         <ul class="ul_down">
                             <a href="#"><li>用户中心</li></a>
+                            <a href="#"><li>后台管理（管理员）</li></a>
                             <a href="#"><li>退出登录</li></a>
                         </ul>
                     </li>

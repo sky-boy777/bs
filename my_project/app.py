@@ -2,7 +2,8 @@ from apps import create_app  # 创建app
 from flask_script import Manager  # 给app套壳: 执行类似命令python app.py runserver。。。
 from flask_migrate import Migrate, MigrateCommand  # 数据库命令
 from exts import db
-from apps.main_app.models import *
+from apps.main_app.models import *  # 前台展示模型
+from apps.user_app.models import *  # 用户模型
 
 
 app = create_app()

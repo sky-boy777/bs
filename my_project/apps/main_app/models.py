@@ -10,31 +10,43 @@ class BaseModel(db.Model):
 
 
 # 在这里创建模型
-class ScenicSpots(BaseModel):
+class ScenicSpotsModel(BaseModel):
     '''景点模型'''
     __tablename__ = 'scenic_spots'
 
     # 景点名称，必填
     sname = db.Column(db.String(20), nullable=False)
-    # 景点简介
+    # 景点简介内容（富文本编辑器，图文），图片以<img src='...'>形式存放数据库
     scontent = db.Column(db.Text, nullable=False)
     # 最近更新时间，strftime是str类型
-    stime = db.Column(db.String(15), default=datetime.now().strftime('%Y/%m/%d'))
+    create_time = db.Column(db.String(15), default=datetime.now().strftime('%Y/%m/%d'))
     # 封面图
     simage = db.Column(db.String(64))  # 存储的是图片路径
 
     # 跟景点图集表建立关系，删除景点时也删除对应的图片
-    images = db.relationship('ScenicSpotsImages', backref='scenic_spots')
+    images = db.relationship('ScenicSpotsImagesModel', backref='scenic_spots')
 
 
-class ScenicSpotsImages(BaseModel):
+class ScenicSpotsImagesModel(BaseModel):
     '''景点图集'''
     __tablename__ = 'scenic_spots_images'
 
     # 图片路径
     image = db.Column(db.String(64))
     # 上传时间
-    upload_time = db.Column(db.String(15), default=datetime.now().strftime('%Y/%m/%d'))
+    create_time = db.Column(db.String(15), default=datetime.now().strftime('%Y/%m/%d'))
 
     # 外键，景点id，图片属于哪个景点
     scenic_spots_id = db.Column(db.Integer, db.ForeignKey('scenic_spots.id'))
+
+
+class InfoModel(BaseModel):
+    '''公告信息模型'''
+    __tablename__ = 'info'
+
+    # 标题
+    title = db.Column(db.String(64), nullable=False)
+    # 内容（富文本编辑器，图文）
+    content = db.Column(db.Text, nullable=False)
+    # 时间
+    create_time = db.Column(db.String(15), default=datetime.now().strftime('%Y/%m/%d'))
