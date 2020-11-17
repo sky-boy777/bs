@@ -7,9 +7,10 @@ class BaseModel(db.Model):
     __abstract__ = True  # 抽象模型，不会在数据库生成表
     # 主键
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    # 创建时间，strftime是str类型
+    create_time = db.Column(db.String(15), default=datetime.now().strftime('%Y-%m-%d'))
 
 
-# 在这里创建模型
 class ScenicSpotsModel(BaseModel):
     '''景点模型'''
     __tablename__ = 'scenic_spots'
@@ -18,8 +19,6 @@ class ScenicSpotsModel(BaseModel):
     sname = db.Column(db.String(20), nullable=False)
     # 景点简介内容（富文本编辑器，图文），图片以<img src='...'>形式存放数据库
     scontent = db.Column(db.Text, nullable=False)
-    # 最近更新时间，strftime是str类型
-    create_time = db.Column(db.String(15), default=datetime.now().strftime('%Y/%m/%d'))
     # 封面图
     simage = db.Column(db.String(64))  # 存储的是图片路径
 
@@ -33,8 +32,6 @@ class ScenicSpotsImagesModel(BaseModel):
 
     # 图片路径
     image = db.Column(db.String(64))
-    # 上传时间
-    create_time = db.Column(db.String(15), default=datetime.now().strftime('%Y/%m/%d'))
 
     # 外键，景点id，图片属于哪个景点
     scenic_spots_id = db.Column(db.Integer, db.ForeignKey('scenic_spots.id'))
@@ -48,5 +45,3 @@ class InfoModel(BaseModel):
     title = db.Column(db.String(64), nullable=False)
     # 内容（富文本编辑器，图文）
     content = db.Column(db.Text, nullable=False)
-    # 时间
-    create_time = db.Column(db.String(15), default=datetime.now().strftime('%Y/%m/%d'))

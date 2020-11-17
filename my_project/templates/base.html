@@ -14,11 +14,12 @@
 </head>
 
 <body>
-    <!--头部开始-->
+{% block nav %}
+    <!--导航栏开始-->
     <nav class="navbar-default">
         <!-- 切换按钮开始 -->
         <button class="navbar-toggle" id="nav-btn">
-            <span class="color-white glyphicon glyphicon-chevron-left" id="btn-span"></span>
+            <span class="toggle-btn glyphicon glyphicon-chevron-left" id="btn-span"></span>
         </button>
         <!--切换按钮结束-->
         <div class="container-fluid">
@@ -46,21 +47,24 @@
 
                 <!-- 用户头像 -->
                 <ul class="nav navbar-right">
-                    <li class="li">
-                        <div class="icon"><a href="javascript:;"><img src="/static/images/icon/icon.jpg" alt="头像"></a> 张三<div>
-                        <ul class="ul_down">
-                            <a href="#"><li>用户中心</li></a>
-                            <a href="#"><li>后台管理（管理员）</li></a>
-                            <a href="#"><li>退出登录</li></a>
-                        </ul>
-                    </li>
+<!--                    <li class="li">-->
+<!--                        <div class="icon"><a href="javascript:;"><img src="/static/images/icon/icon.jpg" alt="头像"></a> 张三<div>-->
+<!--                        <ul class="ul_down">-->
+<!--                            <a href="#"><li>用户中心</li></a>-->
+<!--                            <a href="#"><li>后台管理</li></a>-->
+<!--                            <a href="#"><li>退出登录</li></a>-->
+<!--                        </ul>-->
+<!--                    </li>-->
 <!--                    未登录-->
-<!--                    <li class="login"><a href="#">登录</a>or<a href="#">注册</a></li>-->
+                    {% block login %}
+                    <li class="login"><a href="{{ url_for('user.login') }}">登录</a>or<a href="{{ url_for('user.register') }}">注册</a></li>
+                    {% endblock login %}
                 </ul>
             </div>
         </div>
     </nav>
-    <!--头部结束-->
+    <!--导航栏结束-->
+{% endblock nav %}
 
     <!--身体开始-->
     {% block content %}

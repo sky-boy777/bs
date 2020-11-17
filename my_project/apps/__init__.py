@@ -2,6 +2,7 @@ from flask import Flask
 import settings
 from exts import db
 from apps.main_app.views import main_bp  # 前台展示蓝图
+from apps.user_app.views import user_bp  # 用户模块蓝图
 
 
 def create_app():
@@ -11,6 +12,7 @@ def create_app():
     db.init_app(app)  # 初始化数据库
 
     # 注册蓝图
-    app.register_blueprint(main_bp)  # 前台展示模块
+    app.register_blueprint(main_bp)  # 前台展示蓝图
+    app.register_blueprint(user_bp)  # 用户模块蓝图
 
     return app

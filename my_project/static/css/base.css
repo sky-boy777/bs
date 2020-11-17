@@ -1,5 +1,6 @@
 /* 公共样式 */
 .red{ color: red; }
+
 /* 公共样式 */
 
 .icon{
@@ -25,6 +26,9 @@
       background-color: rgb(69, 176, 248);
     }
 .navbar-default .navbar-nav>li>a:hover{ color: #ffffff; }
+
+/* 移动端导航栏切换按钮 */
+.navbar-toggle{ color: rgb(36, 35, 35);}
 
 /* 未登录 */
 .login>a{ display: inline !important; line-height: 50px; }
