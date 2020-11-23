@@ -98,6 +98,12 @@
         }
         return false;  // 防止事件冒泡(javascript的return false只会阻止默认行为，而是用jQuery的话则既阻止默认行为又防止对象冒泡)
     });
+
+    // 点击切换验证码图片，后面添加随机数，不同的请求才能切换
+    $('#image_code').click(function(){
+        $(this).attr('src', "{{ url_for('user.get_image_code') }}?key=" + Math.random());
+        return false;
+    });
 </script>
 </body>
 

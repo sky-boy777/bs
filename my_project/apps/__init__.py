@@ -3,6 +3,9 @@ import settings
 from exts import db
 from apps.main_app.views import main_bp  # 前台展示蓝图
 from apps.user_app.views import user_bp  # 用户模块蓝图
+from flask_wtf.csrf import CsrfProtect  # 全局csrf
+
+csrf = CsrfProtect()
 
 
 def create_app():
@@ -10,6 +13,7 @@ def create_app():
     app = Flask(__name__, template_folder='../templates', static_folder='../static')
     app.config.from_object(settings)  # 加载配置文件
     db.init_app(app)  # 初始化数据库
+    csrf.init_app(app)  # 初始化全局csrf
 
     # 注册蓝图
     app.register_blueprint(main_bp)  # 前台展示蓝图
