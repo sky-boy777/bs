@@ -8,9 +8,7 @@ import re
 # 在下面定义表单验证类
 class UserRegisterForm(FlaskForm):
     '''用户注册表单验证'''
-    # 用户名
-    username = StringField('username', validators=[DataRequired(message='请输入用户名'),
-                                                   Length(max=30, message='用户名应该在1~30个字符')])
+    # 邮箱
     email = StringField('email', validators=[DataRequired(message='请输入邮箱')])
     # 密码
     password = PasswordField('password', validators=[DataRequired(message='请输入密码'),

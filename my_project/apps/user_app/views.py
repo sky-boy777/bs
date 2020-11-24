@@ -3,10 +3,14 @@ from flask import render_template, request, make_response, session
 from utils.create_image_code import create_image_code  # 生成图片验证码
 import io
 from .forms import UserRegisterForm  # 表单验证类
+from .models import UserModel
+from werkzeug.security import generate_password_hash  # 密码加密
+from exts import db
 
 
 # 用户模块蓝图
 user_bp = Blueprint(name='user', import_name=__name__, url_prefix='/user')
+
 
 @user_bp.route('/get_image_code')
 def get_image_code():
@@ -37,9 +41,22 @@ def register():
     if request.method == 'POST':
         # 表单验证
         if form.validate_on_submit():
-            pass
-        return render_template('user/register.html', form=form)
+            # 验证通过，接收表单数据，可使用以下两种方式
+            email = request.form.get('email')  # POST:form，GET:args
+            password = form.password.data
 
+            # 注册
+            user = UserModel()
+            user.email = email
+            user.password = generate_password_hash(password, salt_length=9)
+            try:
+                db.session.add(user)
+                db.session.commit()
+                return '注册成功'
+            except:
+                return render_template('user/register.html', form=form, msg='未知错误')
+
+        return render_template('user/register.html', form=form)
 
     return render_template('user/register.html', form=form)
 

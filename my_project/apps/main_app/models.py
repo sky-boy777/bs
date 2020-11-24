@@ -16,18 +16,18 @@ class ScenicSpotsModel(BaseModel):
     __tablename__ = 'scenic_spots'
 
     # 景点名称，必填
-    sname = db.Column(db.String(20), nullable=False)
+    name = db.Column(db.String(20), nullable=False)
     # 景点简介内容（富文本编辑器，图文），图片以<img src='...'>形式存放数据库
-    scontent = db.Column(db.Text, nullable=False)
+    content = db.Column(db.Text, nullable=False)
     # 封面图
-    simage = db.Column(db.String(64))  # 存储的是图片路径
+    image = db.Column(db.String(64))  # 存储的是图片路径
 
     # 跟景点图集表建立关系，删除景点时也删除对应的图片
     images = db.relationship('ScenicSpotsImagesModel', backref='scenic_spots')
 
 
 class ScenicSpotsImagesModel(BaseModel):
-    '''景点图集'''
+    '''景点图集模型'''
     __tablename__ = 'scenic_spots_images'
 
     # 图片路径
