@@ -1,11 +1,12 @@
 from flask import Blueprint
-from flask import render_template, request, make_response, session
+from flask import render_template, request, make_response, session, redirect, url_for
 from utils.create_image_code import create_image_code  # 生成图片验证码
 import io
 from .forms import UserRegisterForm  # 表单验证类
 from .models import UserModel
 from werkzeug.security import generate_password_hash  # 密码加密
 from exts import db
+from utils.send_email import send_mail  # 发送邮件
 
 
 # 用户模块蓝图
@@ -52,7 +53,9 @@ def register():
             try:
                 db.session.add(user)
                 db.session.commit()
-                return '注册成功'
+                # 发送激活邮件
+                # send_mail()
+                return redirect(url_for(endpoint='user.login'))
             except:
                 return render_template('user/register.html', form=form, msg='未知错误')
 

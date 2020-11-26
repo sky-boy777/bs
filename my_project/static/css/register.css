@@ -1,0 +1,21 @@
+body{ background-color: #d9e4eb; }
+    .form{
+        width: 400px;
+        height: 400px;
+        position: absolute;
+        top:50%;
+        left:50%;
+        margin-top: -150px;
+        margin-left: -200px;
+        padding: 20px;
+        align-content: center;
+        background-color: #f7f8f8;
+     }
+     .form-group input{ margin-top: 20px; }
+     .code{ width: 100px; height: 30px; cursor: pointer; }
+     .welcome-register {
+        padding: 5px;
+        color: white;
+        background-color: #09f;
+        text-align: center;
+        }

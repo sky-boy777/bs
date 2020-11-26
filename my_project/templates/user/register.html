@@ -1,23 +1,7 @@
 {% extends 'base.html' %}  {# 加载父模板 #}
 
 {% block header %}  {# 预留头部位置 #}
-<style>
-    body{ background-color: #d9e4eb; }
-    .form{
-        width: 400px;
-        height: 400px;
-        position: absolute;
-        top:50%;
-        left:50%;
-        margin-top: -150px;
-        margin-left: -200px;
-        padding: 20px;
-        align-content: center;
-        background-color: #f7f8f8;
-     }
-     .form-group input{ margin-top: 20px; }
-     .code{ width: 100px; height: 30px; cursor: pointer; }
-</style>
+<link rel="stylesheet" href="/static/css/register.css">
 {% endblock header %}  
 
 {% block title %}用户注册{% endblock title %}  {# title #}
@@ -37,6 +21,7 @@
 
 {% block content %}
 <div class="form">
+    <div class="h3 welcome-register">欢迎注册</div>
     <form action="" method="post">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <div class="form-group">
