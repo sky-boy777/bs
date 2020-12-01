@@ -2,11 +2,13 @@ from flask import Blueprint
 from flask import render_template, request, make_response, session, redirect, url_for
 from utils.create_image_code import create_image_code  # 生成图片验证码
 import io
+import settings
 from .forms import UserRegisterForm  # 表单验证类
 from .models import UserModel
 from werkzeug.security import generate_password_hash  # 密码加密
 from exts import db
 from utils.send_email import send_mail  # 发送邮件
+from itsdangerous import TimedJSONWebSignatureSerializer  # token
 
 
 # 用户模块蓝图
@@ -42,25 +44,43 @@ def register():
     if request.method == 'POST':
         # 表单验证
         if form.validate_on_submit():
-            # 验证通过，接收表单数据，可使用以下两种方式
+            # 验证通过，接收数据，可使用以下两种方式
             email = request.form.get('email')  # POST:form，GET:args
             password = form.password.data
+
+            # 查询邮箱是否被注册，布尔值
+            is_register = UserModel.query.filter(UserModel.email == email).first()
+            if is_register:
+                return render_template('user/register.html', form=form, msg='邮箱已被注册')
 
             # 注册
             user = UserModel()
             user.email = email
-            user.password = generate_password_hash(password, salt_length=9)
+            user.password = generate_password_hash(password, salt_length=9)  # 密码加密
             try:
-                db.session.add(user)
-                db.session.commit()
-                # 发送激活邮件
-                # send_mail()
-                return redirect(url_for(endpoint='user.login'))
+                pass
+                # db.session.add(user)
+                # db.session.commit()
             except:
                 return render_template('user/register.html', form=form, msg='未知错误')
 
-        return render_template('user/register.html', form=form)
+            # 如果用户添加成功，则发送激活邮件
+            if user:
+                # 生成token，24小时后过期，secret_key加密
+                serializer = TimedJSONWebSignatureSerializer(secret_key=settings.SECRET_KEY, expires_in=86400)
+                token = serializer.dumps({email: email}).decode('utf-8')
 
+                # 发送激活邮件
+                result = send_mail(email, token)
+                # 发送成功
+                if result:
+                    return redirect(url_for(endpoint='user.login'))
+                # 发送失败
+                else:
+                    return render_template('user/register.html', form=form, msg='邮件发送失败')
+        # 表单验证未通过
+        return render_template('user/register.html', form=form)
+    # get请求
     return render_template('user/register.html', form=form)
 
 
