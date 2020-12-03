@@ -28,7 +28,7 @@
             </div>
             <div class="collapse navbar-collapse" id="nav-div">
                 <ul class="nav navbar-nav">
-                    <li><a href="#">首页</a></li>
+                    <li><a href="{{ url_for('main.index') }}">首页</a></li>
                     <li><a href="#">公告信息</a></li>
                     <li><a href="#">游客动态</a></li>
                 </ul>
@@ -45,19 +45,23 @@
                 <!-- 搜索框结束 -->
                 {% endblock search %}
 
+                {% block login %}
                 <!-- 用户头像 -->
                 <ul class="nav navbar-right">
-<!--                    <li class="li">-->
-<!--                        <div class="icon"><a href="javascript:;"><img src="/static/images/icon/icon.jpg" alt="头像"></a> 张三<div>-->
-<!--                        <ul class="ul_down">-->
-<!--                            <a href="#"><li>用户中心</li></a>-->
-<!--                            <a href="#"><li>后台管理</li></a>-->
-<!--                            <a href="#"><li>退出登录</li></a>-->
-<!--                        </ul>-->
-<!--                    </li>-->
-<!--                    未登录-->
-                    {% block login %}
-                    <li class="login"><a href="{{ url_for('user.login') }}">登录</a>or<a href="{{ url_for('user.register') }}">注册</a></li>
+                    {% if user %}
+                    <li class="li">
+                        <div class="icon"><a href="javascript:;"><img src="/static{{ user.icon }}" alt="头像"></a> {{ user.username }}<div>
+                        <ul class="ul_down">
+                            <li><a href="{{ url_for('user.user_center') }}">用户中心</a></li>
+                            {% if user.is_admin == 1 %}
+                            <li><a href="#">后台管理</a></li>
+                            {% endif %}
+                            <li><a href="{{ url_for('user.user_logout') }}">退出登录</a></li>
+                        </ul>
+                    </li>
+                    {% else %}
+                        <li class="login"><a href="{{ url_for('user.login') }}">登录</a>or<a href="{{ url_for('user.register') }}">注册</a></li>
+                    {% endif %}
                     {% endblock login %}
                 </ul>
             </div>

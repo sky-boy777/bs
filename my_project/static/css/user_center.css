@@ -1,0 +1,19 @@
+.img img{
+    width: 100%;
+    border-radius: 50%;
+    align-items: center;
+}
+.container{ margin-top: 10px; }
+.list-group{ position: absolute; }
+.uname{
+    text-align: center;
+    padding-bottom: 5px;
+ }
+ .item {
+     padding: 10px;
+     border-bottom: solid 1px #d8d6d6;
+     }
+.list-group-item:hover {
+    background-color: #09f !important;
+    color: white !important;
+    }

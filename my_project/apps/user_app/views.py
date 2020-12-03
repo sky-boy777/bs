@@ -1,18 +1,43 @@
-from flask import Blueprint
+from flask import Blueprint, g
 from flask import render_template, request, make_response, session, redirect, url_for
 from utils.create_image_code import create_image_code  # 生成图片验证码
 import io
 import settings
-from .forms import UserRegisterForm  # 表单验证类
+from .forms import UserRegisterForm, UserLoginForm  # 表单验证类
 from .models import UserModel
-from werkzeug.security import generate_password_hash  # 密码加密
+from werkzeug.security import generate_password_hash, check_password_hash  # 密码加密，验证
 from exts import db
 from utils.send_email import send_mail  # 发送邮件
-from itsdangerous import TimedJSONWebSignatureSerializer, SignatureExpired  # token
+from itsdangerous import TimedJSONWebSignatureSerializer, SignatureExpired, BadSignature  # token
 
 
 # 用户模块蓝图
 user_bp = Blueprint(name='user', import_name=__name__, url_prefix='/user')
+
+# 生成序列化器(token)，24小时后过期，secret_key加密
+serializer = TimedJSONWebSignatureSerializer(secret_key=settings.SECRET_KEY, expires_in=120)
+
+# 登录才能访问的路径
+required_login_path = ['/user/user_center']
+# 登录后不能访问的路径
+login_not_path = ['/user/login', '/user/register']
+
+# 钩子函数，每次请求前执行，只用于蓝图，用户权限验证
+@user_bp.before_app_request
+def my_before_request():
+    '''用户权限验证'''
+    # 获取已登录的用户id
+    uid = session.get('uid')
+    # 如果请求的路径需要登录才能访问
+    if request.path in required_login_path:
+        if uid:
+            user = UserModel.query.get(uid)
+            g.user = user  # 使用g对象存储用户，这样哪个页面都能用了
+        else:
+            return redirect(url_for('user.login'))
+    elif request.path in login_not_path and uid:
+        # 已登录，不能访问登录跟注册页面
+        return redirect(url_for('main.index'))
 
 
 @user_bp.route('/get_image_code')
@@ -53,24 +78,27 @@ def register():
             # 方法二，first()
             user = UserModel.query.filter(UserModel.email == email).first()
 
-            # 查询用户是否已存在数据库
+            # 如果用户存在
             if user:
                 # 用户存在且已激活
                 if user.is_activate == 1:
                     return render_template('user/register.html', form=form, msg='邮箱已被注册')
+                elif user.is_delete == 1:
+                    # 恶意账户被管理员逻辑删除
+                    return render_template('user/register.html', form=form, msg='该用户不能注册')
                 elif user.is_delete == 0:
-                    # 用户存在但未激活，未销号（恶意账户被管理员逻辑删除），只更新用户密码，然后重新发送激活邮件
+                    # 用户存在但未激活，未销号，只更新用户密码，然后重新发送激活邮件
                     user.password = generate_password_hash(password, salt_length=9)  # 密码加密
                     try:
                         db.session.commit()
                     except:
                         # 提交数据库出错
                         return render_template('user/register.html', form=form, msg='注册失败')
-                    # 发邮件
+                    # 发邮件（异步）
                     send_mail(email)
                     return redirect(url_for(endpoint='user.login'))
 
-            # 新用户注册
+            # 用户不存在，注册新用户
             user = UserModel()
             user.email = email
             user.password = generate_password_hash(password, salt_length=9)  # 密码加密
@@ -79,7 +107,7 @@ def register():
                 db.session.commit()
             except:
                 return render_template('user/register.html', form=form, msg='注册失败')
-            # 调用异步发送邮件函数，并重定向到登录页面
+            # 发送邮件，并重定向到登录页面
             send_mail(email)
             return redirect(url_for(endpoint='user.login'))
 
@@ -89,43 +117,83 @@ def register():
     return render_template('user/register.html', form=form)
 
 
-@user_bp.route('/activate', methods=['GET'])
+@user_bp.route('/activate')
 def activate():
-    '''账户激活'''
-    print('**************************************开始')
-    # try:
+    '''新用户激活'''
     try:
-        token = request.args.get('token')
-        serializer = TimedJSONWebSignatureSerializer(secret_key=settings.SECRET_KEY)
-        info = serializer.loads(token)
-        email = info.get('email')
-        print(token,'*******', email, '********************')
-    except SignatureExpired as e:
-        print('-------------------------------->>>>>>>>>>>>>>>>>>>>>>>>>链接过期')
-        return '激活链接过期，请重新注册'
-    try:
+        try:
+            # 获取token值
+            token = request.args.get('token', None)
+            # 判断是否有token值
+            if not token:
+                return redirect(url_for(endpoint='main.index'))
+            # 解密token
+            info = serializer.loads(token)
+            email = info.get('email')
+        except SignatureExpired as e:
+            return '激活链接过期，请重新注册'
+        except BadSignature as e:
+            return '无效的链接'
+
         # 查找用户
-        user = UserModel.query.filter(UserModel.email == email).first()
+        try:
+            user = UserModel.query.filter(UserModel.email == email).first()
+        except:
+            return '激活失败'
+
+        # 用户存在且未激活，激活用户
+        if user and user.is_activate == 0:
+            user.is_activate = 1
+            db.session.commit()
+            return '激活成功，可以登录了'
+        # 用户已激活
+        elif user.is_activate == 1:
+            return '激活成功'
+        else:
+            return '用户不存在'
     except:
-        return '用户不存在'
-    if user:
-        user.is_activate = 1
-        db.session.commit()
-        return '激活成功，可以登录了'
-    else:
-        return '用户不存在'
-    # except:
-    #     # 未知错误重定向到主页
-    #     return redirect(url_for(endpoint='main.index'))
+        # 未知错误重定向到主页
+        return redirect(url_for(endpoint='main.index'))
 
 
 @user_bp.route('/login', methods=['GET', 'POST'])
 def login():
     '''用户登录'''
+    form = UserLoginForm()
+    if request.method == 'POST':
+        # 登录表单验证
+        if form.validate_on_submit():
+            # 获取邮箱，密码
+            email = form.email.data
+            password = form.password.data
+            # 验证邮箱，密码
+            try:
+                user = UserModel.query.filter(UserModel.email == email).first()
+                if user and check_password_hash(user.password, password):
+                    # 验证通过，登录，保持登录状态，重定向到主页
+                    session['uid'] = user.id
+                    return redirect(url_for('main.index'))
+            except:
+                return render_template('user/register.html', form=form, msg='登录失败')
+        # 表单验证未通过
+        return render_template('user/login.html', form=form)
+    # get请求
+    return render_template('user/login.html', form=form)
 
-    return render_template('user/login.html')
+
+@user_bp.route('/user_logout')
+def user_logout():
+    '''退出登录'''
+    # 删除session的内存空间和cookie
+    session.clear()
+    return redirect(url_for('main.index'))
 
 
+@user_bp.route('/user_center', methods=['GET', 'POST'])
+def user_center():
+    '''用户中心'''
+    user = g.user
+    return render_template('user/user_center.html', user=user)
 
 
 

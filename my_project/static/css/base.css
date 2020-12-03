@@ -22,7 +22,7 @@
   }
   .navbar-default .navbar-nav>li>a{ color: #ffffff; }
   .navbar-default .navbar-brand { color: #ffffff; }
-  .navbar-default .navbar-nav>li:hover{ 
+  .navbar-default .navbar-nav>li:hover{
       background-color: rgb(69, 176, 248);
     }
 .navbar-default .navbar-nav>li>a:hover{ color: #ffffff; }
@@ -42,9 +42,9 @@
     background-color: rgb(55, 167, 241);
 }
 a:hover {text-decoration:none !important;}
-.ul_down>a{ color: #ffffff;}
-.ul_down>a>li:hover{
-    background-color: rgb(69, 176, 248); 
+.ul_down>li>a{ color: rgb(195, 227, 247);}
+.ul_down>li>a:hover{
+    color: #ffffff;
 }
 .li:hover ul{
     display: block;

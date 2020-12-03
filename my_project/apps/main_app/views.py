@@ -1,5 +1,7 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, g, session
 from .models import ScenicSpotsImagesModel, ScenicSpotsModel
+from apps.user_app.models import UserModel
+
 
 # 前台展示蓝图
 main_bp = Blueprint('main', __name__)  # 前台展示蓝图，需要在create_app下注册
@@ -8,9 +10,13 @@ main_bp = Blueprint('main', __name__)  # 前台展示蓝图，需要在create_ap
 @main_bp.route('/', endpoint='index')
 def index():
     '''首页'''
-    # 查询数据库展示
+    # 如果用户已登录，查询用户
+    uid = session.get('uid')
+    user = UserModel.query.get(uid)
 
-    return render_template('main/index.html')
+    # 查询数据
+
+    return render_template('main/index.html', user=user)
 
 
 @main_bp.route('/scenic_spots_detail', endpoint='scenic_spots_detail')

@@ -2,7 +2,6 @@ from flask_mail import Message
 from exts import mail
 import settings
 import threading
-from itsdangerous import TimedJSONWebSignatureSerializer  # token
 
 
 def async_send_mail(msg):
@@ -16,8 +15,7 @@ def async_send_mail(msg):
 
 def send_mail(email=None):
     '''发送邮件'''
-    # 生成token，24小时后过期，secret_key加密
-    serializer = TimedJSONWebSignatureSerializer(secret_key=settings.SECRET_KEY, expires_in=120)
+    from apps.user_app.views import serializer  # 序列化器
     token = serializer.dumps({'email': email}).decode('utf-8')
 
     # 创建邮件对象

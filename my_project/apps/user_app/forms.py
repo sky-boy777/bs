@@ -31,5 +31,8 @@ class UserRegisterForm(FlaskForm):
             raise ValidationError('邮箱错误')
 
 
-
+class UserLoginForm(UserRegisterForm):
+    '''用户登录表单验证'''
+    # 密码
+    password = PasswordField('password', validators=[DataRequired(message='请输入密码')])
 
