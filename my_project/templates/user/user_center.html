@@ -10,12 +10,12 @@
     <div class="row">
         <div class="col-md-2 col-sm-3 col-xs-4">
             <div class="list-group">
-                <div class="img"><img src="/static{{ user.icon }}" alt="头像"></div>
-                <div class="uname h3">{{ user.username }}</div>
+                <div class="img"><img src="/static{{ g.user.icon }}" alt="头像"></div>
+                <div class="uname h3">{{ g.user.username }}</div>
                 <a href="#" class="list-group-item">编辑个人信息</a>
                 <a href="#" class="list-group-item">我的动态</a>
                 <a href="#" class="list-group-item">我的评论</a>
-                <a href="#" class="list-group-item">修改密码</a>
+                <a href="{{ url_for('user.change_password') }}" class="list-group-item">修改密码</a>
             </div>
         </div>
     </div>

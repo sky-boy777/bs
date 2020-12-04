@@ -36,3 +36,13 @@ class UserLoginForm(UserRegisterForm):
     # 密码
     password = PasswordField('password', validators=[DataRequired(message='请输入密码')])
 
+
+class UserChangePasswordForm(FlaskForm):
+    '''用户修改密码表单验证'''
+    # 旧密码
+    old_password = PasswordField('old_password', validators=[DataRequired(message='请输入密码'),
+                                                            Length(min=6, message='密码格式不对')])
+    # 新密码
+    new_password = PasswordField('new_password', validators=[DataRequired(message='请输入密码'),
+                                                            Length(min=6, message='密码长度至少六位')])
+

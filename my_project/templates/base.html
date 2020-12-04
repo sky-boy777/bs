@@ -5,10 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <link rel="shortcut icon" href="/static/images/favicon.ico" />
-    <link rel="stylesheet" href="/static/css/init.css">
-    <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="/static/css/init.css" type="text/css">
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}" type="text/css">
     <script src="/static/jquery1.12.4/jquery-1.12.4.min.js"></script>
+
     {% block header %} {% endblock header %} {# 头部预留位置 #}
     <title>{% block title %}父模板标题{% endblock title %}</title> {# title #}
 </head>
@@ -48,12 +49,12 @@
                 {% block login %}
                 <!-- 用户头像 -->
                 <ul class="nav navbar-right">
-                    {% if user %}
+                    {% if g.user %}
                     <li class="li">
-                        <div class="icon"><a href="javascript:;"><img src="/static{{ user.icon }}" alt="头像"></a> {{ user.username }}<div>
+                        <div class="icon"><a href="javascript:;"><img src="/static{{ g.user.icon }}" alt="头像"></a> {{ g.user.username }}<div>
                         <ul class="ul_down">
                             <li><a href="{{ url_for('user.user_center') }}">用户中心</a></li>
-                            {% if user.is_admin == 1 %}
+                            {% if g.user.is_admin == 1 %}
                             <li><a href="#">后台管理</a></li>
                             {% endif %}
                             <li><a href="{{ url_for('user.user_logout') }}">退出登录</a></li>
@@ -88,8 +89,6 @@
     {% endblock bottom %}
     <!--底部结束-->
 
-
-
 <script>
     $('#nav-btn').click(function () {
         $('#nav-div').toggleClass('collapse');  // 点击出现下拉菜单
@@ -108,6 +107,9 @@
         $(this).attr('src', "{{ url_for('user.get_image_code') }}?key=" + Math.random());
         return false;
     });
+
+    {% block script %}  {# js预留位置 #}
+    {% endblock script %}
 </script>
 </body>
 

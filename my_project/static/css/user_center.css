@@ -13,6 +13,7 @@
      padding: 10px;
      border-bottom: solid 1px #d8d6d6;
      }
+.list-group-item { color: #23527c !important; }    
 .list-group-item:hover {
     background-color: #09f !important;
     color: white !important;

@@ -10,7 +10,7 @@ def create_image_code():
     '''创建图片验证码'''
     s = 'qwertyuiop1234567890lkjhgfdsazxcvbnm'  # 26个单词跟0-9数字
     # 创建画布
-    image_code = Image.new(mode='RGB', size=(100, 30), color=random_RGB())
+    image_code = Image.new(mode='RGB', size=(100, 30), color=(200, 200, 222))
     # 添加字体文件
     my_font = ImageFont.truetype('static/font/bahnschrift.ttf', size=25)
     # 创建画图对象

@@ -1,9 +1,8 @@
-from flask import Blueprint, g
-from flask import render_template, request, make_response, session, redirect, url_for
+from flask import Blueprint, g, render_template, request, make_response, session, redirect, url_for
 from utils.create_image_code import create_image_code  # 生成图片验证码
 import io
 import settings
-from .forms import UserRegisterForm, UserLoginForm  # 表单验证类
+from .forms import UserRegisterForm, UserLoginForm, UserChangePasswordForm  # 表单验证类
 from .models import UserModel
 from werkzeug.security import generate_password_hash, check_password_hash  # 密码加密，验证
 from exts import db
@@ -15,10 +14,11 @@ from itsdangerous import TimedJSONWebSignatureSerializer, SignatureExpired, BadS
 user_bp = Blueprint(name='user', import_name=__name__, url_prefix='/user')
 
 # 生成序列化器(token)，24小时后过期，secret_key加密
-serializer = TimedJSONWebSignatureSerializer(secret_key=settings.SECRET_KEY, expires_in=120)
+serializer = TimedJSONWebSignatureSerializer(secret_key=settings.SECRET_KEY,
+                                             expires_in=120)
 
 # 登录才能访问的路径
-required_login_path = ['/user/user_center']
+required_login_path = ['/user/user_center', '/user/change_password']
 # 登录后不能访问的路径
 login_not_path = ['/user/login', '/user/register']
 
@@ -26,16 +26,19 @@ login_not_path = ['/user/login', '/user/register']
 @user_bp.before_app_request
 def my_before_request():
     '''用户权限验证'''
-    # 获取已登录的用户id
+    # 尝试获取用户id
     uid = session.get('uid')
+    try:
+        user = UserModel.query.get(uid)
+        g.user = user  # 使用g对象存储用户，这样哪个页面都能用了
+    except:
+        # 查询数据库出错
+        return '未知错误'
     # 如果请求的路径需要登录才能访问
-    if request.path in required_login_path:
-        if uid:
-            user = UserModel.query.get(uid)
-            g.user = user  # 使用g对象存储用户，这样哪个页面都能用了
-        else:
-            return redirect(url_for('user.login'))
-    elif request.path in login_not_path and uid:
+    if request.path in required_login_path and not user:
+        # 如果用户未登录
+        return redirect(url_for('user.login'))
+    if request.path in login_not_path and user:
         # 已登录，不能访问登录跟注册页面
         return redirect(url_for('main.index'))
 
@@ -160,25 +163,24 @@ def activate():
 def login():
     '''用户登录'''
     form = UserLoginForm()
-    if request.method == 'POST':
-        # 登录表单验证
-        if form.validate_on_submit():
-            # 获取邮箱，密码
-            email = form.email.data
-            password = form.password.data
-            # 验证邮箱，密码
-            try:
-                user = UserModel.query.filter(UserModel.email == email).first()
-                if user and check_password_hash(user.password, password):
-                    # 验证通过，登录，保持登录状态，重定向到主页
-                    session['uid'] = user.id
-                    return redirect(url_for('main.index'))
-            except:
-                return render_template('user/register.html', form=form, msg='登录失败')
-        # 表单验证未通过
-        return render_template('user/login.html', form=form)
-    # get请求
+    # 登录表单验证
+    if request.method == 'POST' and form.validate_on_submit():
+        # 获取邮箱，密码
+        email = form.email.data
+        password = form.password.data
+        # 验证邮箱，密码
+        try:
+            user = UserModel.query.filter(UserModel.email == email).first()
+            if user and check_password_hash(user.password, password):
+                # 验证通过，登录并保持登录状态，重定向到主页
+                session['uid'] = user.id
+                return redirect(url_for('main.index'))
+            return render_template('user/login.html', form=form, msg='用户名或密码错误')
+        except:
+            return render_template('user/login.html', form=form, msg='登录失败')
+    # 表单验证未通过或get请求
     return render_template('user/login.html', form=form)
+
 
 
 @user_bp.route('/user_logout')
@@ -192,8 +194,38 @@ def user_logout():
 @user_bp.route('/user_center', methods=['GET', 'POST'])
 def user_center():
     '''用户中心'''
-    user = g.user
-    return render_template('user/user_center.html', user=user)
+    return render_template('user/user_center.html')
+
+
+@user_bp.route('/change_password', methods=['GET', 'POST'])
+def change_password():
+    '''修改密码：已登录才能修改密码'''
+    # 实例化表单验证对象
+    form = UserChangePasswordForm()
+    # post请求，表单验证
+    if request.method == 'POST' and form.validate_on_submit():
+        # 接收数据
+        old_password = form.old_password.data
+        new_password = form.new_password.data
+
+        user = g.user
+        # 匹配用户密码
+        if check_password_hash(user.password, old_password):
+            # 修改密码，提交
+            user.password = generate_password_hash(password=new_password)
+            db.session.commit()
+            # 清除session，修改密码后需要重新登录
+            session.clear()
+            is_change = 1  # 表示修改成功，前端弹框告知用户
+            return render_template('user/change_password.html', form=form, is_change=is_change)
+        else:
+            return render_template('user/change_password.html',
+                                   form=form,
+                                   old_password_error='严重怀疑你不是本人，自己的密码都记不住')
+    # 表单验证未通过或get请求
+    return render_template('user/change_password.html', form=form)
+
+
 
 
 
