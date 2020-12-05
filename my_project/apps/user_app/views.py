@@ -2,12 +2,13 @@ from flask import Blueprint, g, render_template, request, make_response, session
 from utils.create_image_code import create_image_code  # 生成图片验证码
 import io
 import settings
-from .forms import UserRegisterForm, UserLoginForm, UserChangePasswordForm  # 表单验证类
+from .forms import UserRegisterForm, UserLoginForm, UserChangePasswordForm, SendEmailCodeForm, ResetPasswordForm  # 表单验证类
 from .models import UserModel
 from werkzeug.security import generate_password_hash, check_password_hash  # 密码加密，验证
 from exts import db
-from utils.send_email import send_mail  # 发送邮件
+from utils.send_email import send_mail, send_mail_code  # 发送邮件
 from itsdangerous import TimedJSONWebSignatureSerializer, SignatureExpired, BadSignature  # token
+import random
 
 
 # 用户模块蓝图
@@ -112,7 +113,8 @@ def register():
                 return render_template('user/register.html', form=form, msg='注册失败')
             # 发送邮件，并重定向到登录页面
             send_mail(email)
-            return redirect(url_for(endpoint='user.login'))
+            flag = 1  # 1表示已发送邮件
+            return render_template('user/register.html', form=form, flag=flag)
 
         # 表单验证未通过
         return render_template('user/register.html', form=form)
@@ -134,7 +136,7 @@ def activate():
             info = serializer.loads(token)
             email = info.get('email')
         except SignatureExpired as e:
-            return '激活链接过期，请重新注册'
+            return '激活链接过期'
         except BadSignature as e:
             return '无效的链接'
 
@@ -172,6 +174,10 @@ def login():
         try:
             user = UserModel.query.filter(UserModel.email == email).first()
             if user and check_password_hash(user.password, password):
+                if user.is_activate != 1:
+                    return render_template('user/login.html', form=form, msg='该邮箱尚未注册，请先注册')
+                if user.is_delete == 1:
+                    return render_template('user/login.html', form=form, msg='该邮箱已被拉黑')
                 # 验证通过，登录并保持登录状态，重定向到主页
                 session['uid'] = user.id
                 return redirect(url_for('main.index'))
@@ -181,6 +187,54 @@ def login():
     # 表单验证未通过或get请求
     return render_template('user/login.html', form=form)
 
+
+# 忘记密码逻辑处理开始
+@user_bp.route('/send_email_code', methods=['GET', 'POST'])
+def send_email_code():
+    '''发送动态验证码'''
+    form = SendEmailCodeForm()
+    if request.method == 'POST' and form.validate_on_submit():
+        # 接收邮箱号
+        email = form.email.data
+
+        # 生成动态验证码，保存到session
+        email_code = random.randint(100000, 999999)  # 六位整数验证码
+        session['email_code'] = str(email_code)  # 前端接收的是字符串所以这里要转换成str
+        session['email'] = email  # 邮箱也要保存到session
+
+        # 发送动态验证码
+        send_mail_code(email=email, email_code=email_code)
+        flag = 1  # 标记动态验证码发送成功
+        return render_template('user/send_email_code.html', form=form, flag=flag)
+    return render_template('user/send_email_code.html', form=form)
+
+
+@user_bp.route('/reset_password', methods=['GET', 'POST'])
+def reset_password():
+    '''发送验证码后重置密码处理'''
+    form = ResetPasswordForm()
+    if request.method == 'POST' and form.validate_on_submit():
+        # 接收数据
+        email = form.email.data
+        password = form.password.data
+        # 从session取出刚刚发送验证码的邮箱跟前端传来的邮箱对比
+        if email != session.get('email'):
+            return render_template('user/reset_password.html', form=form, email_error='邮箱错误')
+        # 查询用户重置密码
+        try:
+            user = UserModel.query.filter(UserModel.email == email).first()
+            if user:
+                user.password = generate_password_hash(password=password, salt_length=9)
+                db.session.commit()
+                session.clear()
+                flag = 1
+                return render_template('user/reset_password.html', form=form, flag=1)
+            else:
+                return render_template('user/reset_password.html', form=form, msg='用户不存在')
+        except:
+            return render_template('user/reset_password.html', form=form, msg='未知错误')
+    return render_template('user/reset_password.html', form=form)
+# 忘记密码逻辑处理结束
 
 
 @user_bp.route('/user_logout')

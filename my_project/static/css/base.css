@@ -57,3 +57,16 @@ a:hover {text-decoration:none !important;}
     color: #ffffff;
     text-align: center;
 }
+/* 表单 */
+.form{
+        width: 400px;
+        height: 400px;
+        position: absolute;
+        top:50%;
+        left:50%;
+        margin-top: -150px;
+        margin-left: -200px;
+        padding: 20px;
+        align-content: center;
+        background-color: #f7f8f8;
+     }

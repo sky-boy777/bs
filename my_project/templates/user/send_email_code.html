@@ -1,10 +1,12 @@
-{% extends 'base.html' %}  {# 加载父模板 #}
+<!DOCTYPE html>
+<html lang="en">
+<head>{% extends 'base.html' %}  {# 加载父模板 #}
 
 {% block header %}  {# 预留头部位置 #}
-<link rel="stylesheet" href="/static/css/register.css">
-{% endblock header %}  
+<link rel="stylesheet" href="/static/css/login.css">
+{% endblock header %}
 
-{% block title %}欢迎注册{% endblock title %}  {# title #}
+{% block title %}发送验证码{% endblock title %}  {# title #}
 {% block nav %}
     <!--导航栏开始-->
     <nav class="navbar-default">
@@ -21,20 +23,15 @@
 
 {% block content %}
 <div class="form">
-    <div class="h3 welcome-register">欢迎注册</div>
     <form action="" method="post">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <div class="form-group">
           <input type="email" class="form-control" id="exampleInputEmail1" placeholder="邮箱" name="email">
           <div class="red">{{ form.email.errors.0 }}</div>
-          <input type="password" class="form-control" id="exampleInputPassword1" placeholder="密码（至少六位）" name="password">
-          <div class="red">{{ form.password.errors.0 }}</div>
           <input type="text" placeholder="验证码(点击切换)" name="code"><img src="{{ url_for('user.get_image_code') }}" class="code" id="image_code" alt="验证码">
           <div class="red">{{ form.code.errors.0 }}</div>
       </div>
-      <button type="submit" class="btn btn-primary">立即注册</button>
-        <span class="h6"> 已有账号？<a href="{{ url_for('user.login') }}">立即登录</a></span>
-        <div class="red h3">{{ msg }}</div>
+      <button type="submit" class="btn btn-primary">发送验证码</button>
     </form>
 </div>
 {% endblock content %}
@@ -43,7 +40,7 @@
 
 {% block script %}  {# js预留位置 #}
     if("{{ flag }}" == "1"){
-        alert("邮件发送成功");
-        window.location.href = "{{ url_for('user.login') }}";
+        alert("验证码发送成功，请接收");
+        window.location.href = "{{ url_for('user.reset_password') }}";
     };
 {% endblock script %}

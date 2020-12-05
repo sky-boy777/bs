@@ -31,8 +31,9 @@
           <input type="text" placeholder="验证码(点击切换)" name="code"><img src="{{ url_for('user.get_image_code') }}" class="code" id="image_code" alt="验证码">
           <div class="red">{{ form.code.errors.0 }}</div>
       </div>
-      <button type="submit" class="btn btn-default">登录</button>
+      <button type="submit" class="btn btn-primary">登录</button>
         <span class="h6"> 无账号？<a href="{{ url_for('user.register') }}">立即注册</a></span>
+        <div class="h6"><a href="{{ url_for('user.send_email_code') }}">忘记密码？</a></div>
         <div class="red h3">{{ msg }}</div>
     </form>
 </div>

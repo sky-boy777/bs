@@ -29,7 +29,7 @@ TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates').replace('\\', '/')
 # UPLOAD_ICON_DIR = os.path.join(BASE_DIR, 'static/upload/icon').replace('\\', '/')
 
 # 发送邮件配置
-MAIL_DEFAULT_SENDER = '账户激活<bycwql@163.com>'  # 显示发件人
+MAIL_DEFAULT_SENDER = '旅游景点自助系统<bycwql@163.com>'  # 显示发件人
 MAIL_SERVER = 'smtp.163.com'  # smtp服务的邮箱服务器， 如果是 qq 改成 smtp.qq.com
 MAIL_USERNAME = 'bycwql@163.com'  # 发送邮件的邮箱
 MAIL_PASSWORD = 'JBRHBAFRQNGZTPHP'  # 开启SMTP后的客户端授权码

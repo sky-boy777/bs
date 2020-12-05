@@ -28,6 +28,23 @@ def send_mail(email=None):
     t = threading.Thread(target=async_send_mail, args=(msg,))
     t.start()
 
+def async_send_mail_code(msg):
+    '''异步发送动态验证码'''
+    # 在使用到的时候再导入app，在头部导入会出错
+    from app import app
+    # 创建应用上下文
+    with app.app_context():
+        mail.send(message=msg)
+
+
+def send_mail_code(email=None, email_code=None):
+    '''发送动态验证码'''
+    # 创建邮件对象
+    msg = Message(subject='旅游景点自助系统验证码', recipients=[email], body='您的验证码为：' + str(email_code))
+    # 创建一个线程，并启动
+    t = threading.Thread(target=async_send_mail_code, args=(msg,))
+    t.start()
+
 
 if __name__ == '__main__':
     print('pass')
