@@ -40,7 +40,7 @@ def async_send_mail_code(msg):
 def send_mail_code(email=None, email_code=None):
     '''发送动态验证码'''
     # 创建邮件对象
-    msg = Message(subject='旅游景点自助系统验证码', recipients=[email], body='您的验证码为：' + str(email_code))
+    msg = Message(subject='旅游景点自助系统验证码', recipients=[email], body='您的验证码为：' + email_code)
     # 创建一个线程，并启动
     t = threading.Thread(target=async_send_mail_code, args=(msg,))
     t.start()

@@ -24,6 +24,7 @@
 {% block content %}
 <div class="form">
     <form action="" method="post">
+        <div class="h3">邮箱验证</div>
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <div class="form-group">
           <input type="email" class="form-control" id="exampleInputEmail1" placeholder="邮箱" name="email">
@@ -39,8 +40,12 @@
 {% block bottom %}{% endblock bottom %}  {# 底部 #}
 
 {% block script %}  {# js预留位置 #}
-    if("{{ flag }}" == "1"){
-        alert("验证码发送成功，请接收");
-        window.location.href = "{{ url_for('user.reset_password') }}";
+    if("{{ is_send_mail }}" == "1"){
+        alert("验证码发送成功");
+
+        // 加个定时器延时跳转
+        setTimeout(function(){
+            window.location.href = "{{ url_for('user.reset_password') }}";
+        }, 100);
     };
 {% endblock script %}

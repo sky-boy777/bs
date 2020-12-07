@@ -5,7 +5,7 @@ import settings
 from .forms import UserRegisterForm, UserLoginForm, UserChangePasswordForm, SendEmailCodeForm, ResetPasswordForm  # 表单验证类
 from .models import UserModel
 from werkzeug.security import generate_password_hash, check_password_hash  # 密码加密，验证
-from exts import db
+from exts import db, cache
 from utils.send_email import send_mail, send_mail_code  # 发送邮件
 from itsdangerous import TimedJSONWebSignatureSerializer, SignatureExpired, BadSignature  # token
 import random
@@ -68,12 +68,20 @@ def register():
     '''用户注册'''
     # 实例化一个表单验证对象
     form = UserRegisterForm()
+
+    # 1表示已发送邮件，注册成功后才返回给前端
+    is_send_register_mail = 1
+
     if request.method == 'POST':
         # 表单验证
         if form.validate_on_submit():
+            # 判断是否重复提交表单
+            if cache.get('is_send_register_mail') == 1:
+                return render_template('user/register.html', form=form, flag=is_send_register_mail)
             # 验证通过，接收数据，可使用以下两种方式
             email = request.form.get('email')  # POST:form，GET:args
             password = form.password.data
+            code = form.code.data
 
             # 如果用户已注册，且已激活，first()得到一个对象，不加得到查询集
             # 方法一，取下标
@@ -98,9 +106,12 @@ def register():
                     except:
                         # 提交数据库出错
                         return render_template('user/register.html', form=form, msg='注册失败')
+
                     # 发邮件（异步）
                     send_mail(email)
-                    return redirect(url_for(endpoint='user.login'))
+                    # 防止重复提交，设置一个标志，放入缓存
+                    cache.set('is_send_register_mail', 1, timeout=10)
+                    return render_template('user/register.html', form=form, flag=is_send_register_mail)
 
             # 用户不存在，注册新用户
             user = UserModel()
@@ -111,10 +122,12 @@ def register():
                 db.session.commit()
             except:
                 return render_template('user/register.html', form=form, msg='注册失败')
-            # 发送邮件，并重定向到登录页面
+
+            # 发邮件（异步）
             send_mail(email)
-            flag = 1  # 1表示已发送邮件
-            return render_template('user/register.html', form=form, flag=flag)
+            # 防止重复提交，设置一个标志，放入缓存
+            cache.set('is_send_register_mail', 1, timeout=10)
+            return render_template('user/register.html', form=form, is_send_mail=is_send_register_mail)
 
         # 表单验证未通过
         return render_template('user/register.html', form=form)
@@ -139,13 +152,11 @@ def activate():
             return '激活链接过期'
         except BadSignature as e:
             return '无效的链接'
-
         # 查找用户
         try:
             user = UserModel.query.filter(UserModel.email == email).first()
         except:
             return '激活失败'
-
         # 用户存在且未激活，激活用户
         if user and user.is_activate == 0:
             user.is_activate = 1
@@ -175,15 +186,15 @@ def login():
             user = UserModel.query.filter(UserModel.email == email).first()
             if user and check_password_hash(user.password, password):
                 if user.is_activate != 1:
-                    return render_template('user/login.html', form=form, msg='该邮箱尚未注册，请先注册')
+                    return render_template('user/login.html', form=form, msg='该邮箱尚未激活，请先重新注册')
                 if user.is_delete == 1:
-                    return render_template('user/login.html', form=form, msg='该邮箱已被拉黑')
+                    return render_template('user/login.html', form=form, msg='该邮箱已被管理员加入黑名单')
                 # 验证通过，登录并保持登录状态，重定向到主页
                 session['uid'] = user.id
                 return redirect(url_for('main.index'))
-            return render_template('user/login.html', form=form, msg='用户名或密码错误')
+            return render_template('user/login.html', form=form, msg='邮箱未注册或密码错误')
         except:
-            return render_template('user/login.html', form=form, msg='登录失败')
+            return render_template('user/login.html', form=form, msg='未知错误，登录失败')
     # 表单验证未通过或get请求
     return render_template('user/login.html', form=form)
 
@@ -194,18 +205,24 @@ def send_email_code():
     '''发送动态验证码'''
     form = SendEmailCodeForm()
     if request.method == 'POST' and form.validate_on_submit():
+        # 判断缓存是否有值，有：表单重复提交
+        if cache.get('is_send_email') == 1:
+            # 重复提交表单处理
+            return render_template('user/send_email_code.html', form=form, is_send_mail=1)
         # 接收邮箱号
         email = form.email.data
-
-        # 生成动态验证码，保存到session
-        email_code = random.randint(100000, 999999)  # 六位整数验证码
-        session['email_code'] = str(email_code)  # 前端接收的是字符串所以这里要转换成str
-        session['email'] = email  # 邮箱也要保存到session
+        # 生成随机动态验证码，保存到session
+        email_code = str(random.randint(1000, 999999))  # 4~6位验证码，转为str发送邮件
+        # 保存到session，邮箱也要保存到session
+        session['email_code'] = email_code
+        session['email'] = email
 
         # 发送动态验证码
         send_mail_code(email=email, email_code=email_code)
-        flag = 1  # 标记动态验证码发送成功
-        return render_template('user/send_email_code.html', form=form, flag=flag)
+        is_send_mail = 1  # 标记动态验证码发送成功，用来返回给前端
+        # 防止重复提交：设置一个标志，放入缓存
+        cache.set('is_send_email', 1, timeout=10)
+        return render_template('user/send_email_code.html', form=form, is_send_mail=is_send_mail)
     return render_template('user/send_email_code.html', form=form)
 
 
@@ -215,24 +232,24 @@ def reset_password():
     form = ResetPasswordForm()
     if request.method == 'POST' and form.validate_on_submit():
         # 接收数据
-        email = form.email.data
         password = form.password.data
-        # 从session取出刚刚发送验证码的邮箱跟前端传来的邮箱对比
-        if email != session.get('email'):
-            return render_template('user/reset_password.html', form=form, email_error='邮箱错误')
+        email = session.get('email')
         # 查询用户重置密码
         try:
             user = UserModel.query.filter(UserModel.email == email).first()
             if user:
+                # 重置密码
                 user.password = generate_password_hash(password=password, salt_length=9)
                 db.session.commit()
+                # 清除session重新登录
                 session.clear()
-                flag = 1
-                return render_template('user/reset_password.html', form=form, flag=1)
+                is_reset_password = 1  # 标记重置密码成功，返回给前端
+                return render_template('user/reset_password.html', form=form, is_reset_password=is_reset_password)
             else:
                 return render_template('user/reset_password.html', form=form, msg='用户不存在')
         except:
-            return render_template('user/reset_password.html', form=form, msg='未知错误')
+            return render_template('user/reset_password.html', form=form, msg='未知错误，重置密码失败')
+    # get请求
     return render_template('user/reset_password.html', form=form)
 # 忘记密码逻辑处理结束
 

@@ -42,8 +42,10 @@
 {% block bottom %}{% endblock bottom %}  {# 底部 #}
 
 {% block script %}  {# js预留位置 #}
-    if("{{ flag }}" == "1"){
+    if("{{ is_send_register_mail }}" == "1"){
         alert("邮件发送成功");
-        window.location.href = "{{ url_for('user.login') }}";
+         setTimeout(function(){
+            window.location.href = "{{ url_for('user.login') }}";
+        }, 100);
     };
 {% endblock script %}

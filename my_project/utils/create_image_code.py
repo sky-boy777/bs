@@ -22,11 +22,11 @@ def create_image_code():
     for i in range(4):
         c = random.choice(s)  # 每次随机选一个字符
         # xy坐标设置字符间距
-        draw.text(xy=(i*random.randint(20, 30), random.randint(0, 10)), text=c, font=my_font, fill=random_RGB())
+        draw.text(xy=(i*random.randint(20, 25), random.randint(0, 8)), text=c, font=my_font, fill=random_RGB())
         code += c
 
     # 画干扰线
-    for j in range(2):
+    for j in range(3):
         draw.line(xy=((0, random.randint(0, 30)), (90, random.randint(0, 30))), fill=random_RGB())
 
     # image_code.show()
