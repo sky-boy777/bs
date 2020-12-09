@@ -1,8 +1,8 @@
 from flask import Blueprint, g, render_template, request, make_response, session, redirect, url_for
 from utils.create_image_code import create_image_code  # 生成图片验证码
-import io
+import io, os
 import settings
-from .forms import UserRegisterForm, UserLoginForm, UserChangePasswordForm, SendEmailCodeForm, ResetPasswordForm  # 表单验证类
+from .forms import *  # 表单验证类
 from .models import UserModel
 from werkzeug.security import generate_password_hash, check_password_hash  # 密码加密，验证
 from exts import db, cache
@@ -75,13 +75,13 @@ def register():
     if request.method == 'POST':
         # 表单验证
         if form.validate_on_submit():
-            # 判断是否重复提交表单
-            if cache.get('is_send_register_mail') == 1:
-                return render_template('user/register.html', form=form, flag=is_send_register_mail)
             # 验证通过，接收数据，可使用以下两种方式
             email = request.form.get('email')  # POST:form，GET:args
             password = form.password.data
             code = form.code.data
+            # 判断是否重复提交表单
+            if cache.get(email) == 1:
+                return render_template('user/register.html', form=form, flag=is_send_register_mail)
 
             # 如果用户已注册，且已激活，first()得到一个对象，不加得到查询集
             # 方法一，取下标
@@ -109,8 +109,8 @@ def register():
 
                     # 发邮件（异步）
                     send_mail(email)
-                    # 防止重复提交，设置一个标志，放入缓存
-                    cache.set('is_send_register_mail', 1, timeout=10)
+                    # 防止重复提交，设置一唯一个标志，放入缓存
+                    cache.set(email, 1, timeout=10)
                     return render_template('user/register.html', form=form, flag=is_send_register_mail)
 
             # 用户不存在，注册新用户
@@ -125,8 +125,8 @@ def register():
 
             # 发邮件（异步）
             send_mail(email)
-            # 防止重复提交，设置一个标志，放入缓存
-            cache.set('is_send_register_mail', 1, timeout=10)
+            # 防止重复提交，设置一个唯一标志，放入缓存
+            cache.set(email, 1, timeout=10)
             return render_template('user/register.html', form=form, is_send_mail=is_send_register_mail)
 
         # 表单验证未通过
@@ -205,12 +205,13 @@ def send_email_code():
     '''发送动态验证码'''
     form = SendEmailCodeForm()
     if request.method == 'POST' and form.validate_on_submit():
-        # 判断缓存是否有值，有：表单重复提交
-        if cache.get('is_send_email') == 1:
-            # 重复提交表单处理
-            return render_template('user/send_email_code.html', form=form, is_send_mail=1)
         # 接收邮箱号
         email = form.email.data
+        # 判断缓存是否有值，有：表单重复提交
+        if cache.get(email) == 1:
+            # 重复提交表单处理
+            return render_template('user/send_email_code.html', form=form, is_send_mail=1)
+
         # 生成随机动态验证码，保存到session
         email_code = str(random.randint(1000, 999999))  # 4~6位验证码，转为str发送邮件
         # 保存到session，邮箱也要保存到session
@@ -220,8 +221,8 @@ def send_email_code():
         # 发送动态验证码
         send_mail_code(email=email, email_code=email_code)
         is_send_mail = 1  # 标记动态验证码发送成功，用来返回给前端
-        # 防止重复提交：设置一个标志，放入缓存
-        cache.set('is_send_email', 1, timeout=10)
+        # 防止重复提交：设置一唯一个标志，放入缓存
+        cache.set(email, 1, timeout=10)
         return render_template('user/send_email_code.html', form=form, is_send_mail=is_send_mail)
     return render_template('user/send_email_code.html', form=form)
 
@@ -265,7 +266,41 @@ def user_logout():
 @user_bp.route('/user_center', methods=['GET', 'POST'])
 def user_center():
     '''用户中心'''
-    return render_template('user/user_center.html')
+    form = UserCenterForm()
+    if request.method == 'POST' and form.validate_on_submit():
+        # 查询当前用户
+        user = g.user
+        # 判断用户名是否有值
+        if request.form.get('username'):
+            user.username = form.username.data  # 添加到待提交区
+        # 判断是否上传有图片文件
+        if form.icon.data:
+            icon = form.icon.data
+            # 创建文件名跟保存的路径
+            icon_filename = str(user.id) + '.gif'  # 文件名为：用户id.gif，可以动图
+            icon_path = os.path.join(settings.UPLOAD_ICON_DIR, icon_filename)
+
+            # 判断文件大小，字节换算
+            '''
+            1Byte(字节) = 8bit(位)
+            1KB = 1024Byte(字节)
+            1MB = 1024KB
+            1GB = 1024MB
+            1TB = 1024GB
+            '''
+            size = icon.read()  # 读出二进制流文件
+            if len(size) > 3*1024*1024:  # 3M
+                return render_template('user/user_center.html', form=form, msg='大小不能超过3M')
+            # 图片保存到本地，二进制写入
+            with open(icon_path, 'wb') as f:
+                f.write(size)
+
+            # # 添加到待提交区
+            user.icon = '/images/icon/' + icon_filename
+        # 提交到数据库
+        db.session.commit()
+        return render_template('user/user_center.html', form=form)
+    return render_template('user/user_center.html', form=form)
 
 
 @user_bp.route('/change_password', methods=['GET', 'POST'])

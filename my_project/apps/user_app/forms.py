@@ -3,6 +3,7 @@ from wtforms import StringField, PasswordField  # 字段
 from wtforms.validators import DataRequired, Length, ValidationError  # 验证器
 from flask import session
 import re
+from flask_wtf.file import FileField, FileAllowed  # 文件上传字段，验证
 
 
 # 在下面定义表单验证类
@@ -92,3 +93,12 @@ class ResetPasswordForm(FlaskForm):
         email_code = session.get('email_code')
         if email_code != data.data:
             raise ValidationError(message='动态验证码错误')
+
+
+class UserCenterForm(FlaskForm):
+    '''用户中心修改个人信息表单验证'''
+    # 用户名
+    username = StringField('username', validators=[Length(max=30, message='用户名太长了')])
+    # 头像
+    icon = FileField('icon', validators=[FileAllowed(['png', 'jpg', 'gif', 'jpeg'], message='只支持png,jpg,gif,jpeg格式的图片')])
+

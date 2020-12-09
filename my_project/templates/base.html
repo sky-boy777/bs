@@ -51,7 +51,7 @@
                 <ul class="nav navbar-right">
                     {% if g.user %}
                     <li class="li">
-                        <div class="icon"><a href="javascript:;"><img src="/static{{ g.user.icon }}" alt="头像"></a> {{ g.user.username }}<div>
+                        <div class="icon"><a href="javascript:;"><img class="icon_image" src="" alt="头像"></a> {{ g.user.username }}<div>
                         <ul class="ul_down">
                             <li><a href="{{ url_for('user.user_center') }}">用户中心</a></li>
                             {% if g.user.is_admin == 1 %}
@@ -101,6 +101,11 @@
         }
         return false;  // 防止事件冒泡(javascript的return false只会阻止默认行为，而是用jQuery的话则既阻止默认行为又防止对象冒泡)
     });
+
+    // 使用jQuery ready函数加载用户头像，为了在用户上传头像时能更新缓存
+    $(function(){
+        $('.icon_image').attr('src', '/static{{ g.user.icon }}?key=' + Math.random());
+        });
 
     // 点击切换验证码图片，后面添加随机数，不同的请求才能切换
     $('#image_code').click(function(){

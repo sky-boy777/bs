@@ -4,7 +4,6 @@
     align-items: center;
 }
 .container{ margin-top: 10px; }
-.my-fixed { position: fixed; top: 60px; }
 .list-group{ position: absolute;}
 .uname{
     text-align: center;

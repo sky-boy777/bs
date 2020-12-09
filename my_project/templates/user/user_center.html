@@ -11,7 +11,7 @@
     <div class="row my-fixed">
         <div class="col-md-2 col-sm-3 col-xs-4">
             <div class="list-group">
-                <div class="img"><img src="/static{{ g.user.icon }}" alt="头像"></div>
+                <div class="img"><img class="icon_image" src="" alt="头像"></div>
                 <div class="uname h3">{{ g.user.username }}</div>
                 <a href="#my-info" class="list-group-item">编辑个人信息</a>
                 <a href="#my-dynamic-state" class="list-group-item">我的动态</a>
@@ -33,10 +33,10 @@
             <form action="" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <div class="form-group">
+                    <input type="text" class="form-control" value="{{ g.user.username }}" name="username">
+                    <div class="red">{{ form.username.errors.0 }}</div>
                     <input type="file" class="form-control" name="icon">
-                    <div class="red">图片格式错误</div>
-                    <input type="text" class="form-control" value="用户名" name="username">
-                    <div class="red">用户名格式错误</div>
+                    <div class="red">{{ form.icon.errors.0 }}{{ msg }}</div>
                 </div>
                 <button type="submit" class="btn btn-primary">保存</button>
             </form>
@@ -91,66 +91,10 @@
             打开附件打开附件开发的时间飞快的设计费飞机迪斯科飞机附件是昆仑剑法开发建设了房间科夫斯基分手快乐来访记录是否记录卡撒旦解放螺丝钉解放了JFK但是JFK撒旦解放
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-offset-3 col-sm-offset-4 col-xs-offset-5 item">
-            打开附件打开附件开发的时间飞快的设计费飞机迪斯科飞机附件是昆仑剑法开发建设了房间科夫斯基分手快乐来访记录是否记录卡撒旦解放螺丝钉解放了JFK但是JFK撒旦解放
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-offset-3 col-sm-offset-4 col-xs-offset-5 item">
-            打开附件打开附件开发的时间飞快的设计费飞机迪斯科飞机附件是昆仑剑法开发建设了房间科夫斯基分手快乐来访记录是否记录卡撒旦解放螺丝钉解放了JFK但是JFK撒旦解放
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-offset-3 col-sm-offset-4 col-xs-offset-5 item">
-            打开附件打开附件开发的时间飞快的设计费飞机迪斯科飞机附件是昆仑剑法开发建设了房间科夫斯基分手快乐来访记录是否记录卡撒旦解放螺丝钉解放了JFK但是JFK撒旦解放
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-offset-3 col-sm-offset-4 col-xs-offset-5 item">
-            打开附件打开附件开发的时间飞快的设计费飞机迪斯科飞机附件是昆仑剑法开发建设了房间科夫斯基分手快乐来访记录是否记录卡撒旦解放螺丝钉解放了JFK但是JFK撒旦解放
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-offset-3 col-sm-offset-4 col-xs-offset-5 item">
-            打开附件打开附件开发的时间飞快的设计费飞机迪斯科飞机附件是昆仑剑法开发建设了房间科夫斯基分手快乐来访记录是否记录卡撒旦解放螺丝钉解放了JFK但是JFK撒旦解放
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-offset-3 col-sm-offset-4 col-xs-offset-5 item">
-            打开附件打开附件开发的时间飞快的设计费飞机迪斯科飞机附件是昆仑剑法开发建设了房间科夫斯基分手快乐来访记录是否记录卡撒旦解放螺丝钉解放了JFK但是JFK撒旦解放
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-offset-3 col-sm-offset-4 col-xs-offset-5 item">
-            打开附件打开附件开发的时间飞快的设计费飞机迪斯科飞机附件是昆仑剑法开发建设了房间科夫斯基分手快乐来访记录是否记录卡撒旦解放螺丝钉解放了JFK但是JFK撒旦解放
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-offset-3 col-sm-offset-4 col-xs-offset-5 item">
-            打开附件打开附件开发的时间飞快的设计费飞机迪斯科飞机附件是昆仑剑法开发建设了房间科夫斯基分手快乐来访记录是否记录卡撒旦解放螺丝钉解放了JFK但是JFK撒旦解放
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-offset-3 col-sm-offset-4 col-xs-offset-5 item">
-            打开附件打开附件开发的时间飞快的设计费飞机迪斯科飞机附件是昆仑剑法开发建设了房间科夫斯基分手快乐来访记录是否记录卡撒旦解放螺丝钉解放了JFK但是JFK撒旦解放
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-offset-3 col-sm-offset-4 col-xs-offset-5 item">
-            打开附件打开附件开发的时间飞快的设计费飞机迪斯科飞机附件是昆仑剑法开发建设了房间科夫斯基分手快乐来访记录是否记录卡撒旦解放螺丝钉解放了JFK但是JFK撒旦解放
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-offset-3 col-sm-offset-4 col-xs-offset-5 item">
-            打开附件打开附件开发的时间飞快的设计费飞机迪斯科飞机附件是昆仑剑法开发建设了房间科夫斯基分手快乐来访记录是否记录卡撒旦解放螺丝钉解放了JFK但是JFK撒旦解放
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-offset-3 col-sm-offset-4 col-xs-offset-5 item">
-            打开附件打开附件开发的时间飞快的设计费飞机迪斯科飞机附件是昆仑剑法开发建设了房间科夫斯基分手快乐来访记录是否记录卡撒旦解放螺丝钉解放了JFK但是JFK撒旦解放
-        </div>
-    </div>
       <!-- 我的评论结束 -->
 </div>
 {% endblock content %}
+
+
+
+

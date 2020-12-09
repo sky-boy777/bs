@@ -26,7 +26,7 @@ TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates').replace('\\', '/')
 # 上传文件路径
 # UPLOAD_DIR = os.path.join(BASE_DIR, 'static/upload').replace('\\', '/')
 # 头像图片文件路径
-# UPLOAD_ICON_DIR = os.path.join(BASE_DIR, 'static/upload/icon').replace('\\', '/')
+UPLOAD_ICON_DIR = os.path.join(BASE_DIR, 'static/images/icon').replace('\\', '/')
 
 # 发送邮件配置
 MAIL_DEFAULT_SENDER = '旅游景点自助系统<bycwql@163.com>'  # 显示发件人
