@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/static/bootstrap-3.3.7-dist/css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}" type="text/css">
     <script src="/static/jquery1.12.4/jquery-1.12.4.min.js"></script>
-
+    <script src="{{ url_for('static', filename='tinymce/tinymce.min.js') }}"></script>
     {% block header %} {% endblock header %} {# 头部预留位置 #}
     <title>{% block title %}父模板标题{% endblock title %}</title> {# title #}
 </head>
@@ -51,11 +51,11 @@
                 <ul class="nav navbar-right">
                     {% if g.user %}
                     <li class="li">
-                        <div class="icon"><a href="javascript:;"><img class="icon_image" src="" alt="头像"></a> {{ g.user.username }}<div>
+                        <div class="icon"><a href="javascript:;"><img class="icon_image" src="" alt="头像"></a> {{ g.user.username }}</div>
                         <ul class="ul_down">
                             <li><a href="{{ url_for('user.user_center') }}">用户中心</a></li>
                             {% if g.user.is_admin == 1 %}
-                            <li><a href="#">后台管理</a></li>
+                            <li><a href="{{ url_for('admin.admin_index') }}">后台管理</a></li>
                             {% endif %}
                             <li><a href="{{ url_for('user.user_logout') }}">退出登录</a></li>
                         </ul>
@@ -101,6 +101,18 @@
         }
         return false;  // 防止事件冒泡(javascript的return false只会阻止默认行为，而是用jQuery的话则既阻止默认行为又防止对象冒泡)
     });
+
+    // 富文本编辑器初始化
+    tinymce.init({  // 键值对形式
+            selector: '#textarea',
+            language: "zh_CN",
+            inline: false,
+            height: 600,
+            // 插件
+            plugins: 'quickbars advlist autolink link image lists preview', // 字符串，或plugins : ['advlist','autolink','link'],数组方式
+            // 工具栏
+            toolbar: 'undo redo | styleselect | bold italic | link h2 h3 h4 h5 h6',  // 工具栏按钮
+        });
 
     // 使用jQuery ready函数加载用户头像，为了在用户上传头像时能更新缓存
     $(function(){

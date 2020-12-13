@@ -1,6 +1,7 @@
 /* 公共样式 */
 .red{ color: red; }
-
+a:hover {text-decoration:none !important;}
+.container{ margin-top: 10px !important; margin-bottom: 50px !important; }
 /* 公共样式 */
 
 .icon{
@@ -36,14 +37,14 @@
 /* 已登录：用户头像下拉菜单 */
 .ul_down{
     position: absolute;
-    padding: 0px 5px;
+    padding: 5px 10px;
     z-index: 9999;
     display: none;
     background-color: rgb(55, 167, 241);
 }
-a:hover {text-decoration:none !important;}
-.ul_down>li>a{ color: rgb(195, 227, 247);}
-.ul_down>li>a:hover{
+.ul_down li { padding: 5px 0px;  }
+.ul_down li a{ color: rgb(195, 227, 247);}
+.ul_down li a:hover{
     color: #ffffff;
 }
 .li:hover ul{

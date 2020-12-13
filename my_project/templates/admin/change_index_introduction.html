@@ -1,0 +1,33 @@
+{% extends 'admin/admin_index.html' %} {# 加载父模板 #}
+
+{% block title %}修改首页简介{% endblock title %} {# title #}
+{% block header %} {# 预留头部位置 #}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_index.css') }}" type="text/css">
+{% endblock header %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <form action="" method="post">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="red">{{ form.title.errors.0 }}</div>
+                <input type="text" class="form-control" placeholder="标题" name="title" value="{% if item %}{{ item.title }}{% endif %}"><br>
+                <div class="red">{{ form.content.errors.0 }}</div>
+                <input id="textarea" name="content" placeholder="正文" value="{% if item %}{{ item.content }}{% endif %}"><br>
+                <div class="h2 red">{{ msg }}</div>
+                <button type="submit" class="btn btn-primary">保存</button>
+            </form>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block script %}  {# js预留位置 #}
+    if("{{ is_succeed }}" == "1"){
+        alert("保存成功！");
+    };
+{% endblock script %}
+
+
+
+
+

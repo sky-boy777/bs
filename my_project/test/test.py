@@ -1,2 +1,2 @@
-if 'ssaa' == 'ss' + 'aa':
-    print('aa')
+import uuid
+print(type(str(uuid.uuid4())))

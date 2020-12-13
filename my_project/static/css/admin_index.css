@@ -1,0 +1,4 @@
+.icon>a { color: white; border-bottom: 1px solid white; }
+.icon>a:hover { color: rgb(66, 64, 64); }
+.float-r { float: right; }
+.ul-list>li { margin: 10px; padding: 5px; border: 1px solid black; }

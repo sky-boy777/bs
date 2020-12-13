@@ -1,0 +1,80 @@
+{% extends 'base.html' %} {# 加载父模板 #}
+
+{% block title %}后台管理{% endblock title %} {# title #}
+{% block header %} {# 预留头部位置 #}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_index.css') }}" type="text/css">
+{% endblock header %}
+{% block search %}{% endblock search %} {# 搜索框 #}
+{% block nav %}
+    <!--导航栏开始-->
+    <nav class="navbar-default">
+        <!-- 切换按钮开始 -->
+        <button class="navbar-toggle" id="nav-btn">
+            <span class="toggle-btn glyphicon glyphicon-chevron-left" id="btn-span"></span>
+        </button>
+        <!--切换按钮结束-->
+        <div class="container-fluid">
+            <!--logo开始-->
+            <div class="navbar-header">
+                <a class="navbar-brand">后台管理</a>
+            </div>
+            <!--logo结束-->
+            <div class="collapse navbar-collapse" id="nav-div">
+                <div class="icon nav navbar-right">
+                    欢迎！管理员{#{ g.user.username }#}&nbsp;
+                    <a href="{{ url_for('admin.admin_index') }}">后台管理首页</a>
+                    <a href="{{ url_for('main.index') }}">网站首页</a>
+                    <a href="{{ url_for('user.user_logout') }}">退出登录</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!--导航栏结束-->
+{% endblock nav %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="list-group">
+            <div class="list-group-item" style="border:None;">
+                <a href="{{ url_for('admin.change_index_introduction') }}" class="btn btn-primary">修改首页简介</a>
+                <a href="{{ url_for('admin.add_scenic_spot') }}" class="btn btn-primary">添加景点</a>
+                <a href="#" class="btn btn-primary">发布公告</a>
+            </div>
+            <a href="#" id="gg-info" class="list-group-item h4">公告列表 <span class="glyphicon glyphicon-chevron-down float-r"></span></a>
+            <ul class="ul-list" id="gg-info-ul" style="display: None;">
+                <li>标题 <span class="float-r">2020-2-2</span></li>
+                <li><a href="#">Another action</a></li>
+                <li><a href="#">Something else here</a></li>
+                <li><a href="#">Separated link</a></li>
+             </ul>
+            <a href="#" class="list-group-item h4">景点列表<span class="glyphicon glyphicon-chevron-down float-r"></span></a>
+            <a href="#" class="list-group-item h4">用户列表<span class="glyphicon glyphicon-chevron-down float-r"></span></a>
+            <a href="#" class="list-group-item h4">用户评论列表<span class="glyphicon glyphicon-chevron-down float-r"></span></a>
+            <a href="#" class="list-group-item h4">用户留言列表<span class="glyphicon glyphicon-chevron-down float-r"></span></a>
+            <a href="#" class="list-group-item h4">用户动态列表<span class="glyphicon glyphicon-chevron-down float-r"></span></a>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block script %}  {# js预留位置 #}
+
+    // 定义函数，参数: $(this)为调用函数的对象，显示和隐藏切换，200毫秒延迟
+    function toggle_list(ths){
+        ths.next().toggle(200);
+        // 来回切换两个(class)箭头按钮
+        ths.children('span').toggleClass('glyphicon-chevron-down glyphicon-chevron-right');
+    };
+
+    // 显示和隐藏公告列表
+    $('#gg-info').click(function(){
+        var ths = $(this);
+        toggle_list(ths);  // 调用函数
+        return false;
+    });
+{% endblock script %}
+
+
+
+

@@ -23,8 +23,8 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__)).replace('\\', '/')  # 将w
 STATIC_DIR = os.path.join(BASE_DIR, 'static').replace('\\', '/')
 # 模板路径
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates').replace('\\', '/')
-# 上传文件路径
-# UPLOAD_DIR = os.path.join(BASE_DIR, 'static/upload').replace('\\', '/')
+# 景点封面路径
+SCENIC_SPOT_DIR = os.path.join(BASE_DIR, 'static/images/scenic_spot').replace('\\', '/')
 # 头像图片文件路径
 UPLOAD_ICON_DIR = os.path.join(BASE_DIR, 'static/images/icon').replace('\\', '/')
 

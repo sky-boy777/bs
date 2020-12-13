@@ -1,9 +1,26 @@
 {% extends 'base.html' %}  {# 加载父模板 #}
 
-{% block header %}{% endblock header %}  {# 预留头部位置 #}
+
 {% block title %}首页{% endblock title %}  {# title #}
+
+{% block header %}  {# 预留头部位置 #}
+<link rel="stylesheet" href="/static/css/index.css">
+{% endblock header %}
+
 {% block search %}{% endblock search %}  {# 搜索框 #}
+
 {% block content %}
+<!--首页简介开始-->
+        <div class="jumbotron">
+            {% if item %}
+            <h3>{{ item.title }}</h3>
+            <p class="h5">{{ item.content | safe }}</p>
+            {% else %}
+            <h3>景点标题</h3>
+            <p>简介。。。</p>
+            {% endif %}
+        </div>
+<!--首页简介结束-->
     <div class="container">
         <div class="row">
             <div class="col-md-3 col-sm-4 col-xs-6">
@@ -14,7 +31,7 @@
                       <p class="red">成人100/人，小孩半价</p>
                       <p><a href="#" class="btn btn-primary" role="button">详情</a></p>
                     </div>
-                  </div>
+                </div>
             </div>
             <div class="col-md-3 col-sm-4 col-xs-6">
                 <div class="thumbnail">
@@ -24,7 +41,7 @@
                       <p>打开附件打开房价肯定发几款的肌肤的肌肤</p>
                       <p><a href="#" class="btn btn-primary" role="button">详情</a></p>
                     </div>
-                  </div>
+                </div>
             </div>
             <div class="col-md-3 col-sm-4 col-xs-6">
                 <div class="thumbnail">
@@ -34,7 +51,7 @@
                       <p class="red">免费</p>
                       <p><a href="#" class="btn btn-primary" role="button">详情</a></p>
                     </div>
-                  </div>
+                </div>
             </div>
             <div class="col-md-3 col-sm-4 col-xs-6">
                 <div class="thumbnail">
@@ -44,7 +61,7 @@
                       <p>打开附件打开房价肯定发几款的肌肤的肌肤</p>
                       <p><a href="#" class="btn btn-primary" role="button">详情</a></p>
                     </div>
-                  </div>
+                </div>
             </div>
         </div>
     </div>

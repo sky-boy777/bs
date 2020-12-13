@@ -1,9 +1,9 @@
 body{ background-color: #d9e4eb; }
-     .form-group input{ margin-top: 20px; }
-     .code{ width: 100px; height: 27px; cursor: pointer; }
-     .welcome-register {
-        padding: 5px;
-        color: white;
-        background-color: #09f;
-        text-align: center;
-        }
+.form-group input{ margin-top: 20px; }
+.code{ width: 100px; height: 27px; cursor: pointer; }
+.welcome-register {
+    padding: 5px;
+    color: white;
+    background-color: #09f;
+    text-align: center;
+}

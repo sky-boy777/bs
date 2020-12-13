@@ -1,6 +1,5 @@
-from flask import Blueprint, render_template, g, session
-from .models import ScenicSpotsImagesModel, ScenicSpotsModel
-from apps.user_app.models import UserModel
+from flask import Blueprint, render_template
+from apps.main_app.models import IndexBriefIntroductionModel
 
 
 # 前台展示蓝图
@@ -10,13 +9,9 @@ main_bp = Blueprint('main', __name__)  # 前台展示蓝图，需要在create_ap
 @main_bp.route('/', endpoint='index')
 def index():
     '''首页'''
-    # 如果用户已登录，查询用户
-    uid = session.get('uid')
-    user = UserModel.query.get(uid)
-
-    # 查询数据
-
-    return render_template('main/index.html', user=user)
+    # 查询首页简介数据
+    item = IndexBriefIntroductionModel.query.filter().first()
+    return render_template('main/index.html', item=item)
 
 
 @main_bp.route('/scenic_spots_detail', endpoint='scenic_spots_detail')
@@ -34,7 +29,7 @@ def info():
     pass
 
 
-@main_bp.route('/info_detail', endpoint='indo_detail')
+@main_bp.route('/info_detail', endpoint='info_detail')
 def info_detail():
     '''公告信息详情页'''
     # 获取id

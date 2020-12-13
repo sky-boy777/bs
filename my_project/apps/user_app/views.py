@@ -18,7 +18,7 @@ user_bp = Blueprint(name='user', import_name=__name__, url_prefix='/user')
 serializer = TimedJSONWebSignatureSerializer(secret_key=settings.SECRET_KEY,
                                              expires_in=120)
 
-# 登录才能访问的路径
+# 需要登录路径
 required_login_path = ['/user/user_center', '/user/change_password']
 # 登录后不能访问的路径
 login_not_path = ['/user/login', '/user/register']
@@ -35,13 +35,19 @@ def my_before_request():
     except:
         # 查询数据库出错
         return '未知错误'
-    # 如果请求的路径需要登录才能访问
+    # 未登录，不能访问
     if request.path in required_login_path and not user:
-        # 如果用户未登录
         return redirect(url_for('user.login'))
+    # 已登录，不能访问
     if request.path in login_not_path and user:
-        # 已登录，不能访问登录跟注册页面
         return redirect(url_for('main.index'))
+    # 不是管理员不能访问
+    # if re.search(r'^/admin.*', request.path):
+    #     if user and user.is_admin != 1:  # 已登录且是普通用户
+    #         return redirect(url_for('main.index'))
+    #     else:  # 未登录
+    #         return redirect(url_for('user.login'))
+
 
 
 @user_bp.route('/get_image_code')
@@ -289,7 +295,7 @@ def user_center():
             1TB = 1024GB
             '''
             size = icon.read()  # 读出二进制流文件
-            if len(size) > 3*1024*1024:  # 3M
+            if len(size) > 3*1024*1024:  # 限制文件大小：3M
                 return render_template('user/user_center.html', form=form, msg='大小不能超过3M')
             # 图片保存到本地，二进制写入
             with open(icon_path, 'wb') as f:

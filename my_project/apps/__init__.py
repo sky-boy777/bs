@@ -2,6 +2,7 @@ from flask import Flask
 import settings  # 配置文件
 from apps.main_app.views import main_bp  # 前台展示蓝图
 from apps.user_app.views import user_bp  # 用户模块蓝图
+from apps.admin_app.views import admin_bp  # 后台管理蓝图
 from flask_wtf.csrf import CsrfProtect  # 全局csrf
 from exts import db, mail, cache  # 数据库，邮件，缓存
 
@@ -21,5 +22,6 @@ def create_app():
     # 注册蓝图
     app.register_blueprint(main_bp)  # 前台展示蓝图
     app.register_blueprint(user_bp)  # 用户模块蓝图
+    app.register_blueprint(admin_bp)  # 后台管理蓝图
 
     return app
