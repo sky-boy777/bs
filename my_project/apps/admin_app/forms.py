@@ -13,6 +13,8 @@ class ChangeIndexIntroductionForm(FlaskForm):
                                              Length(max=30, message='最多只能输入三十个字符')])
     # 正文
     content = StringField('content', validators=[DataRequired(message='请输入正文')])
+    # 门票费用说明
+    rates = StringField('content', validators=[Length(max=20, message='最多只能输入二十个字符')])
 
 
 class AddScenicSpotForm(FlaskForm):
@@ -22,6 +24,8 @@ class AddScenicSpotForm(FlaskForm):
                                              Length(max=20, message='最多只能输入二十个字符')])
     # 景点简介
     content = StringField('content', validators=[DataRequired(message='请输入景点简介')])
+    # 门票费用说明
+    rates = StringField('content', validators=[Length(max=20, message='最多只能输入二十个字符')])
     # 景点封面图
     image = FileField('image', validators=[DataRequired(message='请添加封面图'),
         FileAllowed(['png', 'jpg', 'gif', 'jpeg'], message='只支持png,jpg,gif,jpeg格式的图片')

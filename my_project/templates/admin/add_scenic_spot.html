@@ -12,6 +12,8 @@
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <div class="red">{{ form.name.errors.0 }}</div>
                 <input type="text" class="form-control" placeholder="景点名称" name="name" value="{% if item %}{{ item.name }}{% endif %}"><br>
+                 <div class="red">{{ form.rates.errors.0 }}</div>
+                <input type="text" class="form-control" placeholder="门票费用说明(默认免费)" name="rates" value="{% if item %}{{ item.rates }}{% endif %}"><br>
                 <label>封面图</label>
                 <div class="red">{{ form.image.errors.0 }}{{ msg }}</div>
                 <input type="file" class="form-control" name="image"><br>

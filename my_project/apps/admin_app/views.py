@@ -29,16 +29,18 @@ def change_index_introduction():
     except:
         return render_template('admin/change_index_introduction.html',
                                is_succeed=is_succeed,
-                               item=None, form=form, msg='查询数据库失败')
+                               item=None, form=form, msg='查询数据失败')
     # 表单验证
     if request.method == 'POST' and form.validate_on_submit():
         # 接收数据
         title = form.title.data
         content = form.content.data
+        rates = form.rates.data
         # 有则更新，无则添加
         if item:
             item.title = title
             item.content = content
+            item.rates = rates if rates else '免费'  # 三元表达式
             try:
                 db.session.commit()
             except:
@@ -50,6 +52,7 @@ def change_index_introduction():
             item = IndexBriefIntroductionModel()
             item.title = title
             item.content = content
+            item.rates = rates if rates else '免费'  # 三元表达式
             try:
                 db.session.add(item)
                 db.session.commit()
@@ -74,6 +77,7 @@ def add_scenic_spot():
         # 接收数据
         name = form.name.data
         content = form.content.data
+        rates = form.rates.data
         image = form.image.data
 
         # 判断是否重复提交
@@ -93,10 +97,11 @@ def add_scenic_spot():
 
         # 查询数据库是否有相同的景点名称，有则更新
         try:
-            item = ScenicSpotsModel.query.filter().first()
+            item = ScenicSpotsModel.query.filter(ScenicSpotsModel.name == name).first()
             if item:
                 item.name = name
                 item.content = content
+                item.rates = rates if rates else '免费'  # 三元表达式
                 item.image = '/images/scenic_spot/' + image_filename
                 db.session.commit()
                 # 防止重复提交，设置唯一标识，放入缓存
@@ -109,6 +114,7 @@ def add_scenic_spot():
         item = ScenicSpotsModel()
         item.name = name
         item.content = content
+        item.rates = rates if rates else '免费'  # 三元表达式
         item.image = '/images/scenic_spot/' + image_filename
         try:
             db.session.add(item)

@@ -10,59 +10,37 @@
 {% block search %}{% endblock search %}  {# 搜索框 #}
 
 {% block content %}
+
+{% if index_brief_introduction %}
 <!--首页简介开始-->
         <div class="jumbotron">
-            {% if item %}
-            <h3>{{ item.title }}</h3>
-            <p class="h5">{{ item.content | safe }}</p>
-            {% else %}
-            <h3>景点标题</h3>
-            <p>简介。。。</p>
-            {% endif %}
+            <h3>{{ index_brief_introduction.title }}</h3>
+            <p class="h5">{{ index_brief_introduction.content | safe }}</p>
+            <br>
+            <i>门票费用说明：<span class="red">{{ index_brief_introduction.rates }}</span></i>
         </div>
 <!--首页简介结束-->
+  {% endif %}
+
     <div class="container">
+    {% if scenic_spots_list %}
         <div class="row">
+        {% for i in range(1, scenic_spots_list | length) %}
             <div class="col-md-3 col-sm-4 col-xs-6">
                 <div class="thumbnail">
-                    <img src="/static/images/scenic_spot/default.jpg" alt="景点封面">
+                    <img src="/static{{ scenic_spots_list[i].image }}" alt="景点封面">
                     <div class="caption">
-                      <h3>景点名称</h3>
-                      <p class="red">成人100/人，小孩半价</p>
+                      <h3>{{ scenic_spots_list[i].name }}</h3>
+                      <p class="red">{{ scenic_spots_list[i].rates }}</p>
                       <p><a href="#" class="btn btn-primary" role="button">详情</a></p>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3 col-sm-4 col-xs-6">
-                <div class="thumbnail">
-                    <img src="/static/images/scenic_spot/default.jpg" alt="景点封面">
-                    <div class="caption">
-                      <h3>景点名称</h3>
-                      <p>打开附件打开房价肯定发几款的肌肤的肌肤</p>
-                      <p><a href="#" class="btn btn-primary" role="button">详情</a></p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-4 col-xs-6">
-                <div class="thumbnail">
-                    <img src="/static/images/scenic_spot/default.jpg" alt="景点封面">
-                    <div class="caption">
-                      <h3>景点名称就会加快回家好好</h3>
-                      <p class="red">免费</p>
-                      <p><a href="#" class="btn btn-primary" role="button">详情</a></p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-4 col-xs-6">
-                <div class="thumbnail">
-                    <img src="/static/images/scenic_spot/default.jpg" alt="景点封面">
-                    <div class="caption">
-                      <h3>景点名称</h3>
-                      <p>打开附件打开房价肯定发几款的肌肤的肌肤</p>
-                      <p><a href="#" class="btn btn-primary" role="button">详情</a></p>
-                    </div>
-                </div>
-            </div>
-        </div>
+            {% if i%4 == 0 %}  {# 四个一行 #}
+        </div>  {# 为上一行将添加结尾div #}
+        <div class="row">  {# 开启新的一行(row) #}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
     </div>
 {% endblock content %}

@@ -12,6 +12,8 @@
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <div class="red">{{ form.title.errors.0 }}</div>
                 <input type="text" class="form-control" placeholder="标题" name="title" value="{% if item %}{{ item.title }}{% endif %}"><br>
+                <div class="red">{{ form.rates.errors.0 }}</div>
+                <input type="text" class="form-control" placeholder="门票费用说明(默认免费)" name="rates" value="{% if item %}{{ item.rates }}{% endif %}"><br>
                 <div class="red">{{ form.content.errors.0 }}</div>
                 <input id="textarea" name="content" placeholder="正文" value="{% if item %}{{ item.content }}{% endif %}"><br>
                 <div class="h2 red">{{ msg }}</div>
