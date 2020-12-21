@@ -1,6 +1,6 @@
 {% extends 'admin/admin_index.html' %} {# 加载父模板 #}
 
-{% block title %}修改首页简介{% endblock title %} {# title #}
+{% block title %}发布公告信息{% endblock title %} {# title #}
 {% block header %} {# 预留头部位置 #}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_index.css') }}" type="text/css">
 {% endblock header %}
@@ -11,13 +11,9 @@
             <form action="" method="post">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <div class="red">{{ form.title.errors.0 }}</div>
-                <input type="text" class="form-control" placeholder="标题" name="title" value="{% if item %}{{ item.title }}{% endif %}"><br>
-                <div class="red">{{ form.opening_hours.errors.0 }}</div>
-                <input type="text" class="form-control" placeholder="开放时间" name="opening_hours" value="{% if item %}{{ item.opening_hours }}{% endif %}"><br>
-                <div class="red">{{ form.rates.errors.0 }}</div>
-                <input type="text" class="form-control" placeholder="门票费用说明(默认免费)" name="rates" value="{% if item %}{{ item.rates }}{% endif %}"><br>
+                <input type="text" class="form-control" placeholder="公告标题" name="title"><br>
                 <div class="red">{{ form.content.errors.0 }}</div>
-                <input id="textarea" name="content" placeholder="正文" value="{% if item %}{{ item.content }}{% endif %}"><br>
+                <input id="textarea" name="content" placeholder="内容"><br>
                 <div class="h2 red">{{ msg }}</div>
                 <button type="submit" class="btn btn-primary">保存</button>
             </form>
@@ -28,6 +24,9 @@
 {% block script %}  {# js预留位置 #}
     if("{{ is_succeed }}" == "1"){
         alert("保存成功！");
+        setTimeout(function(){
+            window.location.href = "{{ url_for('admin.admin_index') }}";
+        }, 100);
     };
 {% endblock script %}
 

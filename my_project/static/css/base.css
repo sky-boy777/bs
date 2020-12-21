@@ -1,5 +1,7 @@
 /* 公共样式 */
 .red{ color: red; }
+.fl{ float: left; }
+.fr{ float: right; }
 a:hover {text-decoration:none !important;}
 .container{ margin-top: 10px !important; margin-bottom: 50px !important; }
 /* 公共样式 */

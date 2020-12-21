@@ -21,7 +21,9 @@ class IndexBriefIntroductionModel(BaseModel):
     # 简介，图文
     content = db.Column(mysql.MSMediumText)
     # 门票说明：收费：100每人/免费
-    rates = db.Column(db.String(20))
+    rates = db.Column(db.String(20), default='免费')
+    # 开放时间
+    opening_hours = db.Column(db.String(50), default='24小时开放')
 
 
 class ScenicSpotsModel(BaseModel):
@@ -35,7 +37,9 @@ class ScenicSpotsModel(BaseModel):
     # 封面图
     image = db.Column(db.String(64))  # 存储的是图片路径
     # 门票说明：收费：100每人/免费
-    rates = db.Column(db.String(20))
+    rates = db.Column(db.String(20), default='免费')
+    # 开放时间
+    opening_hours = db.Column(db.String(50), default='24小时开放')
 
     # 跟景点图集表建立关系，删除景点时也删除对应的图片，不会在数据库生成字段
     images = db.relationship('ScenicSpotsImagesModel', backref='scenic_spots')

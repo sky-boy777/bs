@@ -1,0 +1,27 @@
+{% extends 'base.html' %}  {# 加载父模板 #}
+
+
+{% block title %}景点详情{% endblock title %}  {# title #}
+
+{% block header %}  {# 预留头部位置 #}
+<style>
+.center{ text-align:center; }
+</style>
+{% endblock header %}
+
+{% block search %}{% endblock search %}  {# 搜索框 #}
+
+{% block content %}
+<div class="container jumbotron">
+    <div>
+        {% if item %}
+        <h2 class="center">{{ item.title }}</h2>
+        <p class="fr"><i class="h5">最近更新：{{ item.create_time }}</i></p>
+        <br><br>
+        <p>{{ item.content | safe }}</p>
+        {% else %}
+        <p>数据加载失败！</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}

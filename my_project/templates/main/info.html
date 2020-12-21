@@ -1,0 +1,51 @@
+{% extends 'base.html' %}  {# 加载父模板 #}
+
+
+{% block title %}公告信息{% endblock title %}  {# title #}
+
+{% block header %}  {# 预留头部位置 #}
+<style>
+    .center { text-align: center; }
+</style>
+{% endblock header %}
+
+{% block search %}{% endblock search %}  {# 搜索框 #}
+
+{% block content %}
+<div class="container">
+    {% if info_list %}
+        {% for info in info_list.items %}
+            <div class="row">
+                <div class="col-md-offset-2 col-sm-offset-1 col-md-8 col-sm-10">
+                    <a href="{{ url_for('main.info_detail', info_id=info.id) }}">{{ loop.index }}.{{ info.title }} <span class="fr">{{ info.create_time }}</span></a>
+                </div>
+            </div>
+        {% endfor %}
+</div>
+
+{# 分页开始 #}
+<nav class="center" aria-label="Page navigation">
+  <ul class="pagination">
+     {% if info_list.has_prev %}  {# 上一页 #}
+      <li><a href="{{ url_for('main.info') }}?page={{ info_list.prev_num }}">上一页</a></li>
+      {% else %}
+      <li><a href="javascript:;">上一页</a></li>
+     {% endif %}
+
+      <li><a href="javascript:;">{{ info_list.page }}</a></li>  {# 当前页 #}
+
+      {% if info_list.has_next %}  {# 下一页 #}
+      <li><a href="{{ url_for('main.info') }}?page={{ info_list.next_num }}">下一页</a></li>
+      {% else %}
+      <li><a href="javascript:;">下一页</a></li>
+      {% endif %}
+
+      <li><a>共{{ info_list.pages }}页</a></li>  {# 总页数 #}
+  </ul>
+</nav>
+{# 分页结束 #}
+
+{% else %}
+<h3>数据加载失败！</h3>
+{% endif %}
+{% endblock content %}

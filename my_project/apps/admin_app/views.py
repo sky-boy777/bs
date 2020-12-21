@@ -1,8 +1,9 @@
 from flask import Blueprint, render_template, request, redirect, url_for
-from apps.admin_app.forms import ChangeIndexIntroductionForm, AddScenicSpotForm
-from apps.main_app.models import IndexBriefIntroductionModel, ScenicSpotsModel
+from apps.admin_app.forms import *
+from apps.main_app.models import *
+from apps.user_app.models import *
 from exts import db, cache
-import os, settings, uuid
+import os, settings, uuid, datetime
 
 
 # 后台管理蓝图，需要在create_app下注册
@@ -11,9 +12,21 @@ admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 @admin_bp.route('/admin_index')
 def admin_index():
     '''后台管理首页'''
+    # 公告列表
+    try:
+        info_list = InfoModel.query.filter().all()
+    except:
+        return render_template('admin/admin_index.html')
+    # 景点列表
 
+    # 用户列表
+    # 游客动态列表
+    # 游客留言列表
 
-    return render_template('admin/admin_index.html')
+    return render_template('admin/admin_index.html',
+                           info_list=info_list,
+
+                           )
 
 
 @admin_bp.route('/change_index_introduction', methods=['GET', 'POST'])
@@ -35,11 +48,14 @@ def change_index_introduction():
         # 接收数据
         title = form.title.data
         content = form.content.data
+        opening_hours = form.opening_hours.data
         rates = form.rates.data
         # 有则更新，无则添加
         if item:
             item.title = title
             item.content = content
+            item.create_time = datetime.datetime.now().strftime('%Y-%m-%d')  # 更新时间
+            item.opening_hours = opening_hours if opening_hours else '24小时开放'
             item.rates = rates if rates else '免费'  # 三元表达式
             try:
                 db.session.commit()
@@ -52,6 +68,7 @@ def change_index_introduction():
             item = IndexBriefIntroductionModel()
             item.title = title
             item.content = content
+            item.opening_hours = opening_hours if opening_hours else '24小时开放'
             item.rates = rates if rates else '免费'  # 三元表达式
             try:
                 db.session.add(item)
@@ -77,6 +94,7 @@ def add_scenic_spot():
         # 接收数据
         name = form.name.data
         content = form.content.data
+        opening_hours = form.opening_hours.data
         rates = form.rates.data
         image = form.image.data
 
@@ -101,8 +119,10 @@ def add_scenic_spot():
             if item:
                 item.name = name
                 item.content = content
+                item.opening_hours = opening_hours if opening_hours else '24小时开放'
                 item.rates = rates if rates else '免费'  # 三元表达式
                 item.image = '/images/scenic_spot/' + image_filename
+                item.create_time = datetime.datetime.now().strftime('%Y-%m-%d')  # 更新时间
                 db.session.commit()
                 # 防止重复提交，设置唯一标识，放入缓存
                 cache.set(name, 1, timeout=10)
@@ -114,6 +134,7 @@ def add_scenic_spot():
         item = ScenicSpotsModel()
         item.name = name
         item.content = content
+        item.opening_hours = opening_hours if opening_hours else '24小时开放'
         item.rates = rates if rates else '免费'  # 三元表达式
         item.image = '/images/scenic_spot/' + image_filename
         try:
@@ -129,6 +150,45 @@ def add_scenic_spot():
 
 
 @admin_bp.route('/add_info', methods=['GET', 'POST'])
-def admin_add_info():
+def add_info():
     '''发布公告'''
-    pass
+    form = AddInfoForm()
+    is_succeed = 0  # 标志:添加成功为1，否则为0
+    # post请求+表单验证
+    if request.method == 'POST' and form.validate_on_submit():
+        # 接收数据
+        title = form.title.data
+        content = form.content.data
+
+        # 判断是否重复提交
+        if cache.get(title) == 1:
+            return redirect(url_for('admin.admin_index'))
+
+        # 查询数据库是否有相同的公告名称，有则更新
+        try:
+            item = InfoModel.query.filter(InfoModel.title == title).first()
+            if item:
+                item.title = title
+                item.content = content
+                item.create_time = datetime.datetime.now().strftime('%Y-%m-%d')  # 更新时间
+                db.session.commit()
+                # 防止重复提交，设置唯一标识，放入缓存
+                cache.set(title, 1, timeout=10)
+                return render_template('admin/add_info.html', form=form, is_succeed=1)
+        except:
+            return render_template('admin/add_info.html', form=form, is_succeed=is_succeed, msg='发布失败！')
+
+        # 保存到数据库
+        item = InfoModel()
+        item.title = title
+        item.content = content
+        try:
+            db.session.add(item)
+            db.session.commit()
+            # 防止重复提交，设置唯一标识，放入缓存
+            cache.set(title, 1, timeout=10)
+            return render_template('admin/add_info.html', form=form, is_succeed=1)
+        except:
+            return render_template('admin/add_info', form=form, is_succeed=is_succeed, msg='发布失败！')
+    # get请求
+    return render_template('admin/add_info.html', form=form, is_succeed=is_succeed)

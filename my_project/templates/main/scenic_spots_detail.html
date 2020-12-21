@@ -1,0 +1,27 @@
+{% extends 'base.html' %}  {# 加载父模板 #}
+
+
+{% block title %}景点详情{% endblock title %}  {# title #}
+
+{% block header %}  {# 预留头部位置 #}
+<style>
+.center{ text-align:center; }
+.img_width{ width: 300px; }
+</style>
+{% endblock header %}
+
+{% block search %}{% endblock search %}  {# 搜索框 #}
+
+{% block content %}
+<div class="container jumbotron">
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <h2 class="center">{{ item.name }}</h2>
+            <p class="fr"><i class="h5">最近更新：{{ item.create_time }}</i></p>
+            <br><br>
+            <img class="img_width" src="/static{{ item.image }}" alt="景点封面">
+            <p>{{ item.content | safe }}</p>
+        </div>
+    </div>
+</div>
+{% endblock content %}
