@@ -42,12 +42,9 @@ def my_before_request():
     if request.path in login_not_path and user:
         return redirect(url_for('main.index'))
     # 不是管理员不能访问
-    # if re.search(r'^/admin.*', request.path):
-    #     if user and user.is_admin != 1:  # 已登录且是普通用户
-    #         return redirect(url_for('main.index'))
-    #     else:  # 未登录
-    #         return redirect(url_for('user.login'))
-
+    if re.search(r'^/admin.*', request.path):
+        if user and user.is_admin != 1:  # 已登录且是普通用户
+            return redirect(url_for('main.index'))
 
 
 @user_bp.route('/get_image_code')

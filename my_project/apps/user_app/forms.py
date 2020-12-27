@@ -4,6 +4,7 @@ from wtforms.validators import DataRequired, Length, ValidationError  # 验证�
 from flask import session
 import re
 from flask_wtf.file import FileField, FileAllowed  # 文件上传字段，验证
+from flask_wtf.file import FileStorage
 
 
 # 在下面定义表单验证类
@@ -102,3 +103,9 @@ class UserCenterForm(FlaskForm):
     # 头像
     icon = FileField('icon', validators=[FileAllowed(['png', 'jpg', 'gif', 'jpeg'], message='只支持png,jpg,gif,jpeg格式的图片')])
 
+
+class UserAddDynamicForm(FlaskForm):
+    '''用户发表动态表单验证'''
+    content = StringField('content', validators=[DataRequired(message='请输入内容'),
+                                                 Length(max=500, message='最多只能输入500个字符')])
+    images = FileField('images', validators=[FileAllowed(['png', 'jpg', 'gif', 'jpeg'], message='只支持png,jpg,gif,jpeg格式的图片')])

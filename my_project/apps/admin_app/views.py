@@ -3,7 +3,8 @@ from apps.admin_app.forms import *
 from apps.main_app.models import *
 from apps.user_app.models import *
 from exts import db, cache
-import os, settings, uuid, datetime
+import os
+import settings, uuid, datetime
 
 
 # 后台管理蓝图，需要在create_app下注册
@@ -154,12 +155,12 @@ def add_info():
     '''发布公告'''
     form = AddInfoForm()
     is_succeed = 0  # 标志:添加成功为1，否则为0
+
     # post请求+表单验证
     if request.method == 'POST' and form.validate_on_submit():
         # 接收数据
         title = form.title.data
         content = form.content.data
-
         # 判断是否重复提交
         if cache.get(title) == 1:
             return redirect(url_for('admin.admin_index'))
@@ -190,5 +191,35 @@ def add_info():
             return render_template('admin/add_info.html', form=form, is_succeed=1)
         except:
             return render_template('admin/add_info', form=form, is_succeed=is_succeed, msg='发布失败！')
-    # get请求
+
+    # get请求如果带有info_id，则为编辑公告
+    info_id = request.args.get('info_id')
+    if info_id:
+        # 查询id对应公告
+        try:
+            item = InfoModel.query.get(info_id)
+            return render_template('admin/add_info.html', form=form, is_succeed=is_succeed, item=item)
+        except:
+            # 查询出错则转为添加公告
+            return render_template('admin/add_info.html', form=form, is_succeed=is_succeed)
+    # 普通get请求(添加公告)
     return render_template('admin/add_info.html', form=form, is_succeed=is_succeed)
+
+
+@admin_bp.route('/delete_info', methods=['GET', 'POST'])
+def delete_info():
+    '''删除公告信息'''
+    if request.method == 'POST':
+        # 获取需要删除的公告id
+        info_id = request.form.get('info_id')
+        # 根据id查询，然后删除
+        try:
+            item = InfoModel.query.get(info_id)
+            if item:
+                db.session.delete(item)
+                db.session.commit()
+            else:
+                return '失败，资源不存在'
+        except:
+            return '失败'
+        return 'true'

@@ -42,41 +42,41 @@
                 <a href="{{ url_for('admin.add_info') }}" class="btn btn-primary">发布公告</a>
             </div>
 
-            <a href="#" class="my_list list-group-item h4">公告列表 <span class="glyphicon glyphicon-chevron-down float-r"></span></a>
+            <a href="javascript:;" class="my_list list-group-item h4">公告列表 <span class="glyphicon glyphicon-chevron-right float-r"></span></a>
             {% if info_list %}
             <ul class="ul-list" style="display: None;">
                 {% for info in info_list %}
                 <li>
                     {{ loop.index }}.{{ info.title }}
                     &nbsp;&nbsp;&nbsp;&nbsp;
-                    <a href="#"><button class="btn btn-danger btn-xs">删除</button></a>
-                    <a href="#"><button class="btn btn-info btn-xs">编辑</button></a>
-                    <a href="#"><button class="btn btn-success btn-xs">查看</button></a>
+                    <a href="javascript:;"><button class="btn btn-danger btn-xs info_id" data-info_id="{{ info.id }}">删除</button></a>
+                    <a href="{{ url_for('admin.add_info', info_id=info.id) }}"><button class="btn btn-info btn-xs">编辑</button></a>
+                    <a href="{{ url_for('main.info_detail', info_id=info.id) }}"><button class="btn btn-success btn-xs">查看</button></a>
                     <span class="float-r">{{ info.create_time }}</span>
                 </li>
                 {% endfor %}
             </ul>
             {% endif %}
 
-            <a href="#" class="my_list list-group-item h4">景点列表<span class="glyphicon glyphicon-chevron-down float-r"></span></a>
+            <a href="javascript:;" class="my_list list-group-item h4">景点列表<span class="glyphicon glyphicon-chevron-right float-r"></span></a>
             <ul class="ul-list" style="display: None;">
                 <li>标题 <span class="float-r">2020-2-2</span></li>
                 <li><a href="#">Another action</a></li>
              </ul>
 
-            <a href="#" class="my_list list-group-item h4">用户列表<span class="glyphicon glyphicon-chevron-down float-r"></span></a>
+            <a href="javascript:;" class="my_list list-group-item h4">用户列表<span class="glyphicon glyphicon-chevron-right float-r"></span></a>
             <ul class="ul-list" style="display: None;">
                 <li>标题 <span class="float-r">2020-2-2</span></li>
                 <li><a href="#">Another action</a></li>
              </ul>
 
-            <a href="#" class="my_list list-group-item h4">用户动态列表<span class="glyphicon glyphicon-chevron-down float-r"></span></a>
+            <a href="javascript:;" class="my_list list-group-item h4">用户动态列表<span class="glyphicon glyphicon-chevron-right float-r"></span></a>
             <ul class="ul-list" style="display: None;">
                 <li>标题 <span class="float-r">2020-2-2</span></li>
                 <li><a href="#">Another action</a></li>
              </ul>
 
-            <a href="#" class="my_list list-group-item h4">用户留言列表<span class="glyphicon glyphicon-chevron-down float-r"></span></a>
+            <a href="javascript:;" class="my_list list-group-item h4">用户留言列表<span class="glyphicon glyphicon-chevron-right float-r"></span></a>
             <ul class="ul-list" style="display: None;">
                 <li>标题 <span class="float-r">2020-2-2</span></li>
                 <li><a href="#">Another action</a></li>
@@ -101,6 +101,28 @@
         toggle_list(ths);  // 调用函数
         return false;
     });
+
+    // 删除公告
+    $('.info_id').click(function(){
+        var info_id = $(this).data('info_id');
+        if(confirm("确定删除吗？")){
+            $.ajax({
+                url:"{{ url_for('admin.delete_info') }}",
+                type:"post",
+                data:{info_id:info_id, csrf_token:"{{ csrf_token() }}"},
+                success: function (msg) {   // 回调函数
+                     if(msg == 'true'){
+                            $(this).parent().parent().remove();  // 删除父节点
+                        }
+                     else{
+                        alert(msg);
+                        };
+                    }.bind(this)  // 回调函数里使用$(this)需要绑定
+            });
+        }
+        return false;
+    });
+
 {% endblock script %}
 
 

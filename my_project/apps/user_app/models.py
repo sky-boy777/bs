@@ -32,6 +32,31 @@ class UserModel(BaseModel):
     # 是否超级用户（管理员）
     is_admin = db.Column(db.Boolean, default=0, nullable=False)
 
+    # 跟用户动态模型建立关系，不会在数据库生成字段
+    dynamics = db.relationship('UserDynamicModel', backref='user')
+
     def __str__(self):
         '''魔法方法：打印输出用户名'''
         return self.username
+
+
+class UserDynamicModel(BaseModel):
+    '''用户动态模型'''
+    __tablename__ = 'user_dynamic'
+    # 内容
+    content = db.Column(db.String(500))
+    # 用户id，此条动态属于哪个用户
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # 用法:user_dynamic.user.username
+
+    # 跟用户动态图片集建立关系，不会在数据库生成字段
+    images = db.relationship('UserDynamicImageModel', backref='user_dynamic')  # 用法：user_dynamic.images.image
+
+
+class UserDynamicImageModel(BaseModel):
+    '''用户动态图片集模型'''
+    __tablename__ = 'user_dynamic_image'
+    # 图片路径
+    image = db.Column(db.String(255))
+
+    # 外键，图片属于哪条动态
+    dynamic_id = db.Column(db.Integer, db.ForeignKey('user_dynamic.id'), nullable=False)

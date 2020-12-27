@@ -11,9 +11,9 @@
             <form action="" method="post">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <div class="red">{{ form.title.errors.0 }}</div>
-                <input type="text" class="form-control" placeholder="公告标题" name="title"><br>
+                <input type="text" class="form-control" placeholder="公告标题" name="title" value="{% if item %}{{ item.title }}{% endif %}"><br>
                 <div class="red">{{ form.content.errors.0 }}</div>
-                <input id="textarea" name="content" placeholder="内容"><br>
+                <input id="textarea" name="content" placeholder="内容" value="{% if item %}{{ item.content }}{% endif %}"><br>
                 <div class="h2 red">{{ msg }}</div>
                 <button type="submit" class="btn btn-primary">保存</button>
             </form>
