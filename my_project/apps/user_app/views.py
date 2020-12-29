@@ -3,7 +3,7 @@ from utils.create_image_code import create_image_code  # 生成图片验证码
 import io, os
 import settings
 from .forms import *  # 表单验证类
-from .models import UserModel
+from .models import UserModel, MessageBoardModel, UserDynamicModel, UserDynamicImageModel
 from werkzeug.security import generate_password_hash, check_password_hash  # 密码加密，验证
 from exts import db, cache
 from utils.send_email import send_mail, send_mail_code  # 发送邮件
@@ -18,8 +18,10 @@ user_bp = Blueprint(name='user', import_name=__name__, url_prefix='/user')
 serializer = TimedJSONWebSignatureSerializer(secret_key=settings.SECRET_KEY,
                                              expires_in=120)
 
-# 需要登录路径
-required_login_path = ['/user/user_center', '/user/change_password']
+# 需要登录的路径
+required_login_path = ['/user/user_center', '/user/change_password',
+                       '/user//delete_message', '/user/delete_dynamic',
+                       ]
 # 登录后不能访问的路径
 login_not_path = ['/user/login', '/user/register']
 
@@ -270,6 +272,16 @@ def user_logout():
 def user_center():
     '''用户中心'''
     form = UserCenterForm()
+
+    # get请求
+    # 查询我的留言,我的动态
+    try:
+        messages = MessageBoardModel.query.order_by(-MessageBoardModel.id).all()
+        my_dynamic = UserDynamicModel.query.order_by(-UserDynamicModel.id).all()
+    except:
+        return render_template('user/user_center.html', form=form)
+
+    # post请求
     if request.method == 'POST' and form.validate_on_submit():
         # 查询当前用户
         user = g.user
@@ -293,7 +305,8 @@ def user_center():
             '''
             size = icon.read()  # 读出二进制流文件
             if len(size) > 3*1024*1024:  # 限制文件大小：3M
-                return render_template('user/user_center.html', form=form, msg='大小不能超过3M')
+                return render_template('user/user_center.html', form=form, msg='大小不能超过3M',
+                                       messages=messages, my_dynamic=my_dynamic)
             # 图片保存到本地，二进制写入
             with open(icon_path, 'wb') as f:
                 f.write(size)
@@ -302,8 +315,8 @@ def user_center():
             user.icon = '/images/icon/' + icon_filename
         # 提交到数据库
         db.session.commit()
-        return render_template('user/user_center.html', form=form)
-    return render_template('user/user_center.html', form=form)
+
+    return render_template('user/user_center.html', form=form, messages=messages, my_dynamic=my_dynamic)
 
 
 @user_bp.route('/change_password', methods=['GET', 'POST'])
@@ -333,6 +346,51 @@ def change_password():
                                    old_password_error='严重怀疑你不是本人，自己的密码都记不住')
     # 表单验证未通过或get请求
     return render_template('user/change_password.html', form=form)
+
+
+@user_bp.route('/delete_message', methods=['GET', 'POST'])
+def delete_message():
+    '''删除留言'''
+    if request.method == 'POST':
+        # 获取需要删除的公告id
+        message_id = request.form.get('id')
+        # 根据id查询，然后删除
+        try:
+            item = MessageBoardModel.query.get(message_id)
+            #       判断当前留言是否属于当前用户
+            if item and item.user_id == g.user.id:
+                db.session.delete(item)
+                db.session.commit()
+            else:
+                return '失败，资源不存在'
+        except:
+            return '失败'
+        return 'true'
+
+
+@user_bp.route('/delete_dynamic', methods=['GET', 'POST'])
+def delete_dynamic():
+    '''删除动态'''
+    if request.method == 'POST':
+        # 获取需要删除的公告id
+        dynamic_id = request.form.get('id')
+        # 根据id查询，然后删除
+        try:
+            item = UserDynamicModel.query.get(dynamic_id)
+            #       判断当前留言是否属于当前用户
+            if item and item.user_id == g.user.id:
+                # 查询此条动态的图片
+                item_images = UserDynamicImageModel.query.filter(UserDynamicImageModel.dynamic_id == item.id).all()
+                if item_images:
+                    for i in item_images:
+                        db.session.delete(i)
+                db.session.delete(item)
+                db.session.commit()
+            else:
+                return '失败，资源不存在'
+        except:
+            return '失败'
+        return 'true'
 
 
 

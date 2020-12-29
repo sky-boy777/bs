@@ -3,6 +3,14 @@
 {% block title %}个人中心{% endblock title %} {# title #}
 {% block header %} {# 预留头部位置 #}
 <link rel="stylesheet" href="/static/css/user_center.css">
+<style>
+    .ul-list li { margin: 10px;
+                  padding: 5px;
+                  border: 1px solid #D3D3D3;
+                }
+
+    .img { width: 100px; }
+</style>
 {% endblock header %}
 {% block search %}{% endblock search %} {# 搜索框 #}
 {% block content %}
@@ -13,17 +21,14 @@
             <div class="list-group">
                 <div class="img"><img class="icon_image" src="" alt="头像"></div>
                 <div class="uname h3">{{ g.user.username }}</div>
-                <a href="#my-info" class="list-group-item">编辑个人信息</a>
-                <a href="#my-dynamic-state" class="list-group-item">我的动态</a>
-                <a href="#my-comment" class="list-group-item">我的评论</a>
-                <a href="{{ url_for('user.change_password') }}" class="list-group-item">修改密码</a>
+                <a href="{{ url_for('user.change_password') }}" class="list-group-item h4">修改密码</a>
             </div>
         </div>
     </div>
     <!-- 左侧列表结束 -->
 
     <!-- 编辑个人信息开始-->
-    <div  id="my-info" class="row">
+    <div class="row">
         <div class="col-md-offset-3 col-sm-offset-4 col-xs-offset-5 item">
             <div class="h4">编辑个人信息</div>
         </div>
@@ -40,63 +45,109 @@
                     <input type="file" class="form-control" name="icon">
                     <div class="red">{{ form.icon.errors.0 }}{{ msg }}</div>
                 </div>
-                <button type="submit" class="btn btn-primary">保存</button>
+                <button type="submit" class="btn btn-primary">提交修改</button>
             </form>
         </div>
     </div>
     <!-- 编辑个人信息结束-->
 
     <!-- 我的动态开始 -->
-    <div  id="my-dynamic-state" class="row">
-        <div class="col-md-offset-3 col-sm-offset-4 col-xs-offset-5 item">
-            <div class="h4">我的动态</div>
-        </div>
-    </div>
     <div class="row">
-        <div class="col-md-offset-3 col-sm-offset-4 col-xs-offset-5 item">
-            打开附件打开附件开发的时间飞快的设计费飞机迪斯科飞机附件是昆仑剑法开发建设了房间科夫斯基分手快乐来访记录是否记录卡撒旦解放螺丝钉解放了JFK但是JFK撒旦解放
-            <br>
-            <br>
-            <div><a href="#">删除</a></div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-offset-3 col-sm-offset-4 col-xs-offset-5 item">
-            打开附件打开附件开发的时间飞快的设计费飞机迪斯科飞机附件是昆仑剑法开发建设了房间科夫斯基分手快乐来访记录是否记录卡撒旦解放螺丝钉解放了JFK但是JFK撒旦解放
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-offset-3 col-sm-offset-4 col-xs-offset-5 item">
-            打开附件打开附件开发的时间飞快的设计费飞机迪斯科飞机附件是昆仑剑法开发建设了房间科夫斯基分手快乐来访记录是否记录卡撒旦解放螺丝钉解放了JFK但是JFK撒旦解放
+        <div class="col-md-offset-3 col-sm-offset-4 col-xs-offset-5">
+            <a href="javascript:;" class="my_list list-group-item h4">我的留言 <span class="glyphicon glyphicon-chevron-right fr"></span></a>
+            <ul class="ul-list" style="display: None;">
+                {% if messages %}
+                {% for message in messages %}
+                <li>
+                    <p>{{ message.content }}<span class="fr">{{ message.create_time }}</span></p>
+                    <a href="javascript:;"><button class="btn btn-danger btn-xs message_id" data-message_id="{{ message.id }}">删除</button></a>
+                </li>
+                {% endfor %}
+                {% endif %}
+            </ul>
         </div>
     </div>
     <!-- 我的动态结束 -->
 
     <!-- 我的评论开始 -->
-    <div id="my-comment" class="row">
-        <div class="col-md-offset-3 col-sm-offset-4 col-xs-offset-5 item">
-            <div class="h4">我的评论</div>
-        </div>
-    </div>
     <div class="row">
-        <div class="col-md-offset-3 col-sm-offset-4 col-xs-offset-5 item">
-            打开附件打开附件开发的时间飞快的设计费飞机迪斯科飞机附件是昆仑剑法开发建设了房间科夫斯基分手快乐来访记录是否记录卡撒旦解放螺丝钉解放了JFK但是JFK撒旦解放
+        <div class="col-md-offset-3 col-sm-offset-4 col-xs-offset-5">
+            <a href="javascript:;" class="my_list list-group-item h4">我的动态 <span class="glyphicon glyphicon-chevron-right fr"></span></a>
+            <ul class="ul-list" style="display: None;">
+                {% if my_dynamic %}
+                {% for dynamic in my_dynamic %}
+                <li>
+                    <p>{{ dynamic.content }}<span class="fr">{{ dynamic.create_time }}</span></p>
+                    {% if dynamic.images %}
+                        {% for image in dynamic.images %}  {#  #}
+                        <img class="img" src="{{ url_for('static', filename=image.image) }}" alt="图片">
+                        {% endfor %}
+                    {% endif %}
+                    <a href="javascript:;"><button class="btn btn-danger btn-xs dynamic_id" data-dynamic_id="{{ dynamic.id }}">删除</button></a>
+                </li>
+                {% endfor %}
+                {% endif %}
+            </ul>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-offset-3 col-sm-offset-4 col-xs-offset-5 item">
-            打开附件打开附件开发的时间飞快的设计费飞机迪斯科飞机附件是昆仑剑法开发建设了房间科夫斯基分手快乐来访记录是否记录卡撒旦解放螺丝钉解放了JFK但是JFK撒旦解放
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-offset-3 col-sm-offset-4 col-xs-offset-5 item">
-            打开附件打开附件开发的时间飞快的设计费飞机迪斯科飞机附件是昆仑剑法开发建设了房间科夫斯基分手快乐来访记录是否记录卡撒旦解放螺丝钉解放了JFK但是JFK撒旦解放
-        </div>
-    </div>
       <!-- 我的评论结束 -->
 </div>
 {% endblock content %}
 
+{% block script %}  {# js预留位置 #}
 
+    // 定义函数，参数: $(this)为调用函数的对象，显示和隐藏切换，200毫秒延迟
+    function toggle_list(ths){
+        ths.next('ul').toggle(200);
+        // 来回切换两个(class)箭头按钮
+        ths.children('span').toggleClass('glyphicon-chevron-down glyphicon-chevron-right');
+    };
+
+    // 显示和隐藏公告列表
+    $('.my_list').click(function(){
+        var ths = $(this);
+        toggle_list(ths);  // 调用函数
+        return false;
+    });
+
+    // 定义删除函数
+    function del_fun(id, url, ths){
+            if(confirm("确定删除吗？")){
+                $.ajax({
+                    url: url,
+                    type:"post",
+                    data:{id: id, csrf_token:"{{ csrf_token() }}"},
+                    success: function (msg) {   // 回调函数
+                         if(msg == 'true'){
+                            $(this).parent().parent().remove();  // 删除父节点
+                         }
+                         else{
+                            alert(msg);
+                         };
+                    }.bind(ths)  // 回调函数里使用$(this)，需要绑定
+                });
+            };
+        };
+
+    // 删除留言
+    $('.message_id').click(function(){
+        var message_id = $(this).data('message_id');
+        var url = "{{ url_for('user.delete_message') }}";
+        var ths = $(this)
+        // 调用删除函数
+        del_fun(message_id, url, ths);
+        return false;
+    });
+
+    // 删除动态
+    $('.dynamic_id').click(function(){
+        var dynamic_id = $(this).data('dynamic_id');
+        var url = "{{ url_for('user.delete_dynamic') }}";
+        var ths = $(this)
+        // 调用删除函数
+        del_fun(dynamic_id, url, ths);
+        return false;
+    });
+
+{% endblock script %}
 
 

@@ -34,6 +34,8 @@ class UserModel(BaseModel):
 
     # 跟用户动态模型建立关系，不会在数据库生成字段
     dynamics = db.relationship('UserDynamicModel', backref='user')
+    # 跟留言板模型建立关系
+    messages = db.relationship('MessageBoardModel', backref='user')
 
     def __str__(self):
         '''魔法方法：打印输出用户名'''
@@ -60,3 +62,12 @@ class UserDynamicImageModel(BaseModel):
 
     # 外键，图片属于哪条动态
     dynamic_id = db.Column(db.Integer, db.ForeignKey('user_dynamic.id'), nullable=False)
+
+
+class MessageBoardModel(BaseModel):
+    '''留言板模型'''
+    __tablename__ = 'message_board'
+    content = db.Column(db.String(500), nullable=False)
+
+    # 外键：用户id，此条留言属于哪个用户
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # 用法:message_board.user.username

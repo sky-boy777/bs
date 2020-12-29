@@ -32,20 +32,18 @@
       <li><a href="javascript:;">上一页</a></li>
      {% endif %}
 
-      <li><a href="javascript:;">{{ info_list.page }}</a></li>  {# 当前页 #}
+      <li><a href="javascript:;">{{ info_list.page }}/{{ info_list.pages }}</a></li>  {# 当前页 #}
 
       {% if info_list.has_next %}  {# 下一页 #}
       <li><a href="{{ url_for('main.info') }}?page={{ info_list.next_num }}">下一页</a></li>
       {% else %}
       <li><a href="javascript:;">下一页</a></li>
       {% endif %}
-
-      <li><a>共{{ info_list.pages }}页</a></li>  {# 总页数 #}
   </ul>
 </nav>
 {# 分页结束 #}
 
 {% else %}
-<h3>数据加载失败！</h3>
+<h3>暂无内容</h3>
 {% endif %}
 {% endblock content %}

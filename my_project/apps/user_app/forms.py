@@ -109,3 +109,9 @@ class UserAddDynamicForm(FlaskForm):
     content = StringField('content', validators=[DataRequired(message='请输入内容'),
                                                  Length(max=500, message='最多只能输入500个字符')])
     images = FileField('images', validators=[FileAllowed(['png', 'jpg', 'gif', 'jpeg'], message='只支持png,jpg,gif,jpeg格式的图片')])
+
+
+class MessageBoradForm(FlaskForm):
+    '''留言板表单验证'''
+    content = StringField('content', validators=[DataRequired(message='请输入内容'),
+                                                 Length(max=500, message='最多只能输入500个字符')])

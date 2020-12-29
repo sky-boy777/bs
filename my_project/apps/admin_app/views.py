@@ -211,7 +211,7 @@ def delete_info():
     '''删除公告信息'''
     if request.method == 'POST':
         # 获取需要删除的公告id
-        info_id = request.form.get('info_id')
+        info_id = request.form.get('id')
         # 根据id查询，然后删除
         try:
             item = InfoModel.query.get(info_id)

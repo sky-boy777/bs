@@ -1,54 +1,95 @@
-{% extends 'base.html' %}  {# 加载父模板 #}
+{% extends 'base.html' %} {# 加载父模板 #}
 
 
-{% block title %}游客动态{% endblock title %}  {# title #}
+{% block title %}游客动态{% endblock title %} {# title #}
 
-{% block header %}  {# 预留头部位置 #}
+{% block header %} {# 预留头部位置 #}
 <style>
     .center { text-align: center; }
-    textarea { width: 500px; }
+
+    textarea { width: 300px; }
+
+    .img { width: 100px; }
+
+    .user_icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+    }
+    .row {
+        background-color:  rgb(222, 235, 245); 
+        margin-top: 20px; 
+        padding: 10px;
+    }
 </style>
 {% endblock header %}
 
-{% block search %}{% endblock search %}  {# 搜索框 #}
+{% block search %}{% endblock search %} {# 搜索框 #}
 
 {% block content %}
 <div class="container">
+    {# 表单开始 #}
+    <form method="post" enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="input-group">
+            <div class="red">{{ form.content.errors.0 }}</div>
+            <textarea name="content" rows="2"
+                placeholder="{% if g.user %}输入内容(500个){% else %}登录后发表{% endif %}"></textarea>
+            <div class="h6">上传图片(最多上传五张，每张大小限制10M)</div>
+            <input type="file" name="images" multiple> {# 上传多个文件用multiple #}
+            <div class="red">{{ form.images.errors.0 }}{{ image_error }}{{ image_too_many_error }}</div>
+        </div>
+        <p></p>
+        <button type="submit" class="btn btn-primary">发布</button>
+        <div class="red h4">{{ msg }}</div>
+    </form>
+    {# 表单结束 #}
+
+    {# 用户动态列表开始 #}
+{% if item %}
+    {% for i in item.items %}
     <div class="row">
-        <div class=" col-md-10 col-sm-10">
-            {% for i in item %}
-            <div>{{ i.user.username }}------{{ i.content }}</div>
-                {% for j in i.images %}
-                <img src="{{ url_for('static', filename=j.image) }}" alt="">
+        <div class="col-md-10 col-sm-10 col-xs-10">
+            <div style="color: rgb(114, 111, 111);">
+                <img class="user_icon" src="{{ url_for('static', filename=i.user.icon) }}" alt="头像">
+                <span>{{ i.user.username }}</span>
+                <span class="fr h6">发布时间：{{ i.create_time }}</span>
+            </div>
+            <p></p>
+            <p>&nbsp;&nbsp;&nbsp;&nbsp;{{ i.content }}</p>
+            {% if i.images %}
+                {% for j in i.images %}  {#  #}
+                    <img class="img" src="{{ url_for('static', filename=j.image) }}" alt="图片">
                 {% endfor %}
-            {% endfor %}
+            {% endif %}
         </div>
     </div>
+    {% endfor %}
+    {# 用户动态列表结束 #}
 
-{# 分页开始 #}
+    {# 分页开始 #}
 <nav class="center" aria-label="Page navigation">
   <ul class="pagination">
+     {% if item.has_prev %}  {# 上一页 #}
+      <li><a href="{{ url_for('main.user_dynamic') }}?page={{ item.prev_num }}">上一页</a></li>
+      {% else %}
       <li><a href="javascript:;">上一页</a></li>
-      <li><a href="javascript:;">1</a></li>  {# 当前页 #}
+     {% endif %}
+
+      <li><a href="javascript:;">{{ item.page }}/{{ item.pages }}</a></li>  {# 当前页 #}
+
+      {% if item.has_next %}  {# 下一页 #}
+      <li><a href="{{ url_for('main.user_dynamic') }}?page={{ item.next_num }}">下一页</a></li>
+      {% else %}
       <li><a href="javascript:;">下一页</a></li>
-      <li><a>共1页</a></li>  {# 总页数 #}
+      {% endif %}
   </ul>
 </nav>
 {# 分页结束 #}
-{# 表单开始 #}
-<form method="post" enctype="multipart/form-data">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-    <div class="input-group">
-        <textarea name="content" rows="4" placeholder="{% if g.user %}输入内容(500个){% else %}登录后发表{% endif %}"></textarea>
-        <div class="red">{{ form.content.errors.0 }}</div>
-        <input type="file" name="images" multiple>  {# 上传多个文件用multiple #}
-        <div class="red">{{ form.images.errors.0 }}{{ image_error }}{{ image_too_many_error }}</div>
-    </div>
-    <br>
-    <button type="submit" class="btn btn-primary">发表</button>
-    <div class="red h4">{{ msg }}</div>
-</form>
-{# 表单结束 #}
 
-</div>
+{% else %}
+<h3>暂无内容</h3>
+{% endif %}
+
+</div>  {# container容器结束div #}
 {% endblock content %}

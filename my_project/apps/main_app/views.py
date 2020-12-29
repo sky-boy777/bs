@@ -3,7 +3,7 @@ from apps.main_app.models import *
 import os
 import uuid
 import settings
-from apps.user_app.forms import UserAddDynamicForm
+from apps.user_app.forms import UserAddDynamicForm, MessageBoradForm
 from apps.user_app.models import *
 from exts import cache
 
@@ -48,10 +48,13 @@ def scenic_spots_detail():
 def info():
     '''公告信息列表页'''
     # 页码
-    p = int(request.args.get('page', 1))  # 页码要为整形
+    try:
+        p = int(request.args.get('page', 1))  # 页码要为整形
+    except:
+        p = 1
     # 查询数据库展示数据，分页
     try:
-        info_list = InfoModel.query.filter().paginate(page=p, per_page=20, max_per_page=20)
+        info_list = InfoModel.query.order_by(-InfoModel.id).paginate(page=p, per_page=20)
         return render_template('main/info.html', info_list=info_list)
     except:
         return render_template('main/info.html')
@@ -76,10 +79,20 @@ def info_detail():
 def user_dynamic():
     '''用户动态'''
     form = UserAddDynamicForm()
+    # 页码
+    try:
+        p = int(request.args.get('page', 1))  # 页码要为整形
+    except:
+        p = 1
+    # 查询数据，分页，按id降序
+    try:
+        item = UserDynamicModel.query.order_by(-UserDynamicModel.id).paginate(page=p, per_page=10)
+    except:
+        return render_template('main/user_dynamic.html', form=form)
 
     # 是否登录
     if request.method == 'POST' and not g.user:
-        return render_template('main/user_dynamic.html', form=form, msg='请先登录')
+        return render_template('main/user_dynamic.html', form=form, item=item, msg='请先登录')
 
     # 表单验证
     if request.method == 'POST' and form.validate_on_submit():
@@ -88,8 +101,8 @@ def user_dynamic():
         images = request.files.getlist('images')
 
         # 查看缓存是否有重复提交标志
-        if cache.get(content) == 1:
-            return render_template('main/user_dynamic.html', form=form)
+        if cache.get(content) == content:
+            return render_template('main/user_dynamic.html', form=form, item=item)
 
         # 文本内容保存到数据库
         dynamic_item = UserDynamicModel()
@@ -99,22 +112,26 @@ def user_dynamic():
             db.session.add(dynamic_item)
             db.session.commit()
         except:
-            return render_template('main/user_dynamic.html', form=form, msg='发布失败')
+            return render_template('main/user_dynamic.html', form=form, item=item, msg='发布失败')
+
+        # 判断是否上传有图片
+        if images[0].filename == '':
+            return render_template('main/user_dynamic.html', form=form, item=item)
 
         # 图片数量限制五张
         if len(images) > 5:
-            return render_template('main/user_dynamic.html', form=form, image_too_many_error='最多只能上传五张图片')
+            return render_template('main/user_dynamic.html', form=form, item=item, image_too_many_error='最多只能上传五张图片')
 
         # 图片处理
         for image in images:
             # 图片后缀名验证
             if '.' not in image.filename or image.filename != '' and image.filename.rsplit('.')[1] not in ('png', 'jpg', 'gif', 'jpeg'):
-                return render_template('main/user_dynamic.html', form=form, image_error='只支持png,jpg,gif,jpeg格式的图片')
+                return render_template('main/user_dynamic.html', form=form, item=item, image_error='只支持png,jpg,gif,jpeg格式的图片')
 
             # 图片限制大小：10M
             size = image.read()
             if len(size) > 10*1024*1024:
-                return render_template('main/user_dynamic.html', form=form, msg='大小不能超过10M')
+                return render_template('main/user_dynamic.html', form=form, item=item, msg='大小不能超过10M')
 
             # 创建文件名，用户id_uuid.jpg
             image_filename = str(g.user.id) + '_' + str(uuid.uuid4()) + '.jpg'
@@ -133,15 +150,58 @@ def user_dynamic():
                 db.session.add(image_item)
                 db.session.commit()
             except:
-                return render_template('main/user_dynamic.html', form=form, msg='发布失败')
+                return render_template('main/user_dynamic.html', form=form, item=item, msg='发布失败')
         # 缓存添加标志，防止重复提交，20秒后过期
-        cache.set(content, 1, timeout=20)
+        cache.set(content, content, timeout=20)
+    # get请求
+    return render_template('main/user_dynamic.html', form=form, item=item)
+
+
+@main_bp.route('/message_board', methods=['GET', 'POST'])
+def message_board():
+    '''留言板'''
+    form = MessageBoradForm()
 
     # get请求
-    # 查询所有用户动态+动态的图片
+    # 页码
     try:
-        item = UserDynamicModel.query.filter().all()
+        p = int(request.args.get('page', 1))  # 页码要为整形
     except:
-        return render_template('main/user_dynamic.html', form=form, item=None)
+        p = 1
+    # 查询数据，分页，按id降序
+    try:
+        message_list = MessageBoardModel.query.order_by(-MessageBoardModel.id).paginate(page=p, per_page=10)
+    except:
+        return render_template('main/message_board.html', form=form)
 
-    return render_template('main/user_dynamic.html', form=form, item=item)
+    # post请求
+    # 是否登录
+    if request.method == 'POST' and not g.user:
+        return render_template('main/message_board.html', form=form, message_list=message_list, msg='请先登录')
+
+    # 表单验证
+    if request.method == 'POST' and form.validate_on_submit():
+        # 接收数据
+        content = form.content.data
+
+        # 查看缓存是否有重复提交标志
+        if cache.get(content) == content:
+            return render_template('main/message_board.html', form=form, message_list=message_list)
+
+        # 创建对象
+        item = MessageBoardModel()
+        item.content = content
+        item.user_id = g.user.id
+        # 提交数据库
+        try:
+            db.session.add(item)
+            db.session.commit()
+            cache.set(content, content, timeout=10)
+            try:
+                message_list = MessageBoardModel.query.order_by(-MessageBoardModel.id).paginate(page=p, per_page=10)
+            except:
+                return render_template('main/message_board.html', form=form)
+        except:
+            return render_template('main/message_board.html', form=form, message_list=message_list, msg='提交失败')
+
+    return render_template('main/message_board.html', form=form, message_list=message_list)

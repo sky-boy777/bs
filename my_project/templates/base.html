@@ -34,7 +34,7 @@
                     <li><a href="#">地图</a></li>
                     <li><a href="#">景点服务</a></li>
                     <li><a href="{{ url_for('main.user_dynamic') }}">游客动态</a></li>
-                    <li><a href="#">留言</a></li>
+                    <li><a href="{{ url_for('main.message_board') }}">留言</a></li>
                 </ul>
                 {% block search %}
                   <!--搜索框开始-->
