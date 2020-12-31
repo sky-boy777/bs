@@ -3,6 +3,14 @@
 {% block title %}后台管理{% endblock title %} {# title #}
 {% block header %} {# 预留头部位置 #}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_index.css') }}" type="text/css">
+<style>
+    .scenic_spot_image { width: 50px; }
+    .user_icon{
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        }
+</style>
 {% endblock header %}
 {% block search %}{% endblock search %} {# 搜索框 #}
 {% block nav %}
@@ -60,14 +68,46 @@
 
             <a href="javascript:;" class="my_list list-group-item h4">景点列表<span class="glyphicon glyphicon-chevron-right float-r"></span></a>
             <ul class="ul-list" style="display: None;">
-                <li>标题 <span class="float-r">2020-2-2</span></li>
-                <li><a href="#">Another action</a></li>
+                {% if scenic_spot_list %}
+                {% for sp in scenic_spot_list %}
+                <li>
+                    <img class="scenic_spot_image" src="{{ url_for('static', filename=sp.image) }}" alt="封面">
+                    {{ sp.name }}
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="javascript:;"><button class="btn btn-danger btn-xs sp_id" data-sp_id="{{ sp.id }}">删除</button></a>
+                    <a href="{{ url_for('admin.add_scenic_spot', sid=sp.id) }}"><button class="btn btn-info btn-xs">编辑</button></a>
+                    <a href="{{ url_for('main.scenic_spots_detail', sid=sp.id) }}"><button class="btn btn-success btn-xs">查看</button></a>
+                    <span class="float-r">{{ sp.create_time }}</span>
+                </li>
+
+                <a href="javascript:;" class="my_list list-group-item h5">{{ sp.name }}: 图集列表 <span class="glyphicon glyphicon-chevron-right float-r"></span></a>
+                <ul class="ul-list" style="display: None;">
+                    {% if sp.images %}
+                    {% for image in sp.images %}
+                    <li>
+                        <img src="{{ url_for('static', filename=image.image) }}" alt="图片" style="width:100px;">
+                        <a href="javascript:;"><button class="btn btn-danger btn-xs sp_image_id" data-sp_image_id="{{ image.id }}">删除</button></a>
+                        <span class="float-r">2020-2-2</span>
+                    </li>
+                    {% endfor %}
+                    {% endif %}
+                </ul>
+                <br>
+                {% endfor %}
+                {% endif %}
              </ul>
 
             <a href="javascript:;" class="my_list list-group-item h4">用户列表<span class="glyphicon glyphicon-chevron-right float-r"></span></a>
             <ul class="ul-list" style="display: None;">
-                <li>标题 <span class="float-r">2020-2-2</span></li>
-                <li><a href="#">Another action</a></li>
+                {% if user_list %}
+                {% for user in user_list %}
+                <li>
+                    <img src="{{ url_for('static', filename=user.icon) }}" alt="头像" class="user_icon">
+                    {{ user.username }}
+                    <span class="float-r">{{ user.create_time }}</span>
+                </li>
+                {% endfor %}
+                {% endif %}
              </ul>
 
             <a href="javascript:;" class="my_list list-group-item h4">用户动态列表<span class="glyphicon glyphicon-chevron-right float-r"></span></a>
@@ -125,11 +165,32 @@
     $('.info_id').click(function(){
         var info_id = $(this).data('info_id');
         var url = "{{ url_for('admin.delete_info') }}";
-        var ths = $(this)
+        var ths = $(this);
         // 调用删除函数
         del_fun(info_id, url, ths);
         return false;
     });
+
+     // 删除景点
+    $('.sp_id').click(function(){
+        var sp_id = $(this).data('sp_id');
+        var url = "{{ url_for('admin.delete_scenic_spots') }}";
+        var ths = $(this);
+        // 调用删除函数
+        del_fun(sp_id, url, ths);
+        return false;
+    });
+
+    // 删除景点图片
+    $('.sp_image_id').click(function(){
+        var sp_image_id = $(this).data('sp_image_id');
+        var url = "{{ url_for('admin.delete_scenic_spots_image') }}";
+        var ths = $(this);
+        // 调用删除函数
+        del_fun(sp_image_id, url, ths);
+        return false;
+    });
+
 
 {% endblock script %}
 

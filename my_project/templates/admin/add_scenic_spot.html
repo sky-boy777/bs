@@ -1,6 +1,12 @@
 {% extends 'admin/admin_index.html' %} {# 加载父模板 #}
 
-{% block title %}添加景点{% endblock title %} {# title #}
+{% block title %}  {# title #}
+    {% if item %}
+        编辑景点
+    {% else %}
+        添加景点
+    {% endif %}
+{% endblock title %}
 {% block header %} {# 预留头部位置 #}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_index.css') }}" type="text/css">
 {% endblock header %}
@@ -10,15 +16,31 @@
         <div class="row">
             <form action="" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                {% if item %}<label>景点名称</label>{% endif %}
                 <div class="red">{{ form.name.errors.0 }}</div>
                 <input type="text" class="form-control" placeholder="景点名称" name="name" value="{% if item %}{{ item.name }}{% endif %}"><br>
+
+                {% if item %}<label>开放时间</label>{% endif %}
                 <div class="red">{{ form.opening_hours.errors.0 }}</div>
-                <input type="text" class="form-control" placeholder="开放时间" name="opening_hours" value="{% if item %}{{ item.opening_hours }}{% endif %}"><br>
+                <input type="text" class="form-control" placeholder="开放时间(默认24小时开放)" name="opening_hours" value="{% if item %}{{ item.opening_hours }}{% endif %}"><br>
+
+                {% if item %}<label>门票说明</label>{% endif %}
                 <div class="red">{{ form.rates.errors.0 }}</div>
                 <input type="text" class="form-control" placeholder="门票费用说明(默认免费)" name="rates" value="{% if item %}{{ item.rates }}{% endif %}"><br>
-                <label>封面图</label>
-                <div class="red">{{ form.image.errors.0 }}{{ msg }}</div>
+
+                <label>封面图{% if not item %}(必须){% endif %}</label><br>
+                {% if item %}
+                    <img src="{{ url_for('static', filename=item.image) }}" alt="封面" style="width:50px;">
+                {% endif %}
+                <div class="red">{{ form.image.errors.0 }}{{ image_msg }}</div>
                 <input type="file" class="form-control" name="image"><br>
+
+                <label>景点图集(可选)</label>
+                <div class="red">{{ form.images.errors.0 }}{{ images_msg }}{{ images_too_big }}</div>
+                <input type="file" class="form-control" name="images" multiple="multiple"><br>
+
+                {% if item %}<label>景点简介</label>{% endif %}
                 <div class="red">{{ form.content.errors.0 }}</div>
                 <input id="textarea" name="content" placeholder="景点简介" value="{% if item %}{{ item.content | safe }}{% endif %}"><br>
                 <div class="h2 red">{{ msg }}</div>

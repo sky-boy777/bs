@@ -13,20 +13,44 @@ admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 @admin_bp.route('/admin_index')
 def admin_index():
     '''后台管理首页'''
+    # 初始化
+    info_list = None
+    scenic_spot_list = None
+    user_list = None
+    dynamic_list = None
+    message_board_list = None
+
     # 公告列表
     try:
-        info_list = InfoModel.query.filter().all()
+        info_list = InfoModel.query.order_by(-InfoModel.id).all()
     except:
-        return render_template('admin/admin_index.html')
+        pass
     # 景点列表
-
+    try:
+        scenic_spot_list = ScenicSpotsModel.query.order_by(-ScenicSpotsModel.id).all()
+    except:
+        pass
     # 用户列表
-    # 游客动态列表
-    # 游客留言列表
-
+    try:
+        user_list = UserModel.query.order_by(-UserModel.id).all()
+    except:
+        pass
+    # 动态列表
+    try:
+        dynamic_list = UserDynamicModel.query.order_by(-UserDynamicModel.id).all()
+    except:
+        pass
+    # 留言板列表
+    try:
+        message_board_list = MessageBoardModel.query.order_by(-MessageBoardModel.id).all()
+    except:
+        pass
     return render_template('admin/admin_index.html',
                            info_list=info_list,
-
+                           scenic_spot_list=scenic_spot_list,
+                           user_list=user_list,
+                           dynamic_list=dynamic_list,
+                           message_board_list=message_board_list
                            )
 
 
@@ -90,6 +114,95 @@ def add_scenic_spot():
     '''添加景点'''
     form = AddScenicSpotForm()
     is_succeed = 0  # 标志:添加成功为1，否则为0
+
+    # 有sid则为编辑景点
+    sid = request.args.get('sid')
+    if sid:
+        # 编辑景点表单验证
+        form = EditScenicSpotForm()
+        # 查询id对应景点
+        item = ScenicSpotsModel.query.get(sid)
+
+        if item and request.method == 'POST' and form.validate_on_submit():
+            # 接收数据
+            name = form.name.data
+            content = form.content.data
+            opening_hours = form.opening_hours.data
+            rates = form.rates.data
+            image = form.image.data
+            images = request.files.getlist('images')  # 图集
+
+            # 判断是否重复提交
+            if cache.get(name) == 1:
+                return redirect(url_for('admin.admin_index'))
+
+            # 判断是否上传有封面图
+            if image:
+                # 判断上传封面图片大小，限制大小：5M
+                size = image.read()  # 读出二进制流
+                if len(size) > 5 * 1024 * 1024:
+                    return render_template('admin/add_scenic_spot.html', form=form, image_msg='大小不能超过5M',
+                                           is_succeed=is_succeed, item=item)
+                # 将二进制图片保存到本地
+                image_filename = str(uuid.uuid4()) + '.jpg'  # 文件名
+                image_path = os.path.join(settings.SCENIC_SPOT_DIR, image_filename)
+                with open(image_path, 'wb') as f:
+                    f.write(size)
+
+                item.image = '/images/scenic_spot/' + image_filename
+
+            # 更新数据库
+            item.name = name
+            item.content = content
+            item.opening_hours = opening_hours if opening_hours else '24小时开放'
+            item.rates = rates if rates else '免费'  # 三元表达式
+            item.create_time = datetime.datetime.now().strftime('%Y-%m-%d')  # 更新时间
+            db.session.commit()
+
+            # 判断是否上传有图集
+            if images[0].filename != '':
+                # 图集处理
+                for img in images:
+                    # 图片后缀名验证
+                    if '.' not in img.filename or img.filename != '' and img.filename.rsplit('.')[1] not in (
+                    'png', 'jpg', 'gif', 'jpeg'):
+                        return render_template('admin/add_scenic_spot.html', form=form,
+                                               images_msg='只支持png,jpg,gif,jpeg格式的图片',
+                                               is_succeed=is_succeed, item=item)
+                    # 图片限制大小：15M
+                    size = img.read()
+                    if len(size) > 15 * 1024 * 1024:
+                        return render_template('admin/add_scenic_spot.html', form=form,
+                                               images_too_big='最大只支持15M的图片',
+                                               is_succeed=is_succeed,
+                                               item=item)
+                    # 创建文件名，景点id_uuid.jpg
+                    img_filename = str(item.id) + '_' + str(uuid.uuid4()) + '.jpg'
+                    # 创建文件路径
+                    img_path = os.path.join(settings.SCENIC_SPOT_IMAGES_DIR, img_filename)
+                    # 图片保存到本地，二进制写入
+                    with open(img_path, 'wb') as f:
+                        f.write(size)
+
+                    # 保存图片到数据库
+                    try:
+                        img_item = ScenicSpotsImagesModel()
+                        img_item.image = '/images/scenic_spot_images/' + img_filename
+                        img_item.scenic_spots_id = item.id
+                        db.session.add(img_item)
+                        db.session.commit()
+                    except:
+                        return render_template('admin/add_scenic_spot.html', form=form,
+                                               is_succeed=is_succeed,
+                                               msg='添加失败！',
+                                               item=item)
+            # 防止重复提交，设置唯一标识，放入缓存
+            cache.set(name, 1, timeout=10)
+            return render_template('admin/add_scenic_spot.html', form=form, item=item, is_succeed=1)
+
+        # get请求(编辑)
+        return render_template('admin/add_scenic_spot.html', form=form, item=item)
+
     # post请求+表单验证
     if request.method == 'POST' and form.validate_on_submit():
         # 接收数据
@@ -98,15 +211,16 @@ def add_scenic_spot():
         opening_hours = form.opening_hours.data
         rates = form.rates.data
         image = form.image.data
+        images = request.files.getlist('images')  # 图集
 
         # 判断是否重复提交
         if cache.get(name) == 1:
             return redirect(url_for('admin.admin_index'))
 
-        # 判断上传图片大小，限制大小：5M
+        # 判断上传封面图片大小，限制大小：5M
         size = image.read()  # 读出二进制流
         if len(size) > 5 * 1024 * 1024:
-            return render_template('admin/add_scenic_spot.html', form=form, msg='大小不能超过5M', is_succeed=is_succeed)
+            return render_template('admin/add_scenic_spot.html', form=form, image_msg='大小不能超过5M', is_succeed=is_succeed)
 
         # 将二进制图片保存到本地
         image_filename = str(uuid.uuid4()) + '.jpg'  # 文件名
@@ -125,6 +239,44 @@ def add_scenic_spot():
                 item.image = '/images/scenic_spot/' + image_filename
                 item.create_time = datetime.datetime.now().strftime('%Y-%m-%d')  # 更新时间
                 db.session.commit()
+
+                # 判断是否上传有图集
+                if images[0].filename != '':
+                    # 图集处理
+                    for img in images:
+                        # 图片后缀名验证
+                        if '.' not in img.filename or img.filename != '' and img.filename.rsplit('.')[1] not in ('png', 'jpg', 'gif', 'jpeg'):
+                            return render_template('admin/add_scenic_spot.html', form=form,
+                                                   images_msg='只支持png,jpg,gif,jpeg格式的图片',
+                                                   is_succeed=is_succeed
+                                                   )
+                        # 图片限制大小：15M
+                        size = img.read()
+                        if len(size) > 15 * 1024 * 1024:
+                            return render_template('admin/add_scenic_spot.html', form=form,
+                                                   images_too_big='最大只支持15M的图片',
+                                                   is_succeed=is_succeed
+                                                   )
+                        # 创建文件名，景点id_uuid.jpg
+                        img_filename = str(item.id) + '_' + str(uuid.uuid4()) + '.jpg'
+                        # 创建文件路径
+                        img_path = os.path.join(settings.SCENIC_SPOT_IMAGES_DIR, img_filename)
+                        # 图片保存到本地，二进制写入
+                        with open(img_path, 'wb') as f:
+                            f.write(size)
+
+                        # 保存图片到数据库
+                        try:
+                            img_item = ScenicSpotsImagesModel()
+                            img_item.image = '/images/scenic_spot_images/' + img_filename
+                            img_item.scenic_spots_id = item.id
+                            db.session.add(img_item)
+                            db.session.commit()
+                        except:
+                            return render_template('admin/add_scenic_spot.html', form=form,
+                                                   is_succeed=is_succeed,
+                                                   msg='添加失败！'
+                                                   )
                 # 防止重复提交，设置唯一标识，放入缓存
                 cache.set(name, 1, timeout=10)
                 return render_template('admin/add_scenic_spot.html', form=form, is_succeed=1)
@@ -141,6 +293,45 @@ def add_scenic_spot():
         try:
             db.session.add(item)
             db.session.commit()
+
+            # 判断是否上传有图集
+            if images[0].filename != '':
+                # 图集处理
+                for img in images:
+                    # 图片后缀名验证
+                    if '.' not in img.filename or img.filename != '' and img.filename.rsplit('.')[1] not in (
+                    'png', 'jpg', 'gif', 'jpeg'):
+                        return render_template('admin/add_scenic_spot.html', form=form,
+                                               images_msg='只支持png,jpg,gif,jpeg格式的图片',
+                                               is_succeed=is_succeed
+                                               )
+                    # 图片限制大小：15M
+                    size = img.read()
+                    if len(size) > 15 * 1024 * 1024:
+                        return render_template('admin/add_scenic_spot.html', form=form,
+                                               images_too_big='最大只支持15M的图片',
+                                               is_succeed=is_succeed
+                                               )
+                    # 创建文件名，景点id_uuid.jpg
+                    img_filename = str(item.id) + '_' + str(uuid.uuid4()) + '.jpg'
+                    # 创建文件路径
+                    img_path = os.path.join(settings.SCENIC_SPOT_IMAGES_DIR, img_filename)
+                    # 图片保存到本地，二进制写入
+                    with open(img_path, 'wb') as f:
+                        f.write(size)
+
+                    # 保存图片到数据库
+                    try:
+                        img_item = ScenicSpotsImagesModel()
+                        img_item.image = '/images/scenic_spot_images/' + img_filename
+                        img_item.scenic_spots_id = item.id
+                        db.session.add(img_item)
+                        db.session.commit()
+                    except:
+                        return render_template('admin/add_scenic_spot.html', form=form,
+                                               is_succeed=is_succeed,
+                                               msg='添加失败！'
+                                               )
             # 防止重复提交，设置唯一标识，放入缓存
             cache.set(name, 1, timeout=10)
             return render_template('admin/add_scenic_spot.html', form=form, is_succeed=1)
@@ -215,6 +406,49 @@ def delete_info():
         # 根据id查询，然后删除
         try:
             item = InfoModel.query.get(info_id)
+            if item:
+                db.session.delete(item)
+                db.session.commit()
+            else:
+                return '失败，资源不存在'
+        except:
+            return '失败'
+        return 'true'
+
+
+@admin_bp.route('/delete_scenic_spots', methods=['GET', 'POST'])
+def delete_scenic_spots():
+    '''删除景点'''
+    if request.method == 'POST':
+        # 获取需要删除的公告id
+        sp_id = request.form.get('id')
+        # 根据id查询，然后删除
+        try:
+            item = ScenicSpotsModel.query.get(sp_id)
+            if item:
+                # 删除对应的图集
+                item_images = ScenicSpotsImagesModel.query.filter(ScenicSpotsImagesModel.scenic_spots_id == item.id).all()
+                if item_images:
+                    for i in item_images:
+                        db.session.delete(i)
+                db.session.delete(item)
+                db.session.commit()
+            else:
+                return '失败，资源不存在'
+        except:
+            return '失败'
+        return 'true'
+
+
+@admin_bp.route('/delete_scenic_spots_image', methods=['GET', 'POST'])
+def delete_scenic_spots_image():
+    '''单独删除景点图集对应图片'''
+    if request.method == 'POST':
+        # 获取需要删除的公告id
+        sp_image_id = request.form.get('id')
+        # 根据id查询，然后删除
+        try:
+            item = ScenicSpotsImagesModel.query.get(sp_image_id)
             if item:
                 db.session.delete(item)
                 db.session.commit()

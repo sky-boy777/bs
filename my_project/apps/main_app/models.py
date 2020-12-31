@@ -35,7 +35,7 @@ class ScenicSpotsModel(BaseModel):
     # 景点简介内容（富文本编辑器，图文），图片以<img src='...'>形式存放数据库
     content = db.Column(mysql.MSMediumText, nullable=False)
     # 封面图
-    image = db.Column(db.String(64))  # 存储的是图片路径
+    image = db.Column(db.String(255))  # 存储的是图片路径
     # 门票说明：收费：100每人/免费
     rates = db.Column(db.String(20), default='免费')
     # 开放时间
@@ -50,7 +50,7 @@ class ScenicSpotsImagesModel(BaseModel):
     __tablename__ = 'scenic_spots_images'
 
     # 图片路径
-    image = db.Column(db.String(64))
+    image = db.Column(db.String(255))
     # 外键，景点id，图片属于哪个景点
     scenic_spots_id = db.Column(db.Integer, db.ForeignKey('scenic_spots.id'))
 

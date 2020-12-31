@@ -1,6 +1,4 @@
-b = []
-a = 's' if b else 'y'
-print(a)
+print(0%4)
 
 
 

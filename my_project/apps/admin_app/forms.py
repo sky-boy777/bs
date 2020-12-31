@@ -34,6 +34,18 @@ class AddScenicSpotForm(FlaskForm):
     image = FileField('image', validators=[DataRequired(message='请添加封面图'),
         FileAllowed(['png', 'jpg', 'gif', 'jpeg'], message='只支持png,jpg,gif,jpeg格式的图片')
     ])
+    # 景点图集
+    images = FileField('images', validators=[
+        FileAllowed(['png', 'jpg', 'gif', 'jpeg'], message='只支持png,jpg,gif,jpeg格式的图片')
+    ])
+
+
+class EditScenicSpotForm(AddScenicSpotForm):
+    '''编辑景点表单验证'''
+    # 景点封面图
+    image = FileField('image', validators=[FileAllowed(['png', 'jpg', 'gif', 'jpeg'],
+                                             message='只支持png,jpg,gif,jpeg格式的图片')
+                                           ])
 
 
 class AddInfoForm(FlaskForm):

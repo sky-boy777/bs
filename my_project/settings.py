@@ -25,6 +25,8 @@ STATIC_DIR = os.path.join(BASE_DIR, 'static').replace('\\', '/')
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates').replace('\\', '/')
 # 景点封面路径
 SCENIC_SPOT_DIR = os.path.join(BASE_DIR, 'static/images/scenic_spot').replace('\\', '/')
+# 景点图集路径
+SCENIC_SPOT_IMAGES_DIR = os.path.join(BASE_DIR, 'static/images/scenic_spot_images').replace('\\', '/')
 # 头像图片文件路径
 UPLOAD_ICON_DIR = os.path.join(BASE_DIR, 'static/images/icon').replace('\\', '/')
 # 用户发布动态图片上传路径

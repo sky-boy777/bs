@@ -1,18 +1,24 @@
-{% extends 'base.html' %}  {# 加载父模板 #}
+{% extends 'base.html' %} {# 加载父模板 #}
 
 
-{% block title %}景点详情{% endblock title %}  {# title #}
+{% block title %}景点详情{% endblock title %} {# title #}
 
-{% block header %}  {# 预留头部位置 #}
+{% block header %} {# 预留头部位置 #}
 <style>
-.center{ text-align:center; }
-.img_width{ width: 300px; }
+    .center {
+        text-align: center;
+    }
+
+    .img_width {
+        width: 300px;
+    }
 </style>
 {% endblock header %}
 
-{% block search %}{% endblock search %}  {# 搜索框 #}
+{% block search %}{% endblock search %} {# 搜索框 #}
 
 {% block content %}
+<!-- 简介开始 -->
 <div class="container jumbotron">
     <div class="row">
         <div class="col-md-12 col-sm-12 col-xs-12">
@@ -24,4 +30,27 @@
         </div>
     </div>
 </div>
+<!-- 简介结束 -->
+{% if item.images %}
+<!-- 图集开始 -->
+<div class="container-fluid jumbotron">
+    <h3>照片墙</h3>
+    <hr>
+    <div class="row">
+        {% for i in range(item.images | length) %}
+        <div class="col-md-3 col-sm-4 col-xs-6">
+            <img class="img-thumbnail" src="{{ url_for('static', filename=item.images[i].image) }}" alt="图片"
+                style="width: 300px;">
+        </div>
+        {% if i>0 and i%4 == 0 %} {# 四个一行 #}
+    </div> {# 为上一行将添加结尾div #}
+    <div class="row"> {# 开启新的一行(row) #}
+        {% endif %}
+        {% endfor %}
+    </div> {# 循环结束，包尾div #}
+</div>
+<!-- 图集结束 -->
+{% endif %}
+
+
 {% endblock content %}
