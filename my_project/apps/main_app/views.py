@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, g
+from flask import Blueprint, render_template, request, redirect, g, url_for
 from apps.main_app.models import *
 import os
 import uuid
@@ -99,6 +99,7 @@ def user_dynamic():
         # 接收数据
         content = request.form.get('content')
         images = request.files.getlist('images')
+        print(cache.get(content),'***********************************************')
 
         # 查看缓存是否有重复提交标志
         if cache.get(content) == content:
@@ -116,7 +117,9 @@ def user_dynamic():
 
         # 判断是否上传有图片
         if images[0].filename == '':
-            return render_template('main/user_dynamic.html', form=form, item=item)
+            # 缓存添加标志，防止重复提交，10秒后过期
+            cache.set(content, content, timeout=10)
+            return redirect(url_for('main.user_dynamic'))
 
         # 图片数量限制五张
         if len(images) > 5:
@@ -151,8 +154,9 @@ def user_dynamic():
                 db.session.commit()
             except:
                 return render_template('main/user_dynamic.html', form=form, item=item, msg='发布失败')
-        # 缓存添加标志，防止重复提交，20秒后过期
-        cache.set(content, content, timeout=20)
+        # 缓存添加标志，防止重复提交，10秒后过期
+        cache.set(content, content, timeout=10)
+        return redirect(url_for('main.user_dynamic'))
     # get请求
     return render_template('main/user_dynamic.html', form=form, item=item)
 
@@ -203,5 +207,5 @@ def message_board():
                 return render_template('main/message_board.html', form=form)
         except:
             return render_template('main/message_board.html', form=form, message_list=message_list, msg='提交失败')
-
+    # get请求
     return render_template('main/message_board.html', form=form, message_list=message_list)

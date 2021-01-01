@@ -457,3 +457,66 @@ def delete_scenic_spots_image():
         except:
             return '失败'
         return 'true'
+
+
+@admin_bp.route('/add_admin', methods=['GET', 'POST'])
+def add_admin():
+    '''添加管理员'''
+    if request.method == 'POST':
+        # 用户id
+        user_id = request.form.get('id')
+        # 根据id查询
+        try:
+            item = UserModel.query.get(user_id)
+            if item:
+                item.is_admin = 1
+                db.session.commit()
+            else:
+                return '失败，用户不存在'
+        except:
+            return '添加失败'
+        return 'true'
+
+
+@admin_bp.route('/delete_dynamic', methods=['GET', 'POST'])
+def delete_dynamic():
+    '''删除动态'''
+    if request.method == 'POST':
+        # 获取需要删除的公告id
+        d_id = request.form.get('id')
+        # 根据id查询，然后删除
+        try:
+            item = UserDynamicModel.query.get(d_id)
+            if item:
+                # 删除对应的图集
+                item_images = UserDynamicImageModel.query.filter(UserDynamicImageModel.dynamic_id == item.id).all()
+                if item_images:
+                    for i in item_images:
+                        db.session.delete(i)
+                db.session.delete(item)
+                db.session.commit()
+            else:
+                return '失败，资源不存在'
+        except:
+            return '失败'
+        return 'true'
+
+
+@admin_bp.route('/delete_message', methods=['GET', 'POST'])
+def delete_message():
+    '''删除留言'''
+    if request.method == 'POST':
+        # 获取需要删除的公告id
+        message_id = request.form.get('id')
+        # 根据id查询，然后删除
+        try:
+            item = MessageBoardModel.query.get(message_id)
+            if item:
+                db.session.delete(item)
+                db.session.commit()
+            else:
+                return '失败，资源不存在'
+        except:
+            return '失败'
+        return 'true'
+

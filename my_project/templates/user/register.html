@@ -42,7 +42,7 @@
 {% block bottom %}{% endblock bottom %}  {# 底部 #}
 
 {% block script %}  {# js预留位置 #}
-    if("{{ is_send_register_mail }}" == "1"){
+    if("{{ flag }}" == "1"){
         alert("邮件发送成功");
          setTimeout(function(){
             window.location.href = "{{ url_for('user.login') }}";

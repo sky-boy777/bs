@@ -132,7 +132,7 @@ def register():
             send_mail(email)
             # 防止重复提交，设置一个唯一标志，放入缓存
             cache.set(email, 1, timeout=10)
-            return render_template('user/register.html', form=form, is_send_mail=is_send_register_mail)
+            return render_template('user/register.html', form=form, flag=is_send_register_mail)
 
         # 表单验证未通过
         return render_template('user/register.html', form=form)

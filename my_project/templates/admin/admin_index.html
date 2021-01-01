@@ -10,6 +10,7 @@
         height: 30px;
         border-radius: 50%;
         }
+    .ml { margin-left: 10px; }
 </style>
 {% endblock header %}
 {% block search %}{% endblock search %} {# 搜索框 #}
@@ -104,7 +105,14 @@
                 <li>
                     <img src="{{ url_for('static', filename=user.icon) }}" alt="头像" class="user_icon">
                     {{ user.username }}
-                    <span class="float-r">{{ user.create_time }}</span>
+                    {% if not user.is_admin and user.is_activate and not user.is_delete %}
+                    <a href="javascript:;"><button class="btn btn-success btn-xs user_id" data-user_id="{{ user.id }}">添加为管理员</button></a>
+                    {% endif %}
+                    <button type="button" class="btn btn-info fr ml" disabled="disabled">{{ user.create_time }}</button>
+                    <button type="button" class="btn btn-info fr ml" disabled="disabled">{% if user.is_admin %}管理员{% else %}普通用户{% endif %}</button>
+                    <button type="button" class="btn btn-info fr ml" disabled="disabled">{% if user.is_activate %}已激活{% else %}未激活{% endif %}</button>
+                    {% if user.is_delete %}<button type="button" class="btn btn-warning fr ml" disabled="disabled">黑名单</button>{% endif %}
+                    <button type="button" class="btn btn-info fr ml" disabled="disabled">邮箱：{{ user.email }}</button>
                 </li>
                 {% endfor %}
                 {% endif %}
@@ -112,14 +120,38 @@
 
             <a href="javascript:;" class="my_list list-group-item h4">用户动态列表<span class="glyphicon glyphicon-chevron-right float-r"></span></a>
             <ul class="ul-list" style="display: None;">
-                <li>标题 <span class="float-r">2020-2-2</span></li>
-                <li><a href="#">Another action</a></li>
+                {% if dynamic_list %}
+                {% for d in dynamic_list %}
+                <li>
+                    <img src="{{ url_for('static', filename=d.user.icon) }}" alt="头像" class="user_icon">
+                    {{ d.user.username }}
+                    <span class="float-r">{{ d.create_time }}</span>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ d.content }}</p>
+                    {% if d.images %}
+                        {% for image in d.images %}
+                            <img src="{{ url_for('static', filename=image.image) }}" alt="图片" style="width: 100px;">
+                        {% endfor %}
+                    {% endif %}
+                    <br>
+                    <a href="javascript:;"><button class="btn btn-danger btn-xs d_id" data-d_id="{{ d.id }}">删除</button></a>
+                </li>
+                {% endfor %}
+                {% endif %}
              </ul>
 
             <a href="javascript:;" class="my_list list-group-item h4">用户留言列表<span class="glyphicon glyphicon-chevron-right float-r"></span></a>
             <ul class="ul-list" style="display: None;">
-                <li>标题 <span class="float-r">2020-2-2</span></li>
-                <li><a href="#">Another action</a></li>
+                {% if message_board_list %}
+                {% for message in message_board_list %}
+                <li>
+                    <img src="{{ url_for('static', filename=message.user.icon) }}" alt="头像" class="user_icon">
+                    {{ message.user.username }}
+                    <span class="float-r">{{ message.create_time }}</span>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ message.content }}</p>
+                    <a href="javascript:;"><button class="btn btn-danger btn-xs message_id" data-message_id="{{ message.id }}">删除此留言</button></a>
+                </li>
+                {% endfor %}
+                {% endif %}
              </ul>
         </div>
     </div>
@@ -188,6 +220,48 @@
         var ths = $(this);
         // 调用删除函数
         del_fun(sp_image_id, url, ths);
+        return false;
+    });
+
+    // 删除动态
+    $('.d_id').click(function(){
+        var d_id = $(this).data('d_id');
+        var url = "{{ url_for('admin.delete_dynamic') }}";
+        var ths = $(this);
+        // 调用删除函数
+        del_fun(d_id, url, ths);
+        return false;
+    });
+
+    // 删除留言
+    $('.message_id').click(function(){
+        var message_id = $(this).data('message_id');
+        var url = "{{ url_for('admin.delete_message') }}";
+        var ths = $(this);
+        // 调用删除函数
+        del_fun(message_id, url, ths);
+        return false;
+    });
+
+     // 添加为管理员
+    $('.user_id').click(function(){
+        var user_id = $(this).data('user_id');
+        if(confirm("确定将此用户添加为管理员吗？")){
+                $.ajax({
+                    url: "{{ url_for('admin.add_admin') }}",
+                    type:"post",
+                    data:{id: user_id, csrf_token:"{{ csrf_token() }}"},
+                    success: function (msg) {   // 回调函数
+                         if(msg == 'true'){
+                            $(this).parent().next().next().text('管理员');  // 改为管理员
+                            $(this).remove();  // 删除当前按钮
+                         }
+                         else{
+                            alert(msg);
+                         };
+                    }.bind(this)  // 回调函数里使用$(this)，需要绑定
+                });
+        };
         return false;
     });
 
