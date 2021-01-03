@@ -1,0 +1,24 @@
+{% extends 'base.html' %}  {# 加载父模板 #}
+
+
+{% block title %}景点地图{% endblock title %}  {# title #}
+
+{% block header %}  {# 预留头部位置 #}
+<style>
+</style>
+{% endblock header %}
+
+{% block search %}{% endblock search %}  {# 搜索框 #}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <h1>景点位置</h1>
+        <p>广西壮族自治区贵港市桂平市西山路3号</p>
+        <div class="col-md-6 col-sm-6 col-xs-6">
+            <iframe src="/static/my_map.html" width="710" frameborder="0" height="560"scrolling="no"></iframe>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

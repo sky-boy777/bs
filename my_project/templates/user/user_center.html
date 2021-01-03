@@ -83,6 +83,7 @@
                         <img class="img" src="{{ url_for('static', filename=image.image) }}" alt="图片">
                         {% endfor %}
                     {% endif %}
+                    <br>
                     <a href="javascript:;"><button class="btn btn-danger btn-xs dynamic_id" data-dynamic_id="{{ dynamic.id }}">删除</button></a>
                 </li>
                 {% endfor %}

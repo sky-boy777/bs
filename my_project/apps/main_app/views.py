@@ -75,6 +75,12 @@ def info_detail():
     return redirect('/')
 
 
+@main_bp.route('/attractions_map')
+def attractions_map():
+    '''景点地图'''
+
+    return render_template('main/attractions_map.html')
+
 @main_bp.route('/user_dynamic', methods=['GET', 'POST'])
 def user_dynamic():
     '''用户动态'''

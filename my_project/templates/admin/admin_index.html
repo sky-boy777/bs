@@ -139,7 +139,7 @@
                 {% endif %}
              </ul>
 
-            <a href="javascript:;" class="my_list list-group-item h4">用户留言列表<span class="glyphicon glyphicon-chevron-right float-r"></span></a>
+            <a href="javascript:;" class="my_list list-group-item h4">用户反馈列表<span class="glyphicon glyphicon-chevron-right float-r"></span></a>
             <ul class="ul-list" style="display: None;">
                 {% if message_board_list %}
                 {% for message in message_board_list %}
@@ -148,7 +148,7 @@
                     {{ message.user.username }}
                     <span class="float-r">{{ message.create_time }}</span>
                     <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ message.content }}</p>
-                    <a href="javascript:;"><button class="btn btn-danger btn-xs message_id" data-message_id="{{ message.id }}">删除此留言</button></a>
+                    <a href="javascript:;"><button class="btn btn-danger btn-xs message_id" data-message_id="{{ message.id }}">删除</button></a>
                 </li>
                 {% endfor %}
                 {% endif %}
