@@ -9,12 +9,15 @@
 <link rel="stylesheet" href="/static/swiper6.4.1/swiper-bundle.min.css">
 <style>
     .swiper-container {
-        width: 900px;
-        height: 400px;
+        width: 80%;
     }
     .swiper-wrapper img {
         width: 100%;
         height: 100%;
+    }
+    .color { background-color: #09f;
+        padding: 5px;
+        color: white;
     }
 </style>
 {% endblock header %}
@@ -48,14 +51,17 @@
 <!--轮播图开始-->
 <div class="swiper-container">
     <div class="swiper-wrapper">
-        <div class="swiper-slide"><img src="/static/images/logo.jpg" alt=""></div>
-        <div class="swiper-slide"><img src="/static/images/map.jpg" alt=""></div>
-        <div class="swiper-slide"><img src="/static/images/logo.jpg" alt=""></div>
+        <div class="swiper-slide"><img src="/static/images/banner/1.jpg" alt="图片"></div>
+        <div class="swiper-slide"><img src="/static/images/banner/2.jpg" alt="图片"></div>
+        <div class="swiper-slide"><img src="/static/images/banner/3.jpg" alt="图片"></div>
+        <div class="swiper-slide"><img src="/static/images/banner/4.jpg" alt="图片"></div>
+        <div class="swiper-slide"><img src="/static/images/banner/5.jpg" alt="图片"></div>
+        <div class="swiper-slide"><img src="/static/images/banner/6.jpg" alt="图片"></div>
     </div>
-    <!-- 如果需要分页器 -->
+    <!-- 底部分页器 -->
     <div class="swiper-pagination"></div>
 
-    <!-- 如果需要导航按钮 -->
+    <!-- 前进后退按钮 -->
     <div class="swiper-button-prev"></div>
     <div class="swiper-button-next"></div>
 
@@ -65,39 +71,30 @@
   var mySwiper = new Swiper ('.swiper-container', {
     direction: 'horizontal', // 水平切换选项
     loop: true, // 循环模式选项
-     // 自动循环播放
-     autoplay: {
-        delay: 2000,  // 两秒切换一次
-        },
 
-    // 如果需要分页器
+    // 自动循环播放
+    autoplay: {
+        delay: 2000,  // 两秒切换一次
+    },
+
+    // 底部分页器
     pagination: {
       el: '.swiper-pagination',
     },
 
-    // 如果需要前进后退按钮
+    // 前进后退按钮
     navigation: {
       nextEl: '.swiper-button-next',
       prevEl: '.swiper-button-prev',
     },
   })
-
-  //鼠标覆盖停止自动切换
-  mySwiper.el.onmouseover = function(){
-  mySwiper.autoplay.stop();
-  }
-
-  //鼠标离开开始自动切换
-  mySwiper.el.onmouseout = function(){
-  mySwiper.autoplay.start();
-  }
   </script>
 <!--轮播图结束-->
 
 <!--景点列表开始-->
-<!--<h3>景点列表</h3>-->
-<!--<hr>-->
+
 <div class="container">
+    <h2 class="color">景点列表</h2>
 {% if scenic_spots_list %}
     <div class="row">
     {% for i in range(scenic_spots_list | length) %}
