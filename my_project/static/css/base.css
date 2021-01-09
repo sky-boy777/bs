@@ -4,6 +4,8 @@
 .fr{ float: right; }
 a:hover {text-decoration:none !important;}
 .container{ margin-top: 10px !important; margin-bottom: 50px !important; }
+body { background-color: rgb(228, 230, 231);}
+.container { background-color: rgb(252, 246, 246); padding: 20px; }
 /* 公共样式 */
 
 .icon{

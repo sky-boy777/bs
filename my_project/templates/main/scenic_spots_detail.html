@@ -5,8 +5,17 @@
 
 {% block header %} {# 预留头部位置 #}
 <style>
-    .center {
+     .center {
         text-align: center;
+    }
+
+    .time {
+        border-bottom: 1px solid rgb(205, 206, 207);
+        text-align: right;
+    }
+
+    .title {
+        color: rgb(65, 64, 64);
     }
 
     .img_width {
@@ -19,12 +28,12 @@
 
 {% block content %}
 <!-- 简介开始 -->
-<div class="container jumbotron">
+<div class="container">
     <div class="row">
         <div class="col-md-12 col-sm-12 col-xs-12">
-            <h2 class="center">{{ item.name }}</h2>
-            <p class="fr"><i class="h5">最近更新：{{ item.create_time }}</i></p>
-            <br><br>
+            <h2 class="center title">{{ item.name }}</h2>
+            <div class="time">最近更新：{{ item.create_time }}</div>
+            <br>
             <img class="img_width" src="/static{{ item.image }}" alt="景点封面">
             <p>{{ item.content | safe }}</p>
         </div>

@@ -1,23 +1,33 @@
-{% extends 'base.html' %}  {# 加载父模板 #}
+{% extends 'base.html' %} {# 加载父模板 #}
 
 
-{% block title %}景点详情{% endblock title %}  {# title #}
+{% block title %}景点详情{% endblock title %} {# title #}
 
-{% block header %}  {# 预留头部位置 #}
+{% block header %} {# 预留头部位置 #}
 <style>
-.center{ text-align:center; }
+    .center {
+        text-align: center;
+    }
+
+    .time {
+        border-bottom: 1px solid rgb(205, 206, 207);
+        text-align: right;
+    }
+
+    .title {
+        color: rgb(73, 72, 72);
+    }
 </style>
 {% endblock header %}
 
-{% block search %}{% endblock search %}  {# 搜索框 #}
+{% block search %}{% endblock search %} {# 搜索框 #}
 
 {% block content %}
-<div class="container jumbotron">
+<div class="container">
     <div>
         {% if item %}
-        <h2 class="center">{{ item.title }}</h2>
-        <p class="fr"><i class="h5">最近更新：{{ item.create_time }}</i></p>
-        <br><br>
+        <h2 class="center title">{{ item.title }}</h2>
+        <div class="h6 time">发布时间：{{ item.create_time }}</div>
         <p>{{ item.content | safe }}</p>
         {% else %}
         <p>数据加载失败！</p>

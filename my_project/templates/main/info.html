@@ -16,7 +16,7 @@
     {% if info_list %}
         {% for info in info_list.items %}
             <div class="row">
-                <div class="col-md-offset-2 col-sm-offset-1 col-md-8 col-sm-10">
+                <div>
                     <a href="{{ url_for('main.info_detail', info_id=info.id) }}">{{ loop.index }}.{{ info.title }} <span class="fr">{{ info.create_time }}</span></a>
                 </div>
             </div>

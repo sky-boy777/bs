@@ -16,8 +16,8 @@
     }
 
     .row {
-        background-color: rgb(222, 235, 245);
-        margin-top: 20px;
+        border-bottom: 1px solid #d8dadb;
+
         padding: 10px;
     }
 </style>
@@ -31,7 +31,7 @@
     <form method="post">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <div class="input-group">
-            <input type="text" name="content" placeholder="{% if g.user %}留言{% else %}登录后留言{% endif %}">
+            <input type="text" name="content" placeholder="{% if g.user %}给我们留言{% else %}登录后留言{% endif %}">
             <div class="red">{{ form.content.errors.0 }}</div>
         </div>
         <p></p>
@@ -39,20 +39,21 @@
         <div class="red h4">{{ msg }}</div>
     </form>
     {# 表单结束 #}
-
+</div>
+<div class="container">
     {% if message_list %}
 
     {# 留言列表开始 #}
     {% for message in message_list.items %}
     <div class="row">
-        <div class="col-md-10 col-sm-10 col-xs-10">
-            <div style="color: rgb(175, 162, 162);">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div style="color: #999;">
                 <img class="user_icon" src="{{ url_for('static', filename=message.user.icon) }}" alt="头像">
                 <span>{{ message.user.username }}</span>
                 <span class="fr h6">发布时间：{{ message.create_time }}</span>
             </div>
             <p></p>
-            <p>&nbsp;&nbsp;&nbsp;&nbsp;{{ message.content }}</p>
+            <p>{{ message.content }}</p>
         </div>
     </div>
     {% endfor %}
