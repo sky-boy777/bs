@@ -56,8 +56,8 @@
         <div class="col-md-offset-3 col-sm-offset-4 col-xs-offset-5">
             <a href="javascript:;" class="my_list list-group-item h4">我的留言 <span class="glyphicon glyphicon-chevron-right fr"></span></a>
             <ul class="ul-list" style="display: None;">
-                {% if messages %}
-                {% for message in messages %}
+                {% if g.user.messages %}
+                {% for message in g.user.messages | reverse %}
                 <li>
                     <p>{{ message.content }}<span class="fr">{{ message.create_time }}</span></p>
                     <a href="javascript:;"><button class="btn btn-danger btn-xs message_id" data-message_id="{{ message.id }}">删除</button></a>
@@ -74,8 +74,8 @@
         <div class="col-md-offset-3 col-sm-offset-4 col-xs-offset-5">
             <a href="javascript:;" class="my_list list-group-item h4">我的动态 <span class="glyphicon glyphicon-chevron-right fr"></span></a>
             <ul class="ul-list" style="display: None;">
-                {% if my_dynamic %}
-                {% for dynamic in my_dynamic %}
+                {% if g.user.dynamics %}
+                {% for dynamic in g.user.dynamics | reverse %}
                 <li>
                     <p>{{ dynamic.content }}<span class="fr">{{ dynamic.create_time }}</span></p>
                     {% if dynamic.images %}

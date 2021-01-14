@@ -273,15 +273,7 @@ def user_center():
     '''用户中心'''
     form = UserCenterForm()
 
-    # get请求
-    # 查询我的留言,我的动态
-    try:
-        messages = MessageBoardModel.query.order_by(-MessageBoardModel.id).all()
-        my_dynamic = UserDynamicModel.query.order_by(-UserDynamicModel.id).all()
-    except:
-        return render_template('user/user_center.html', form=form)
-
-    # post请求
+    # post请求，修改个人信息
     if request.method == 'POST' and form.validate_on_submit():
         # 查询当前用户
         user = g.user
@@ -305,8 +297,7 @@ def user_center():
             '''
             size = icon.read()  # 读出二进制流文件
             if len(size) > 3*1024*1024:  # 限制文件大小：3M
-                return render_template('user/user_center.html', form=form, msg='大小不能超过3M',
-                                       messages=messages, my_dynamic=my_dynamic)
+                return render_template('user/user_center.html', form=form, msg='大小不能超过3M')
             # 图片保存到本地，二进制写入
             with open(icon_path, 'wb') as f:
                 f.write(size)
@@ -316,7 +307,7 @@ def user_center():
         # 提交到数据库
         db.session.commit()
 
-    return render_template('user/user_center.html', form=form, messages=messages, my_dynamic=my_dynamic)
+    return render_template('user/user_center.html', form=form)
 
 
 @user_bp.route('/change_password', methods=['GET', 'POST'])

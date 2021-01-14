@@ -6,13 +6,18 @@
 <link rel="stylesheet" href="/static/css/login.css">
 {% endblock header %}
 
-{% block title %}发送验证码{% endblock title %}  {# title #}
+{% block title %}邮箱验证{% endblock title %}  {# title #}
 {% block nav %}
     <!--导航栏开始-->
     <nav class="navbar-default">
         <div class="container-fluid">
             <div class="navbar-header">
                 <a class="navbar-brand">旅游景点自助系统</a>
+            </div>
+            <div class="collapse navbar-collapse" id="nav-div">
+                <ul class="nav navbar-nav">
+                    <li><a href="{{ url_for('main.index') }}">首页</a></li>
+                </ul>
             </div>
                 {% block search %}{% endblock search %}  {# 搜索框 #}
                 {% block login %}{% endblock login %}  {# 登录注册链接 #}

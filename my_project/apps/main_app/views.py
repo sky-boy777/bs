@@ -78,8 +78,8 @@ def info_detail():
 @main_bp.route('/attractions_map')
 def attractions_map():
     '''景点地图'''
-
     return render_template('main/attractions_map.html')
+
 
 @main_bp.route('/user_dynamic', methods=['GET', 'POST'])
 def user_dynamic():
@@ -105,7 +105,6 @@ def user_dynamic():
         # 接收数据
         content = request.form.get('content')
         images = request.files.getlist('images')
-        print(cache.get(content),'***********************************************')
 
         # 查看缓存是否有重复提交标志
         if cache.get(content) == content:

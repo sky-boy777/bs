@@ -46,13 +46,13 @@
         <div class="input-group">
             <div class="red">{{ form.content.errors.0 }}</div>
             <textarea name="content" rows="2"
-                placeholder="{% if g.user %}输入内容(500个){% else %}登录后发表{% endif %}"></textarea>
+                placeholder="{% if g.user %}输入内容(500个字符){% else %}登录后发表{% endif %}"></textarea>
             <div class="h6">上传图片(最多上传五张，每张大小限制10M)</div>
             <input type="file" name="images" multiple> {# 上传多个文件用multiple #}
             <div class="red">{{ form.images.errors.0 }}{{ image_error }}{{ image_too_many_error }}</div>
         </div>
         <p></p>
-        <button type="submit" class="btn btn-primary">发布</button>
+        <button type="submit" class="btn btn-primary">发布动态</button>
         <div class="red h4">{{ msg }}</div>
     </form>
     {# 表单结束 #}

@@ -346,8 +346,33 @@ def add_info():
     '''发布公告'''
     form = AddInfoForm()
     is_succeed = 0  # 标志:添加成功为1，否则为0
+    # get请求如果带有info_id，则为编辑公告
 
-    # post请求+表单验证
+    # 编辑公告
+    info_id = request.args.get('info_id')
+    if info_id:
+        # 查询id对应公告
+        try:
+            item = InfoModel.query.get(info_id)
+            if request.method == 'POST' and form.validate_on_submit() and item:
+                title = form.title.data
+                # 判断是否重复提交
+                if cache.get(title) == 1:
+                    return redirect(url_for('admin.admin_index'))
+
+                item.title = title
+                item.content = form.content.data
+                item.create_time = datetime.datetime.now().strftime('%Y-%m-%d')  # 更新时间
+                db.session.commit()
+                # 防止重复提交，设置唯一标识，放入缓存
+                cache.set(title, 1, timeout=10)
+                return render_template('admin/add_info.html', form=form, is_succeed=1)
+            return render_template('admin/add_info.html', form=form, is_succeed=is_succeed, item=item)
+        except:
+            # 查询出错则转为添加公告
+            return render_template('admin/add_info.html', form=form, is_succeed=is_succeed)
+
+    # 发布或更新公告
     if request.method == 'POST' and form.validate_on_submit():
         # 接收数据
         title = form.title.data
@@ -356,7 +381,7 @@ def add_info():
         if cache.get(title) == 1:
             return redirect(url_for('admin.admin_index'))
 
-        # 查询数据库是否有相同的公告名称，有则更新
+        # 查询数据库是否有相同的公告名称，有则更新公告
         try:
             item = InfoModel.query.filter(InfoModel.title == title).first()
             if item:
@@ -370,7 +395,7 @@ def add_info():
         except:
             return render_template('admin/add_info.html', form=form, is_succeed=is_succeed, msg='发布失败！')
 
-        # 保存到数据库
+        # 发布公告
         item = InfoModel()
         item.title = title
         item.content = content
@@ -383,16 +408,6 @@ def add_info():
         except:
             return render_template('admin/add_info', form=form, is_succeed=is_succeed, msg='发布失败！')
 
-    # get请求如果带有info_id，则为编辑公告
-    info_id = request.args.get('info_id')
-    if info_id:
-        # 查询id对应公告
-        try:
-            item = InfoModel.query.get(info_id)
-            return render_template('admin/add_info.html', form=form, is_succeed=is_succeed, item=item)
-        except:
-            # 查询出错则转为添加公告
-            return render_template('admin/add_info.html', form=form, is_succeed=is_succeed)
     # 普通get请求(添加公告)
     return render_template('admin/add_info.html', form=form, is_succeed=is_succeed)
 
