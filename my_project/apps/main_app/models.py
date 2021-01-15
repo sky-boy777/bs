@@ -2,6 +2,7 @@ from exts import db
 from datetime import datetime
 from sqlalchemy.databases import mysql  # 定义MySQL特有的字段类型
 
+
 # 父类，简化每个类都要加id步骤
 class BaseModel(db.Model):
     '''父类模型'''

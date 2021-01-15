@@ -493,6 +493,26 @@ def add_admin():
         return 'true'
 
 
+@admin_bp.route('/del_user', methods=['GET', 'POST'])
+def del_user():
+    '''删除未激活的用户'''
+    if request.method == 'POST':
+        # 用户id
+        user_id = request.form.get('id')
+        # 根据id查询
+        try:
+            item = UserModel.query.get(user_id)
+            # 判断是否为未激活的用户
+            if item and not item.is_activate:
+                db.session.delete(item)
+                db.session.commit()
+            else:
+                return '失败，用户不存在'
+        except:
+            return '失败'
+        return 'true'
+
+
 @admin_bp.route('/delete_dynamic', methods=['GET', 'POST'])
 def delete_dynamic():
     '''删除动态'''

@@ -51,6 +51,7 @@
                 <a href="{{ url_for('admin.add_info') }}" class="btn btn-primary">发布公告</a>
             </div>
 
+            <!-- 公告列表开始 -->
             <a href="javascript:;" class="my_list list-group-item h4">公告列表 <span class="glyphicon glyphicon-chevron-right float-r"></span></a>
             {% if info_list %}
             <ul class="ul-list" style="display: None;">
@@ -66,12 +67,14 @@
                 {% endfor %}
             </ul>
             {% endif %}
-
+            <!-- 公告列表结束 -->
+            <!-- 景点列表开始 -->
             <a href="javascript:;" class="my_list list-group-item h4">景点列表<span class="glyphicon glyphicon-chevron-right float-r"></span></a>
             <ul class="ul-list" style="display: None;">
                 {% if scenic_spot_list %}
                 {% for sp in scenic_spot_list %}
                 <li>
+                    {{ loop.index }}.
                     <img class="scenic_spot_image" src="{{ url_for('static', filename=sp.image) }}" alt="封面">
                     {{ sp.name }}
                     &nbsp;&nbsp;&nbsp;&nbsp;
@@ -86,6 +89,7 @@
                     {% if sp.images %}
                     {% for image in sp.images %}
                     <li>
+                        ({{ loop.index }})
                         <img src="{{ url_for('static', filename=image.image) }}" alt="图片" style="width:100px;">
                         <a href="javascript:;"><button class="btn btn-danger btn-xs sp_image_id" data-sp_image_id="{{ image.id }}">删除</button></a>
                         <span class="float-r">2020-2-2</span>
@@ -97,7 +101,8 @@
                 {% endfor %}
                 {% endif %}
              </ul>
-
+             <!-- 景点列表结束 -->
+             <!-- 用户列表开始 -->
             <a href="javascript:;" class="my_list list-group-item h4">用户列表<span class="glyphicon glyphicon-chevron-right float-r"></span></a>
             <ul class="ul-list" style="display: None;">
                 {% if user_list %}
@@ -105,32 +110,91 @@
                 <li>
                     <img src="{{ url_for('static', filename=user.icon) }}" alt="头像" class="user_icon">
                     {{ user.username }}
+                    &nbsp;&nbsp;&nbsp;&nbsp;
                     {% if not user.is_admin and user.is_activate and not user.is_delete %}
                     <a href="javascript:;"><button class="btn btn-success btn-xs user_id" data-user_id="{{ user.id }}">添加为管理员</button></a>
                     {% endif %}
-                    <button type="button" class="btn btn-info fr ml" disabled="disabled">{{ user.create_time }}</button>
-                    <button type="button" class="btn btn-info fr ml" disabled="disabled">{% if user.is_admin %}管理员{% else %}普通用户{% endif %}</button>
-                    <button type="button" class="btn btn-info fr ml" disabled="disabled">{% if user.is_activate %}已激活{% else %}未激活{% endif %}</button>
-                    {% if user.is_delete %}<button type="button" class="btn btn-warning fr ml" disabled="disabled">黑名单</button>{% endif %}
-                    <button type="button" class="btn btn-info fr ml" disabled="disabled">邮箱：{{ user.email }}</button>
+
+                    {% if not user.is_activate %}  {# 管理员可以删除未激活的用户 #}
+                    <a href="javascript:;"><button class="btn btn-danger fr ml del_user_id" data-user_id="{{ user.id }}">删除</button></a>
+                    {% endif %}
+
+                    <button type="button" class="btn btn-default fr ml" disabled="disabled">{{ user.create_time }}</button>
+                    
+                    {% if user.is_admin %}
+                        <button type="button" class="btn btn-info fr ml" disabled="disabled">管理员</button>
+                    {% else %}
+                        <button type="button" class="btn btn-default fr ml" disabled="disabled">普通用户</button>
+                    {% endif %}
+                    
+                    {% if user.is_activate %}
+                        <button type="button" class="btn btn-success fr ml" disabled="disabled">已激活</button>
+                        {% else %}
+                        <button type="button" class="btn btn-default fr ml" disabled="disabled">未激活</button>
+                        {% endif %}
+                    {% if user.is_delete %}<button type="button" class="btn btn-danger fr ml" disabled="disabled">黑名单</button>{% endif %}
+                    <button type="button" class="btn btn-default fr ml" disabled="disabled">邮箱：{{ user.email }}</button>
                 </li>
+
+                    {% if user.dynamics %}
+                    <!-- 他的动态开始 -->
+                    <a href="javascript:;" class="my_list list-group-item h5">他的动态<span class="glyphicon glyphicon-chevron-right float-r"></span></a>
+                    <ul class="ul-list" style="display: None;">
+                        {% for d in user.dynamics %}
+                        <li>
+                            <span class="float-r">{{ d.create_time }}</span>
+                            <p>({{ loop.index }}){{ d.content }}</p>
+                            {% if d.images %}
+                                {% for image in d.images %}
+                                <img src="{{ url_for('static', filename=image.image) }}" alt="图片" style="width: 100px;">
+                                {% endfor %}
+                                <br>
+                            {% endif %}
+                            <br>
+                            <a href="javascript:;"><button class="btn btn-danger btn-xs d_id" data-d_id="{{ d.id }}">删除</button></a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <!-- 他的动态结束 -->
+                    {% endif %}
+
+                    {% if user.messages %}
+                    <!-- 他的留言开始 -->
+                    <a href="javascript:;" class="my_list list-group-item h5">他的留言<span class="glyphicon glyphicon-chevron-right float-r"></span></a>
+                    <ul class="ul-list" style="display: None;">
+                        {% for message in user.messages %}
+                        <li>
+                            <span class="float-r">{{ message.create_time }}</span>
+                            <p>({{ loop.index }}){{ message.content }}</p>
+                            <a href="javascript:;"><button class="btn btn-danger btn-xs message_id" data-message_id="{{ message.id }}">删除</button></a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <!-- 他的留言结束 -->
+                    {% endif %}   
+                    <br>
+
                 {% endfor %}
                 {% endif %}
              </ul>
+             <!-- 用户列表结束 -->
 
+             <!-- 用户动态开始 -->
             <a href="javascript:;" class="my_list list-group-item h4">用户动态列表<span class="glyphicon glyphicon-chevron-right float-r"></span></a>
             <ul class="ul-list" style="display: None;">
                 {% if dynamic_list %}
                 {% for d in dynamic_list %}
                 <li>
+                    {{ loop.index }}.
                     <img src="{{ url_for('static', filename=d.user.icon) }}" alt="头像" class="user_icon">
                     {{ d.user.username }}
                     <span class="float-r">{{ d.create_time }}</span>
                     <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ d.content }}</p>
                     {% if d.images %}
                         {% for image in d.images %}
-                            <img src="{{ url_for('static', filename=image.image) }}" alt="图片" style="width: 100px;">
+                        <img src="{{ url_for('static', filename=image.image) }}" alt="图片" style="width: 100px;">
                         {% endfor %}
+                        <br>
                     {% endif %}
                     <br>
                     <a href="javascript:;"><button class="btn btn-danger btn-xs d_id" data-d_id="{{ d.id }}">删除</button></a>
@@ -138,12 +202,14 @@
                 {% endfor %}
                 {% endif %}
              </ul>
-
+             <!-- 用户动态结束 -->
+             <!-- 用户留言开始 -->
             <a href="javascript:;" class="my_list list-group-item h4">用户留言列表<span class="glyphicon glyphicon-chevron-right float-r"></span></a>
             <ul class="ul-list" style="display: None;">
                 {% if message_board_list %}
                 {% for message in message_board_list %}
                 <li>
+                    {{ loop.index }}.
                     <img src="{{ url_for('static', filename=message.user.icon) }}" alt="头像" class="user_icon">
                     {{ message.user.username }}
                     <span class="float-r">{{ message.create_time }}</span>
@@ -153,6 +219,7 @@
                 {% endfor %}
                 {% endif %}
              </ul>
+             <!-- 用户留言结束 -->
         </div>
     </div>
 </div>
@@ -200,6 +267,16 @@
         var ths = $(this);
         // 调用删除函数
         del_fun(info_id, url, ths);
+        return false;
+    });
+
+    // 删除未激活用户
+    $('.del_user_id').click(function(){
+        var user_id = $(this).data('user_id');
+        var url = "{{ url_for('admin.del_user') }}";
+        var ths = $(this);
+        // 调用删除函数
+        del_fun(user_id, url, ths);
         return false;
     });
 

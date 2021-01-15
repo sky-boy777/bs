@@ -6,6 +6,7 @@
 {% block header %}  {# 预留头部位置 #}
 <style>
     .center { text-align: center; }
+    .b_b { border-bottom: 1px solid #09f; }
 </style>
 {% endblock header %}
 
@@ -16,8 +17,8 @@
     {% if info_list %}
         {% for info in info_list.items %}
             <div class="row">
-                <div>
-                    <a href="{{ url_for('main.info_detail', info_id=info.id) }}">{{ loop.index }}.{{ info.title }} <span class="fr">{{ info.create_time }}</span></a>
+                <div class="h5">
+                    <a class="b_b" href="{{ url_for('main.info_detail', info_id=info.id) }}">{{ loop.index }}.{{ info.title }} <span class="fr">{{ info.create_time }}</span></a>
                 </div>
             </div>
         {% endfor %}
