@@ -214,3 +214,10 @@ def message_board():
             return render_template('main/message_board.html', form=form, message_list=message_list, msg='提交失败')
     # get请求
     return render_template('main/message_board.html', form=form, message_list=message_list)
+
+
+# 自定义404错误页面
+@main_bp.app_errorhandler(404)
+def page_404(e):
+    '''页面未找到错误'''
+    return render_template('404.html'), 404

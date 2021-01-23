@@ -1,5 +1,5 @@
-s = 'qwerkfjdgkajfkdsjflsd'
-for i in range(len(s)):
-    print(s[i], end='')
-    if i>0 and i % 4 == 0:
-        print()
+def a(n):
+    if n==1:
+        return n
+    return n+a(n-1)
+print(a(16))

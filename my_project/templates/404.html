@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>404</title>
+    <style>
+        .center {
+            width: 500px;
+            position: absolute;
+            top: 25%;
+            left: 50%;
+            margin-left: -250px;
+        }
+        img { width: 500px; }
+    </style>
+</head>
+
+<body>
+    <div class="center">
+        <img class="img" src="/static/images/404.png" alt="图片">
+        <div>
+            <a href="{{ url_for('main.index') }}"><h3>返回首页</h3></a>
+        </div>
+    </div>
+    
+</body>
+
+</html>
