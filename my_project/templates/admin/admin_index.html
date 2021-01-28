@@ -11,9 +11,12 @@
         border-radius: 50%;
         }
     .ml { margin-left: 10px; }
+
+    {% block style %}  {# 样式预留位置 #}
+    {% endblock style %}
 </style>
 {% endblock header %}
-{% block search %}{% endblock search %} {# 搜索框 #}
+
 {% block nav %}
     <!--导航栏开始-->
     <nav class="navbar-default">
@@ -28,6 +31,27 @@
                 <a class="navbar-brand">后台管理</a>
             </div>
             <!--logo结束-->
+            {% block search %}  {# 搜索框 #}
+             <!--搜索框开始-->
+                <form style="color:black;" class="navbar-form navbar-left" method="post" action="{{ url_for('admin.search_page') }}">
+                    <div class="form-group">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <select class="form-control" name="key">
+                            <option value="1">公告标题</option>
+                            <option value="2">景点名</option>
+                            <option value="3">用户名</option>
+                            <option value="4">邮箱</option>
+                            <option value="5">动态</option>
+                            <option value="6">留言</option>
+                        </select>
+                        <input type="text" class="form-control" placeholder="查找" name="content">
+                    </div>
+                    <button type="submit" class="btn btn-default">
+                        <span class="glyphicon glyphicon-search"></span>
+                    </button>
+                </form>
+                <!-- 搜索框结束 -->
+            {% endblock search %}
             <div class="collapse navbar-collapse" id="nav-div">
                 <div class="icon nav navbar-right">
                     欢迎！管理员{#{ g.user.username }#}&nbsp;
@@ -89,7 +113,7 @@
                     {% if sp.images %}
                     {% for image in sp.images %}
                     <li>
-                        ({{ loop.index }})
+                        {{ loop.index }}.
                         <img src="{{ url_for('static', filename=image.image) }}" alt="图片" style="width:100px;">
                         <a href="javascript:;"><button class="btn btn-danger btn-xs sp_image_id" data-sp_image_id="{{ image.id }}">删除</button></a>
                         <span class="float-r">2020-2-2</span>
@@ -143,7 +167,7 @@
                         {% for d in user.dynamics %}
                         <li>
                             <span class="float-r">{{ d.create_time }}</span>
-                            <p>({{ loop.index }}){{ d.content }}</p>
+                            <p>{{ loop.index }}.{{ d.content }}</p>
                             {% if d.images %}
                                 {% for image in d.images %}
                                 <img src="{{ url_for('static', filename=image.image) }}" alt="图片" style="width: 100px;">
@@ -165,7 +189,7 @@
                         {% for message in user.messages %}
                         <li>
                             <span class="float-r">{{ message.create_time }}</span>
-                            <p>({{ loop.index }}){{ message.content }}</p>
+                            <p>{{ loop.index }}.{{ message.content }}</p>
                             <a href="javascript:;"><button class="btn btn-danger btn-xs message_id" data-message_id="{{ message.id }}">删除</button></a>
                         </li>
                         {% endfor %}
@@ -189,7 +213,7 @@
                     <img src="{{ url_for('static', filename=d.user.icon) }}" alt="头像" class="user_icon">
                     {{ d.user.username }}
                     <span class="float-r">{{ d.create_time }}</span>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ d.content }}</p>
+                    <p>{{ d.content }}</p>
                     {% if d.images %}
                         {% for image in d.images %}
                         <img src="{{ url_for('static', filename=image.image) }}" alt="图片" style="width: 100px;">
@@ -213,7 +237,7 @@
                     <img src="{{ url_for('static', filename=message.user.icon) }}" alt="头像" class="user_icon">
                     {{ message.user.username }}
                     <span class="float-r">{{ message.create_time }}</span>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ message.content }}</p>
+                    <p>{{ message.content }}</p>
                     <a href="javascript:;"><button class="btn btn-danger btn-xs message_id" data-message_id="{{ message.id }}">删除</button></a>
                 </li>
                 {% endfor %}

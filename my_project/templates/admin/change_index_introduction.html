@@ -4,7 +4,7 @@
 {% block header %} {# 预留头部位置 #}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_index.css') }}" type="text/css">
 {% endblock header %}
-
+{% block search %}{% endblock search %} {# 搜索框 #}
 {% block content %}
     <div class="container">
         <div class="row">

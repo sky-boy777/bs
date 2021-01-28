@@ -10,6 +10,7 @@ import settings, uuid, datetime
 # 后台管理蓝图，需要在create_app下注册
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
+
 @admin_bp.route('/admin_index')
 def admin_index():
     '''后台管理首页'''
@@ -410,6 +411,59 @@ def add_info():
 
     # 普通get请求(添加公告)
     return render_template('admin/add_info.html', form=form, is_succeed=is_succeed)
+
+
+@admin_bp.route('/search_page', methods=['POST', 'GET'])
+def search_page():
+    '''搜索结果页面'''
+    # 一个标志,返回给前端，表示对应返回的数据类型
+    flag = 0
+
+    # get请求:接收翻页的参数
+    key = request.args.get('key', None)
+    content = request.args.get('content', None)
+
+    # 提取关键字跟搜索内容
+    if request.method == 'POST':
+        key = request.form.get('key', None)
+        content = request.form.get('content', None)
+
+    # 空值处理
+    if key is None or content is None:
+        return redirect(url_for('admin.admin_index'))
+
+    # 页码
+    try:
+        p = int(request.args.get('page', 1))  # 页码要为整形
+    except:
+        p = 1
+
+    """
+    1: 公告标题
+    2: 景点名
+    3: 用户名
+    4: 邮箱
+    5: 动态
+    6: 留言
+    """
+    try:
+        items_dict = {
+            '1': InfoModel.query.filter(InfoModel.title.contains(content)),
+            '2': ScenicSpotsModel.query.filter(ScenicSpotsModel.name.contains(content)),
+            '3': UserModel.query.filter(UserModel.username.contains(content)),
+            '4': UserModel.query.filter(UserModel.email.contains(content)),
+            '5': UserDynamicModel.query.filter(UserDynamicModel.content.contains(content)),
+            '6': MessageBoardModel.query.filter(MessageBoardModel.content.contains(content))
+        }
+    except:
+        return redirect(url_for('admin.admin_index'))
+
+    items = items_dict.get(key)
+    if items:
+        items = items.paginate(page=p, per_page=20)
+        return render_template('admin/search_page.html', items=items, flag=int(key), key=key, content=content)
+
+    return redirect(url_for('admin.admin_index'))
 
 
 @admin_bp.route('/delete_info', methods=['GET', 'POST'])
