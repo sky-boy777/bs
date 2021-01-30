@@ -144,6 +144,14 @@
 
         {% block script %} {# js预留位置 #}
         {% endblock script %}
+
+        // 当元素距离底部大于0时，添加固定定位css
+        var b_height = $('.bottom').offset().top;
+        var w_height = $(window).height();
+        // 窗口可视区域高度 - 元素距离顶部高度 = 元素距离底部距离
+        if (w_height - b_height > 0){
+            $('.bottom').addClass('navbar-fixed-bottom');
+        };
     </script>
 </body>
 

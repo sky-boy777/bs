@@ -427,9 +427,10 @@ def search_page():
     if request.method == 'POST':
         key = request.form.get('key', None)
         content = request.form.get('content', None)
+        print(key,content,type(content),'***************************************')
 
-    # 空值处理
-    if key is None or content is None:
+    # 空值处理:关键字跟搜索内容必须传
+    if not key or not content:
         return redirect(url_for('admin.admin_index'))
 
     # 页码
