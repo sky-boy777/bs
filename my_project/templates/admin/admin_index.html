@@ -73,6 +73,7 @@
                 <a href="{{ url_for('admin.change_index_introduction') }}" class="btn btn-primary">修改首页简介</a>
                 <a href="{{ url_for('admin.add_scenic_spot') }}" class="btn btn-primary">添加景点</a>
                 <a href="{{ url_for('admin.add_info') }}" class="btn btn-primary">发布公告</a>
+                 <a href="{{ url_for('admin.bottom_info') }}" class="btn btn-primary">网站底部联系方式管理</a>
             </div>
 
             <!-- 公告列表开始 -->
@@ -248,7 +249,7 @@
     </div>
 </div>
 {% endblock content %}
-
+{% block bottom %}{% endblock bottom %}  {# 底部 #}
 {% block script %}  {# js预留位置 #}
 
     // 定义函数，参数: $(this)为调用函数的对象，显示和隐藏切换，200毫秒延迟

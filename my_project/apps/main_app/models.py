@@ -27,6 +27,17 @@ class IndexBriefIntroductionModel(BaseModel):
     opening_hours = db.Column(db.String(50), default='24小时开放')
 
 
+class BottomInfoModel(BaseModel):
+    '''网站底部信息'''
+    __tablename__ = 'bottom_info'
+    # 紧急救援电话，可多个
+    phone = db.Column(db.String(30))
+    # 联系邮箱
+    email = db.Column(db.String(30))
+    # 联系电话，可以有多个
+    phone2 = db.Column(db.String(40))
+
+
 class ScenicSpotsModel(BaseModel):
     '''景点模型'''
     __tablename__ = 'scenic_spots'

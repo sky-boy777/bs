@@ -1,0 +1,44 @@
+{% extends 'admin/admin_index.html' %} {# 加载父模板 #}
+
+{% block title %}网站底部信息管理{% endblock title %} {# title #}
+{% block header %} {# 预留头部位置 #}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin_index.css') }}" type="text/css">
+{% endblock header %}
+{% block search %}{% endblock search %} {# 搜索框 #}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <form action="" method="post">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <label>紧急救援电话</label>
+                <div class="red">{{ form.phone.errors.0 }}</div>
+                <input type="text" class="form-control" placeholder="紧急救援电话" name="phone" value="{% if item %}{{ item.phone }}{% endif %}"><br>
+
+                <label>联系邮箱</label>
+                <div class="red">{{ form.email.errors.0 }}</div>
+                <input type="email" class="form-control" placeholder="联系邮箱" name="email" value="{% if item %}{{ item.email }}{% endif %}"><br>
+
+                <label>联系电话</label>
+                <div class="red">{{ form.phone2.errors.0 }}</div>
+                <input type="text" class="form-control" placeholder="联系电话" name="phone2" value="{% if item %}{{ item.phone2 }}{% endif %}"><br>
+
+                <div class="h2 red">{{ msg }}</div>
+                <button type="submit" class="btn btn-primary">保存</button>
+            </form>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block script %}  {# js预留位置 #}
+    if("{{ is_succeed }}" == "1"){
+        alert("保存成功！");
+        setTimeout(function(){
+            window.location.href = "{{ url_for('admin.admin_index') }}";
+        }, 100);
+    };
+{% endblock script %}
+
+
+
+
+

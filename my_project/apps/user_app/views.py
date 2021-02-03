@@ -4,6 +4,7 @@ import io, os
 import settings
 from .forms import *  # 表单验证类
 from .models import UserModel, MessageBoardModel, UserDynamicModel, UserDynamicImageModel
+from apps.main_app.models import BottomInfoModel
 from werkzeug.security import generate_password_hash, check_password_hash  # 密码加密，验证
 from exts import db, cache
 from utils.send_email import send_mail, send_mail_code  # 发送邮件
@@ -29,6 +30,11 @@ login_not_path = ['/user/login', '/user/register']
 @user_bp.before_app_request
 def my_before_request():
     '''用户权限验证'''
+    # 查询网站底部信息
+    try:
+        g.bottom_info = BottomInfoModel.query.filter().first()
+    except:
+        g.bottom_info = None
     # 尝试获取用户id
     uid = session.get('uid')
     try:
@@ -36,7 +42,7 @@ def my_before_request():
         g.user = user  # 使用g对象存储用户，这样哪个页面都能用了
     except:
         # 查询数据库出错
-        return '未知错误'
+        g.user = None
     # 未登录，不能访问
     if request.path in required_login_path and not user:
         return redirect(url_for('user.login'))

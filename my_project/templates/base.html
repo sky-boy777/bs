@@ -100,8 +100,8 @@
     <!--底部开始-->
     {% block bottom %}
     <div class="bottom">
-        <p class="h4">紧急救援电话：0775-12345</p>
-        <p>联系邮箱：1251779123@qq.com&nbsp;&nbsp;&nbsp;&nbsp;联系电话：123456789012</p>
+        <p class="h4">紧急救援电话：{{ g.bottom_info.phone }}</p>
+        <p>联系邮箱：{{ g.bottom_info.email }}&nbsp;&nbsp;&nbsp;&nbsp;联系电话：{{ g.bottom_info.phone2 }}</p>
     </div>
     {% endblock bottom %}
     <!--底部结束-->
@@ -151,6 +151,9 @@
         // 窗口可视区域高度 - 元素距离顶部高度 = 元素距离底部距离
         if (w_height - b_height > 0){
             $('.bottom').addClass('navbar-fixed-bottom');
+        };
+        if (w_height - b_height < 0){
+            $('.bottom').removeClass('navbar-fixed-bottom');
         };
     </script>
 </body>

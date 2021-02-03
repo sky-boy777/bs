@@ -110,6 +110,51 @@ def change_index_introduction():
                            form=form, item=item, is_succeed=is_succeed)
 
 
+@admin_bp.route('/bottom_info', methods=['GET', 'POST'])
+def bottom_info():
+    '''修改网站底部信息'''
+    form = BottomInfoForm()
+    is_succeed = 0  # 标志:成功为1，否则为0
+    try:
+        # 查询看数据库是否有数据
+        item = BottomInfoModel.query.filter().first()
+    except:
+        return render_template('admin/bottom_info.html',
+                               is_succeed=is_succeed,
+                               item=None, msg='查询数据失败', form=form)
+
+    if request.method == 'POST' and form.validate_on_submit():
+        phone = request.form.get('phone')
+        email = request.form.get('email')
+        phone2 = request.form.get('phone2')
+
+        # 有数据则更新
+        if item:
+            item.phone = phone
+            item.email = email
+            item.phone2 = phone2
+            try:
+                db.session.commit()
+            except:
+                return render_template('admin/bottom_info.html',
+                                       is_succeed=is_succeed,
+                                       item=None, msg='失败', form=form)
+        else:
+            item = BottomInfoModel()
+            item.phone = phone
+            item.email = email
+            item.phone2 = phone2
+            try:
+                db.session.add(item)
+                db.session.commit()
+            except:
+                return render_template('admin/bottom_info.html',
+                                       is_succeed=is_succeed,
+                                       item=None, msg='失败', form=form)
+        return render_template('admin/bottom_info.html', is_succeed=1, item=item, form=form)
+    return render_template('admin/bottom_info.html', item=item, is_succeed=is_succeed, form=form)
+
+
 @admin_bp.route('/add_scenic_spot', methods=['GET', 'POST'])
 def add_scenic_spot():
     '''添加景点'''

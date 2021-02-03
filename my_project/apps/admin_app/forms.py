@@ -19,6 +19,13 @@ class ChangeIndexIntroductionForm(FlaskForm):
     opening_hours = StringField('opening_hours', validators=[Length(max=50, message='最多只能输入五十个字符')])
 
 
+class BottomInfoForm(FlaskForm):
+    '''网站底部信息'''
+    phone = StringField('phone', validators=[Length(max=30, message='最多只能输入三十个字符')])
+    email = StringField('email', validators=[Length(max=30, message='最多只能输入三十个字符')])
+    phone2 = StringField('phone2', validators=[Length(max=40, message='最多只能输入四十个字符')])
+
+
 class AddScenicSpotForm(FlaskForm):
     '''添加景点表单验证'''
     # 景点名称
