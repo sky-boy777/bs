@@ -27,7 +27,7 @@
     <div>
         {% if item %}
         <h2 class="center title">{{ item.title }}</h2>
-        <div class="h6 time">发布时间：{{ item.create_time }}</div>
+        <div class="h6 time">浏览量：{{ item.num }} &nbsp;&nbsp;&nbsp;&nbsp;发布时间：{{ item.create_time }}</div>
         <p>{{ item.content | safe }}</p>
         {% else %}
         <p>数据加载失败！</p>

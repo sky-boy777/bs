@@ -75,3 +75,5 @@ class InfoModel(BaseModel):
     title = db.Column(db.String(64), nullable=False)
     # 内容（富文本编辑器，图文）
     content = db.Column(mysql.MSMediumText, nullable=False)
+    # 浏览量
+    num = db.Column(db.Integer, nullable=False, default=0)

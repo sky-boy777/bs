@@ -71,6 +71,16 @@ def info_detail():
         except:
             return '数据加载失败'
         if item:
+            # 查询是否有缓存
+            if cache.get(info_id):
+                return render_template('main/info_detail.html', item=item)
+            # 设置缓存记录浏览标记，60秒
+            cache.set(info_id, 1, 60)
+            item.num += 1  # 浏览量加1
+            try:
+                db.session.commit()
+            except:
+                return 'a'
             return render_template('main/info_detail.html', item=item)
     return redirect('/')
 
