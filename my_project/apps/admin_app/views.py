@@ -535,7 +535,7 @@ def delete_info():
 def delete_scenic_spots():
     '''删除景点'''
     if request.method == 'POST':
-        # 获取需要删除的公告id
+        # 获取id
         sp_id = request.form.get('id')
         # 根据id查询，然后删除
         try:
@@ -548,6 +548,9 @@ def delete_scenic_spots():
                         db.session.delete(i)
                 db.session.delete(item)
                 db.session.commit()
+                # 删除完数据库里面的数据后，删除保存在本地的图片
+                for j in item_images:
+                    os.remove(settings.STATIC_DIR + j.image)
             else:
                 return '失败，资源不存在'
         except:
@@ -559,7 +562,7 @@ def delete_scenic_spots():
 def delete_scenic_spots_image():
     '''单独删除景点图集对应图片'''
     if request.method == 'POST':
-        # 获取需要删除的公告id
+        # 获取id
         sp_image_id = request.form.get('id')
         # 根据id查询，然后删除
         try:
@@ -567,6 +570,8 @@ def delete_scenic_spots_image():
             if item:
                 db.session.delete(item)
                 db.session.commit()
+                # 删除完数据库里面的数据后，删除保存在本地的图片
+                os.remove(settings.STATIC_DIR + item.image)
             else:
                 return '失败，资源不存在'
         except:
@@ -617,7 +622,7 @@ def del_user():
 def delete_dynamic():
     '''删除动态'''
     if request.method == 'POST':
-        # 获取需要删除的公告id
+        # 获取id
         d_id = request.form.get('id')
         # 根据id查询，然后删除
         try:
@@ -630,6 +635,9 @@ def delete_dynamic():
                         db.session.delete(i)
                 db.session.delete(item)
                 db.session.commit()
+                # 删除完数据库里面的数据后，删除保存在本地的图片
+                for j in item_images:
+                    os.remove(settings.STATIC_DIR + j.image)
             else:
                 return '失败，资源不存在'
         except:
@@ -641,7 +649,7 @@ def delete_dynamic():
 def delete_message():
     '''删除留言'''
     if request.method == 'POST':
-        # 获取需要删除的公告id
+        # 获取id
         message_id = request.form.get('id')
         # 根据id查询，然后删除
         try:

@@ -173,7 +173,7 @@ CREATE TABLE `scenic_spots` (
 
 LOCK TABLES `scenic_spots` WRITE;
 /*!40000 ALTER TABLE `scenic_spots` DISABLE KEYS */;
-INSERT INTO `scenic_spots` VALUES (9,'2021-01-14','乳泉亭','<p>&nbsp; &nbsp; &nbsp; &nbsp; 简介</p>','/images/scenic_spot/a0be0e3e-5d6d-4482-bf78-a7d7b7c912f5.jpg','泉水收费',' 04:00-19:00'),(10,'2021-01-14','九龙亭','<p>&nbsp; &nbsp; &nbsp; &nbsp;的房间里建安费两地分居扩大飞机卡拉附件客服经理的洒家分厘卡积分的房间里建安费两地分居扩大飞机卡拉附件客服经理的洒家分厘卡积分的房间里建安费两地分居扩大飞机卡拉附件客服经理的洒家分厘卡积分的房间里建安费两地分居扩大飞机卡拉附件客服经理的洒家分厘卡积分的房间里建安费两地分居扩大飞机卡拉附件客服经理的洒家分厘卡积分的房间里建安费两地分居扩大飞机卡拉附件客服经理的洒家分厘卡积分的房间里建安费两地分居扩大飞机卡拉附件客服经理的洒家分厘卡积分的房间里建安费两地分居扩大飞机卡拉附件客服经理的洒家分厘卡积分的房间里建安费两地分居扩大飞机卡拉附件客服经理的洒家分厘卡积分的房间</p>','/images/scenic_spot/23ee87e6-8ff1-4fb0-8aa8-4d9370dad748.jpg','免费',' 04:00-19:00'),(12,'2021-01-28','观音岩','<p>空间户籍科户籍科好空间户籍科户籍</p>','/images/scenic_spot/645e08d7-a748-4746-8a5f-8c71e48fff45.jpg','免费',' 04:00-19:00'),(17,'2021-02-05','龙华寺','<p>&nbsp; &nbsp; &nbsp; &nbsp; 桂平市西山龙华寺始建于宋朝，清康熙乾隆、同治年间曾三次重修，一九七四、八八年又两次重修，现为钢筋水泥结构。几经重修后，一九九○年重修开光。殿阁雄伟巍峨，香火甚盛，香客进香，参禅礼拜，佛殿生辉。龙华古寺，又名上寺，已传四十余代僧，二十世纪三十年代初为释巨赞、释觉光法师驻锡，现为广西佛教协会驻寺。古寺背靠姚翁岩飞阁，左旁灵溪，右临乳泉，下至碧云天。寺内塑四大金刚、十八罗汉，主殿为释迦牟尼佛祖像。&ldquo;大雄宝殿&rdquo;殿额为原国家佛教协会会长赵朴初所题，殿联为释觉光法师墨宝。殿前为钟鼓楼。后为千手观音殿，&ldquo;木鸟树音咸宣佛教僧宝，灵霞山色尽毗庐遮哪&rdquo;，这是释觉光法师给龙华寺的赠联。古寺重光，晨钟暮鼓，佛法弘扬。</p>','/images/scenic_spot/8112c3fe-1df7-4eb7-afb0-9caf42698637.jpg','免费','24小时开放'),(18,'2021-01-14','洗石庵','<p>&nbsp; &nbsp; &nbsp; &nbsp; 雕刻技法螺丝钉解放拉萨积分电路设计开飞机的沙拉飞机迪斯科飞机萨拉减肥的斯科拉飞机迪斯科浪费就</p><p>是的肌肤接收了附件是的离开科夫斯基拉开飞机</p><p>地方撒雷锋精神独立开发技术的开发时间。</p>','/images/scenic_spot/6573db3f-447a-4664-b56d-5a131e41e15d.jpg','免费',' 04:00-19:00');
+INSERT INTO `scenic_spots` VALUES (9,'2021-02-13','乳泉亭','<p>&nbsp; &nbsp; &nbsp; &nbsp; 简介</p>','/images/scenic_spot/48062f86-d9c1-4861-ac09-69dbfcaf7e35.jpg','泉水收费',' 04:00-19:00'),(10,'2021-02-13','九龙亭','<p>&nbsp; &nbsp; &nbsp; &nbsp;的房间里建安费两地分居扩大飞机卡拉附件客服经理的洒家分厘卡积分的房间里建安费两地分居扩大飞机卡拉附件客服经理的洒家分厘卡积分的房间里建安费两地分居扩大飞机卡拉附件客服经理的洒家分厘卡积分的房间里建安费两地分居扩大飞机卡拉附件客服经理的洒家分厘卡积分的房间里建安费两地分居扩大飞机卡拉附件客服经理的洒家分厘卡积分的房间里建安费两地分居扩大飞机卡拉附件客服经理的洒家分厘卡积分的房间里建安费两地分居扩大飞机卡拉附件客服经理的洒家分厘卡积分的房间里建安费两地分居扩大飞机卡拉附件客服经理的洒家分厘卡积分的房间里建安费两地分居扩大飞机卡拉附件客服经理的洒家分厘卡积分的房间</p>','/images/scenic_spot/510980d6-cca4-40e2-9866-cbab19691f52.jpg','免费',' 04:00-19:00'),(12,'2021-02-13','观音岩','<p>空间户籍科户籍科好空间户籍科户籍</p>','/images/scenic_spot/f2e0479f-8788-43bb-bc38-5de421ad4e4d.jpg','免费',' 04:00-19:00'),(18,'2021-02-13','洗石庵','<p>&nbsp; &nbsp; &nbsp; &nbsp; 雕刻技法螺丝钉解放拉萨积分电路设计开飞机的沙拉飞机迪斯科飞机萨拉减肥的斯科拉飞机迪斯科浪费就</p><p>是的肌肤接收了附件是的离开科夫斯基拉开飞机</p><p>地方撒雷锋精神独立开发技术的开发时间。</p>','/images/scenic_spot/df8c451e-9fa1-4845-ae74-7c0a5fa0519b.jpg','免费',' 04:00-19:00');
 /*!40000 ALTER TABLE `scenic_spots` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -192,7 +192,7 @@ CREATE TABLE `scenic_spots_images` (
   PRIMARY KEY (`id`),
   KEY `scenic_spots_id` (`scenic_spots_id`),
   CONSTRAINT `scenic_spots_images_ibfk_1` FOREIGN KEY (`scenic_spots_id`) REFERENCES `scenic_spots` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -201,7 +201,7 @@ CREATE TABLE `scenic_spots_images` (
 
 LOCK TABLES `scenic_spots_images` WRITE;
 /*!40000 ALTER TABLE `scenic_spots_images` DISABLE KEYS */;
-INSERT INTO `scenic_spots_images` VALUES (25,'2021-01-14','/images/scenic_spot_images/9_5fc13950-63c2-43b0-b644-3e22ee50df54.jpg',9),(27,'2021-01-14','/images/scenic_spot_images/18_30002980-6d4d-4a4b-8bd8-3e0622611adc.jpg',18),(29,'2021-02-05','/images/scenic_spot_images/17_d289a91e-1d0c-4130-8b81-998cd4de2142.jpg',17),(30,'2021-02-05','/images/scenic_spot_images/17_46c42bd6-ed04-480c-87a7-e4e42a69d0b4.jpg',17);
+INSERT INTO `scenic_spots_images` VALUES (31,'2021-02-13','/images/scenic_spot_images/18_689eeee1-77ce-4ce4-895f-55d5e84940e1.jpg',18),(33,'2021-02-13','/images/scenic_spot_images/12_ea551b67-bedf-49c3-bad3-875875ac0104.jpg',12),(34,'2021-02-13','/images/scenic_spot_images/12_d395ca6c-519b-4945-a840-b9e34746e8fe.jpg',12);
 /*!40000 ALTER TABLE `scenic_spots_images` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -252,7 +252,7 @@ CREATE TABLE `user_dynamic` (
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `user_dynamic_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=64 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -261,7 +261,7 @@ CREATE TABLE `user_dynamic` (
 
 LOCK TABLES `user_dynamic` WRITE;
 /*!40000 ALTER TABLE `user_dynamic` DISABLE KEYS */;
-INSERT INTO `user_dynamic` VALUES (62,'2021-01-15','嘎嘎嘎',4),(63,'2021-01-15','333',11);
+INSERT INTO `user_dynamic` VALUES (62,'2021-01-15','嘎嘎嘎',4);
 /*!40000 ALTER TABLE `user_dynamic` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -280,7 +280,7 @@ CREATE TABLE `user_dynamic_image` (
   PRIMARY KEY (`id`),
   KEY `dynamic_id` (`dynamic_id`),
   CONSTRAINT `user_dynamic_image_ibfk_1` FOREIGN KEY (`dynamic_id`) REFERENCES `user_dynamic` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -289,7 +289,6 @@ CREATE TABLE `user_dynamic_image` (
 
 LOCK TABLES `user_dynamic_image` WRITE;
 /*!40000 ALTER TABLE `user_dynamic_image` DISABLE KEYS */;
-INSERT INTO `user_dynamic_image` VALUES (22,'2021-01-15','/images/upload_user_dynamic_image/11_15995981-a02c-4759-b374-bed92af57c33.jpg',63);
 /*!40000 ALTER TABLE `user_dynamic_image` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -302,4 +301,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-02-09 14:21:28
+-- Dump completed on 2021-02-13 12:56:36
