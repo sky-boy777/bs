@@ -43,7 +43,7 @@
             {% for image in sp.images %}
             <li>
                 {{ loop.index }}.
-                <img src="{{ url_for('static', filename=image.image) }}" alt="图片" style="width:100px;">
+                <img class="img_list" src="{{ url_for('static', filename=image.image) }}" alt="图片">
                 <a href="javascript:;"><button class="btn btn-danger btn-xs sp_image_id" data-sp_image_id="{{ image.id }}">删除</button></a>
                 <span class="float-r">2020-2-2</span>
             </li>
@@ -98,7 +98,7 @@
                     <p>{{ loop.index }}.{{ d.content }}</p>
                     {% if d.images %}
                         {% for image in d.images %}
-                        <img src="{{ url_for('static', filename=image.image) }}" alt="图片" style="width: 100px;">
+                        <img class="img_list" src="{{ url_for('static', filename=image.image) }}" alt="图片">
                         {% endfor %}
                         <br>
                     {% endif %}
@@ -142,7 +142,7 @@
             <p>{{ d.content }}</p>
             {% if d.images %}
                 {% for image in d.images %}
-                <img src="{{ url_for('static', filename=image.image) }}" alt="图片" style="width: 100px;">
+                <img class="img_list" src="{{ url_for('static', filename=image.image) }}">
                 {% endfor %}
                 <br>
             {% endif %}

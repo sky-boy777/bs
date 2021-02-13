@@ -4,13 +4,14 @@
 {% block header %} {# 预留头部位置 #}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/admin_index.css') }}" type="text/css">
 <style>
-    .scenic_spot_image { width: 50px; }
+    .scenic_spot_image { width: 109px; height: 72px; }
     .user_icon{
         width: 30px;
         height: 30px;
         border-radius: 50%;
         }
     .ml { margin-left: 10px; }
+    .img_list { width:170px; height: 113px; }
 
     {% block style %}  {# 样式预留位置 #}
     {% endblock style %}
@@ -115,9 +116,9 @@
                     {% for image in sp.images %}
                     <li>
                         {{ loop.index }}.
-                        <img src="{{ url_for('static', filename=image.image) }}" alt="图片" style="width:100px;">
+                        <img class="img_list" src="{{ url_for('static', filename=image.image) }}" alt="图片">
                         <a href="javascript:;"><button class="btn btn-danger btn-xs sp_image_id" data-sp_image_id="{{ image.id }}">删除</button></a>
-                        <span class="float-r">2020-2-2</span>
+                        <span class="float-r">{{ image.create_time }}</span>
                     </li>
                     {% endfor %}
                     {% endif %}
@@ -171,7 +172,7 @@
                             <p>{{ loop.index }}.{{ d.content }}</p>
                             {% if d.images %}
                                 {% for image in d.images %}
-                                <img src="{{ url_for('static', filename=image.image) }}" alt="图片" style="width: 100px;">
+                                <img class="img_list" src="{{ url_for('static', filename=image.image) }}" alt="图片">
                                 {% endfor %}
                                 <br>
                             {% endif %}
@@ -217,7 +218,7 @@
                     <p>{{ d.content }}</p>
                     {% if d.images %}
                         {% for image in d.images %}
-                        <img src="{{ url_for('static', filename=image.image) }}" alt="图片" style="width: 100px;">
+                        <img class="img_list" src="{{ url_for('static', filename=image.image) }}" alt="图片">
                         {% endfor %}
                         <br>
                     {% endif %}
