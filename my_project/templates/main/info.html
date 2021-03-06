@@ -1,46 +1,52 @@
-{% extends 'base.html' %}  {# 加载父模板 #}
+{% extends 'base.html' %} {# 加载父模板 #}
 
 
-{% block title %}公告{% endblock title %}  {# title #}
+{% block title %}公告{% endblock title %} {# title #}
 
-{% block header %}  {# 预留头部位置 #}
+{% block header %} {# 预留头部位置 #}
 <style>
-    .center { text-align: center; }
-    .b_b { border-bottom: 1px solid #09f; }
+    .center {
+        text-align: center;
+    }
+    .b_b { color: black; }
+    .b_b:hover {
+        text-decoration: underline !important;
+    }
 </style>
 {% endblock header %}
 
-{% block search %}{% endblock search %}  {# 搜索框 #}
+{% block search %}{% endblock search %} {# 搜索框 #}
 
 {% block content %}
 <div class="container">
     {% if info_list %}
+
+    <div class="row">
         {% for info in info_list.items %}
-            <div class="row">
-                <div class="h5">
-                    <a class="b_b" href="{{ url_for('main.info_detail', info_id=info.id) }}">{{ loop.index }}.{{ info.title }} <span class="fr">{{ info.create_time }}</span></a>
-                </div>
-            </div>
+        <h4 class="text-muted">{{ loop.index }}.<a class="b_b" href="{{ url_for('main.info_detail', info_id=info.id) }}">{{ info.title
+                }}</a> <span class="fr">{{ info.create_time }}</span></h4>
         {% endfor %}
+    </div>
+
 </div>
 
 {# 分页开始 #}
 <nav class="center" aria-label="Page navigation">
-  <ul class="pagination">
-     {% if info_list.has_prev %}  {# 上一页 #}
-      <li><a href="{{ url_for('main.info') }}?page={{ info_list.prev_num }}">上一页</a></li>
-      {% else %}
-      <li><a href="javascript:;">上一页</a></li>
-     {% endif %}
+    <ul class="pagination">
+        {% if info_list.has_prev %} {# 上一页 #}
+        <li><a href="{{ url_for('main.info') }}?page={{ info_list.prev_num }}">上一页</a></li>
+        {% else %}
+        <li><a href="javascript:;">上一页</a></li>
+        {% endif %}
 
-      <li><a href="javascript:;">{{ info_list.page }}/{{ info_list.pages }}</a></li>  {# 当前页 #}
+        <li><a href="javascript:;">{{ info_list.page }}/{{ info_list.pages }}</a></li> {# 当前页 #}
 
-      {% if info_list.has_next %}  {# 下一页 #}
-      <li><a href="{{ url_for('main.info') }}?page={{ info_list.next_num }}">下一页</a></li>
-      {% else %}
-      <li><a href="javascript:;">下一页</a></li>
-      {% endif %}
-  </ul>
+        {% if info_list.has_next %} {# 下一页 #}
+        <li><a href="{{ url_for('main.info') }}?page={{ info_list.next_num }}">下一页</a></li>
+        {% else %}
+        <li><a href="javascript:;">下一页</a></li>
+        {% endif %}
+    </ul>
 </nav>
 {# 分页结束 #}
 

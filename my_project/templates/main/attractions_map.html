@@ -6,7 +6,7 @@
 {% block header %}  {# 预留头部位置 #}
 <style>
     body { background-color: white;}
-    .container { background-color: white; padding: 20px; }
+    .container { background-color: white; padding: 0 20px; }
 </style>
 {% endblock header %}
 
@@ -15,15 +15,16 @@
 {% block content %}
 <div class="container">
     <div class="row">
+        <h1>景点位置</h1>
+        <p class="glyphicon glyphicon-map-marker">广西壮族自治区贵港市桂平市西山路3号</p>
         <div>
-            <img src="/static/images/map.jpg" alt="导览图" style="width: 100%;">
+            <iframe src="/static/my_map.html" width="95%" frameborder="0" height="565" scrolling="no"></iframe>
         </div>
     </div>
     <div class="row">
-        <h1>景点位置</h1>
-        <p>广西壮族自治区贵港市桂平市西山路3号</p>
+        <div class="h3">景区导览图</div>
         <div>
-            <iframe src="/static/my_map.html" width="100%" frameborder="0" height="565" scrolling="no"></iframe>
+            <img src="/static/images/map.jpg" alt="导览图" style="width: 100%;">
         </div>
     </div>
 </div>

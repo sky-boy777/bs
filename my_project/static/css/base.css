@@ -26,17 +26,22 @@ body { background-color: rgb(228, 230, 231);}
     color: #ffffff;
   }
   .navbar-default .navbar-nav>li>a{ color: #ffffff; }
-  .navbar-default .navbar-brand { color: #ffffff; }
-  .navbar-default .navbar-nav>li:hover{
-      background-color: rgb(69, 176, 248);
-    }
+  .navbar-default .navbar-brand { color: #cae9f7; }
+  .navbar-brand:hover { color: #cae9f7 !important; }
+  .navbar-default li:hover{ background-color: rgb(69, 176, 248); }
 .navbar-default .navbar-nav>li>a:hover{ color: #ffffff; }
 
 /* 移动端导航栏切换按钮 */
-.navbar-toggle{ color: rgb(36, 35, 35);}
+.navbar-toggle { color: rgb(253, 251, 251);}
+.navbar-toggle:hover { color: black; }
 
 /* 未登录 */
-.login>a{ display: inline !important; line-height: 50px; }
+.login>a{ 
+    display: inline !important; 
+    line-height: 50px;
+    color: white; 
+}
+.login>a:hover { color: black; }
 
 /* 已登录：用户头像下拉菜单 */
 .ul_down{

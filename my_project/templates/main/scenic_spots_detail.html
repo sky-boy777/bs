@@ -32,8 +32,8 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12 col-sm-12 col-xs-12">
-            <h2 class="center title">{{ item.name }}</h2>
-            <div class="time">最近更新：{{ item.create_time }}</div>
+            <h3 class="center title">{{ item.name }}</h3>
+            <div class="time text-muted">最近更新：{{ item.create_time }}</div>
             <br>
             <img class="img" src="/static{{ item.image }}" alt="景点封面">
             <p>{{ item.content | safe }}</p>
