@@ -511,6 +511,47 @@ def search_page():
     return redirect(url_for('admin.admin_index'))
 
 
+@admin_bp.route('/add_banner', methods=['GET', 'POST'])
+def add_banner():
+    '''首页轮播图管理'''
+    form = BannerForm()
+    # 查询所有图片，渲染到页面
+    image_list = None
+    try:
+        image_list = BannerModel.query.order_by(-BannerModel.id).all()
+    except:
+        return render_template('admin/add_banner.html', form=form, error='数据加载失败')
+
+    # 上传图片验证
+    if request.method == 'POST' and form.validate_on_submit():
+        image = form.image.data
+
+        # 读取图片，限制大小：15M
+        size = image.read()
+        if len(size) > 15 * 1024 * 1024:
+            return render_template('admin/add_banner.html', form=form, msg='图片大小限制15M',
+                                   image_list=image_list)
+
+        # 将二进制图片保存到本地
+        image_filename = str(uuid.uuid4()) + '.jpg'  # 文件名
+        image_path = os.path.join(settings.UPLOAD_BANNER_DIR, image_filename)
+        with open(image_path, 'wb') as f:
+            f.write(size)
+
+        # 图片保存到数据库
+        item = BannerModel()
+        item.image = '/images/banner/' + image_filename
+        try:
+            db.session.add(item)
+            db.session.commit()
+            return redirect(url_for('admin.add_banner'))
+        except:
+            return render_template('admin/add_banner.html', form=form, msg='上传失败',
+                                   image_list=image_list)
+
+    return render_template('admin/add_banner.html', form=form, image_list=image_list)
+
+
 @admin_bp.route('/delete_info', methods=['GET', 'POST'])
 def delete_info():
     '''删除公告信息'''
@@ -656,6 +697,27 @@ def delete_message():
             if item:
                 db.session.delete(item)
                 db.session.commit()
+            else:
+                return '失败，资源不存在'
+        except:
+            return '失败'
+        return 'true'
+
+
+@admin_bp.route('/delete_banner_img', methods=['GET', 'POST'])
+def delete_banner_img():
+    '''删除轮播图'''
+    if request.method == 'POST':
+        # 获取id
+        img_id = request.form.get('id')
+        # 根据id查询，然后删除
+        try:
+            item = BannerModel.query.get(img_id)
+            if item:
+                db.session.delete(item)
+                db.session.commit()
+                # 删除本地的图片
+                os.remove(settings.STATIC_DIR + item.image)
             else:
                 return '失败，资源不存在'
         except:

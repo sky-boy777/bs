@@ -77,3 +77,11 @@ class InfoModel(BaseModel):
     content = db.Column(mysql.MSMediumText, nullable=False)
     # 浏览量
     num = db.Column(db.Integer, nullable=False, default=0)
+
+
+class BannerModel(BaseModel):
+    '''首页轮播图模型'''
+    __tablename__ = 'banner'
+
+    # 图片路径
+    image = db.Column(db.String(255))

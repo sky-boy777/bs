@@ -23,9 +23,15 @@ def index():
         scenic_spots_list = ScenicSpotsModel.query.filter().all()
     except:
         return render_template('main/index.html')
+    # 轮播图
+    try:
+        image_list = BannerModel.query.filter().all()
+    except:
+        return render_template('main/index.html')
     return render_template('main/index.html',
                            index_brief_introduction=index_brief_introduction,
                            scenic_spots_list=scenic_spots_list,
+                           image_list=image_list
                            )
 
 

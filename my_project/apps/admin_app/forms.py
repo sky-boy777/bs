@@ -62,3 +62,12 @@ class AddInfoForm(FlaskForm):
                                              Length(max=40, message='最多只能输入四十个字符')])
     # 内容
     content = StringField('content', validators=[DataRequired(message='请输入内容')])
+
+
+class BannerForm(FlaskForm):
+    '''轮播图验证'''
+    # 图片验证
+    image = FileField('image', validators=[DataRequired(message='请上传图片'),
+                                           FileAllowed(['png', 'jpg', 'gif', 'jpeg'],
+                                             message='只支持png,jpg,gif,jpeg格式的图片')
+                                           ])

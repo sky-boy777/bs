@@ -30,6 +30,8 @@ SCENIC_SPOT_DIR = os.path.join(BASE_DIR, 'static/images/scenic_spot').replace('\
 SCENIC_SPOT_IMAGES_DIR = os.path.join(BASE_DIR, 'static/images/scenic_spot_images').replace('\\', '/')
 # 头像图片文件路径
 UPLOAD_ICON_DIR = os.path.join(BASE_DIR, 'static/images/icon').replace('\\', '/')
+# 轮播图路径
+UPLOAD_BANNER_DIR = os.path.join(BASE_DIR, 'static/images/banner').replace('\\', '/')
 # 用户发布动态图片上传路径
 UPLOAD_USER_DYNAMIC_IMAGE = os.path.join(BASE_DIR, 'static/images/upload_user_dynamic_image/').replace('\\', '/')
 
