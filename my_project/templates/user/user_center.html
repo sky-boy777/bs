@@ -10,6 +10,12 @@
                 }
 
     .img { width:170px; height: 113px; }
+
+    .change_pwd {
+        border-radius: 0px;
+        text-align: center;
+        }
+
 </style>
 {% endblock header %}
 {% block search %}{% endblock search %} {# 搜索框 #}
@@ -21,7 +27,7 @@
             <div class="list-group">
                 <div class="img"><img class="icon_image" src="" alt="头像"></div>
                 <div class="uname h3">{{ g.user.username }}</div>
-                <a href="{{ url_for('user.change_password') }}" class="list-group-item h4">修改密码</a>
+                <a href="{{ url_for('user.change_password') }}" class="list-group-item h5 change_pwd">修改密码</a>
             </div>
         </div>
     </div>

@@ -50,6 +50,22 @@ def scenic_spots_detail():
     return redirect('/')
 
 
+@main_bp.route('/scenic_spots')
+def scenic_spots():
+    '''景点展示页面'''
+    # 页码
+    try:
+        p = int(request.args.get('page', 1))  # 页码要为整形
+    except:
+        p = 1
+    # 查询数据库展示数据，分页
+    try:
+        scenic_spots_list = ScenicSpotsModel.query.order_by(-ScenicSpotsModel.id).paginate(page=p, per_page=20)
+        return render_template('main/scenic_spots.html', scenic_spots_list=scenic_spots_list)
+    except:
+        return render_template('main/scenic_spots.html')
+
+
 @main_bp.route('/info', endpoint='info')
 def info():
     '''公告信息列表页'''
