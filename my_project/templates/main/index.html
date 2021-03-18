@@ -9,7 +9,12 @@
 <link rel="stylesheet" href="/static/swiper6.4.1/swiper-bundle.min.css">
 <style>
     /* 轮播图宽度 */
-    .swiper-container { width: 100%;}
+    .swiper-container { width: 96%; height: 500px;}
+
+    /* 媒体查询：当窗口宽小于800时修改轮播图宽度 */
+    @media screen  and (max-width: 800px){
+        .swiper-container { height: 100%; }
+    }
 
     .swiper-wrapper img {
         width: 100%;
