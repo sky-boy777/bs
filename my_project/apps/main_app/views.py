@@ -169,7 +169,7 @@ def user_dynamic():
                 return render_template('main/user_dynamic.html', form=form, item=item, image_error='只支持png,jpg,gif,jpeg格式的图片')
 
             # 图片限制大小：10M
-            size = image.read()
+            size = image.read(10*1024*1024+1)  # 最大读取10M+1字节，防止读取全部
             if len(size) > 10*1024*1024:
                 return render_template('main/user_dynamic.html', form=form, item=item, msg='大小不能超过10M')
 

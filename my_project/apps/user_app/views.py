@@ -301,7 +301,7 @@ def user_center():
             1GB = 1024MB
             1TB = 1024GB
             '''
-            size = icon.read()  # 读出二进制流文件
+            size = icon.read(3*1024*1024+1)  # 最大读取3M+1字节，防止全部读取
             if len(size) > 3*1024*1024:  # 限制文件大小：3M
                 return render_template('user/user_center.html', form=form, msg='大小不能超过3M')
             # 图片保存到本地，二进制写入

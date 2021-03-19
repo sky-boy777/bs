@@ -185,7 +185,7 @@ def add_scenic_spot():
             # 判断是否上传有封面图
             if image:
                 # 判断上传封面图片大小，限制大小：5M
-                size = image.read()  # 读出二进制流
+                size = image.read(5*1024*1024+1)  # 限制最大读取字节大小，防止读取全部
                 if len(size) > 5 * 1024 * 1024:
                     return render_template('admin/add_scenic_spot.html', form=form, image_msg='大小不能超过5M',
                                            is_succeed=is_succeed, item=item)
@@ -216,7 +216,7 @@ def add_scenic_spot():
                                                images_msg='只支持png,jpg,gif,jpeg格式的图片',
                                                is_succeed=is_succeed, item=item)
                     # 图片限制大小：15M
-                    size = img.read()
+                    size = img.read(15 * 1024 * 1024+1)
                     if len(size) > 15 * 1024 * 1024:
                         return render_template('admin/add_scenic_spot.html', form=form,
                                                images_too_big='最大只支持15M的图片',
@@ -264,7 +264,7 @@ def add_scenic_spot():
             return redirect(url_for('admin.admin_index'))
 
         # 判断上传封面图片大小，限制大小：5M
-        size = image.read()  # 读出二进制流
+        size = image.read(5*1024*1024+1)  # 限制最大读取字节大小，防止读取全部
         if len(size) > 5 * 1024 * 1024:
             return render_template('admin/add_scenic_spot.html', form=form, image_msg='大小不能超过5M', is_succeed=is_succeed)
 
@@ -297,7 +297,7 @@ def add_scenic_spot():
                                                    is_succeed=is_succeed
                                                    )
                         # 图片限制大小：15M
-                        size = img.read()
+                        size = img.read(15 * 1024 * 1024 + 1)
                         if len(size) > 15 * 1024 * 1024:
                             return render_template('admin/add_scenic_spot.html', form=form,
                                                    images_too_big='最大只支持15M的图片',
@@ -352,7 +352,7 @@ def add_scenic_spot():
                                                is_succeed=is_succeed
                                                )
                     # 图片限制大小：15M
-                    size = img.read()
+                    size = img.read(15 * 1024 * 1024 + 1)
                     if len(size) > 15 * 1024 * 1024:
                         return render_template('admin/add_scenic_spot.html', form=form,
                                                images_too_big='最大只支持15M的图片',
@@ -527,7 +527,7 @@ def add_banner():
         image = form.image.data
 
         # 读取图片，限制大小：15M
-        size = image.read()
+        size = image.read(15 * 1024 * 1024 + 1)
         if len(size) > 15 * 1024 * 1024:
             return render_template('admin/add_banner.html', form=form, msg='图片大小限制15M',
                                    image_list=image_list)

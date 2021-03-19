@@ -49,7 +49,7 @@
             <textarea name="content" rows="2"
                 placeholder="{% if g.user %}输入内容(500个字符){% else %}登录后发表{% endif %}"></textarea>
             <div class="h6">上传图片(最多上传五张，每张大小限制10M)</div>
-            <input type="file" name="images" multiple> {# 上传多个文件用multiple #}
+            <input type="file" name="images" multiple="multiple"> {# 上传多个文件用multiple #}
             <div class="red">{{ form.images.errors.0 }}{{ image_error }}{{ image_too_many_error }}</div>
         </div>
         <p></p>
