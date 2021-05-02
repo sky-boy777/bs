@@ -30,11 +30,15 @@ login_not_path = ['/user/login', '/user/register']
 @user_bp.before_app_request
 def my_before_request():
     '''用户权限验证'''
-    # 查询网站底部信息
-    try:
-        g.bottom_info = BottomInfoModel.query.filter().first()
-    except:
-        g.bottom_info = None
+    # 查询网站底部信息，先从缓存中取，无则在数据库中查找，并更新缓存
+    g.bottom_info = cache.get('bottom_info')
+    if not g.bottom_info:
+        try:
+            bottom_info = BottomInfoModel.query.filter().first()
+            g.bottom_info = bottom_info
+            cache.set('bottom_info', bottom_info, timeout=60*60*24)  # 更新缓存，1天
+        except:
+            g.bottom_info = None
     # 尝试获取用户id
     uid = session.get('uid')
     try:
@@ -42,13 +46,16 @@ def my_before_request():
         g.user = user  # 使用g对象存储用户，这样哪个页面都能用了
     except:
         # 查询数据库出错
-        g.user = None
+        g.user = user = None
+
     # 未登录，不能访问
     if request.path in required_login_path and not user:
         return redirect(url_for('user.login'))
+
     # 已登录，不能访问
     if request.path in login_not_path and user:
         return redirect(url_for('main.index'))
+
     # 不是管理员不能访问
     if re.search(r'^/admin.*', request.path):
         if user and user.is_admin != 1:  # 已登录且是普通用户

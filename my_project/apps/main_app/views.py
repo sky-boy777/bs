@@ -6,6 +6,7 @@ import settings
 from apps.user_app.forms import UserAddDynamicForm, MessageBoradForm
 from apps.user_app.models import *
 from exts import cache
+from math import ceil
 
 # 前台展示蓝图
 main_bp = Blueprint('main', __name__)  # 前台展示蓝图，需要在create_app下注册
@@ -13,21 +14,34 @@ main_bp = Blueprint('main', __name__)  # 前台展示蓝图，需要在create_ap
 @main_bp.route('/', endpoint='index')
 def index():
     '''首页'''
+    # 先从缓存中获取数据，没有则到数据库查找，并更新缓存
+    index_brief_introduction = cache.get('index_brief_introduction')
+    scenic_spots_list = cache.get('scenic_spots_list')
+    image_list = cache.get('image_list')
+
     # 查询首页简介数据
-    try:
-        index_brief_introduction = IndexBriefIntroductionModel.query.filter().first()
-    except:
-        return render_template('main/index.html')
+    if not index_brief_introduction:
+        try:
+            index_brief_introduction = IndexBriefIntroductionModel.query.filter().first()
+            cache.set('index_brief_introduction', index_brief_introduction, timeout=60*60)  # 1小时
+        except:
+            index_brief_introduction = None
+
     # 查询景点数据
-    try:
-        scenic_spots_list = ScenicSpotsModel.query.filter().all()
-    except:
-        return render_template('main/index.html')
+    if not scenic_spots_list:
+        try:
+            scenic_spots_list = ScenicSpotsModel.query.filter().all()
+            cache.set('scenic_spots_list', scenic_spots_list, timeout=1800)  # 30分钟
+        except:
+            scenic_spots_list = None
+
     # 轮播图
-    try:
-        image_list = BannerModel.query.filter().all()
-    except:
-        return render_template('main/index.html')
+    if not image_list:
+        try:
+            image_list = BannerModel.query.filter().all()
+            cache.set('image_list', image_list, timeout=60*60*24*7)  # 7天
+        except:
+            image_list = None
     return render_template('main/index.html',
                            index_brief_introduction=index_brief_introduction,
                            scenic_spots_list=scenic_spots_list,
@@ -52,18 +66,34 @@ def scenic_spots_detail():
 
 @main_bp.route('/scenic_spots')
 def scenic_spots():
-    '''景点展示页面'''
+    '''景点列表页'''
     # 页码
     try:
         p = int(request.args.get('page', 1))  # 页码要为整形
     except:
         p = 1
-    # 查询数据库展示数据，分页
+
+    # 每页条数
+    per_page = 10
+
+    count = ScenicSpotsModel.query.count()
+    # 总页数，上一页，下一页，还有景点列表
+    pages = ceil(count/per_page)
+    if not 0 < p <= pages:
+        p = 1
+    prev_num = p-1
+    next_num = p+1
     try:
-        scenic_spots_list = ScenicSpotsModel.query.order_by(-ScenicSpotsModel.id).paginate(page=p, per_page=20)
-        return render_template('main/scenic_spots.html', scenic_spots_list=scenic_spots_list)
+        scenic_spots_list = ScenicSpotsModel.query.offset((p-1)*per_page).limit(per_page)
     except:
         return render_template('main/scenic_spots.html')
+    return render_template('main/scenic_spots.html',
+                           scenic_spots_list=scenic_spots_list,
+                           pages=pages,
+                           prev_num=prev_num,
+                           next_num=next_num,
+                           page=p
+                           )
 
 
 @main_bp.route('/info', endpoint='info')
@@ -76,7 +106,7 @@ def info():
         p = 1
     # 查询数据库展示数据，分页
     try:
-        info_list = InfoModel.query.order_by(-InfoModel.id).paginate(page=p, per_page=20)
+        info_list = InfoModel.query.order_by(-InfoModel.id).paginate(page=p, per_page=15)
         return render_template('main/info.html', info_list=info_list)
     except:
         return render_template('main/info.html')
@@ -124,7 +154,7 @@ def user_dynamic():
         p = 1
     # 查询数据，分页，按id降序
     try:
-        item = UserDynamicModel.query.order_by(-UserDynamicModel.id).paginate(page=p, per_page=10)
+        item = UserDynamicModel.query.order_by(-UserDynamicModel.id).paginate(page=p, per_page=15)
     except:
         return render_template('main/user_dynamic.html', form=form)
 
@@ -211,7 +241,7 @@ def message_board():
         p = 1
     # 查询数据，分页，按id降序
     try:
-        message_list = MessageBoardModel.query.order_by(-MessageBoardModel.id).paginate(page=p, per_page=10)
+        message_list = MessageBoardModel.query.order_by(-MessageBoardModel.id).paginate(page=p, per_page=20)
     except:
         return render_template('main/message_board.html', form=form)
 

@@ -14,38 +14,32 @@ admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 @admin_bp.route('/admin_index')
 def admin_index():
     '''后台管理首页'''
-    # 初始化
-    info_list = None
-    scenic_spot_list = None
-    user_list = None
-    dynamic_list = None
-    message_board_list = None
 
     # 公告列表
     try:
         info_list = InfoModel.query.order_by(-InfoModel.id).all()
     except:
-        pass
+        info_list = None
     # 景点列表
     try:
         scenic_spot_list = ScenicSpotsModel.query.order_by(-ScenicSpotsModel.id).all()
     except:
-        pass
+        scenic_spot_list = None
     # 用户列表
     try:
         user_list = UserModel.query.order_by(-UserModel.id).all()
     except:
-        pass
+        user_list = None
     # 动态列表
     try:
         dynamic_list = UserDynamicModel.query.order_by(-UserDynamicModel.id).all()
     except:
-        pass
+        dynamic_list = None
     # 留言板列表
     try:
         message_board_list = MessageBoardModel.query.order_by(-MessageBoardModel.id).all()
     except:
-        pass
+        message_board_list = None
     return render_template('admin/admin_index.html',
                            info_list=info_list,
                            scenic_spot_list=scenic_spot_list,
@@ -58,6 +52,7 @@ def admin_index():
 @admin_bp.route('/change_index_introduction', methods=['GET', 'POST'])
 def change_index_introduction():
     '''修改首页简介'''
+    cache.delete('index_brief_introduction')  # 删除缓存
     form = ChangeIndexIntroductionForm()
     is_succeed = 0  # 标志:成功为1，否则为0
 
@@ -113,6 +108,7 @@ def change_index_introduction():
 @admin_bp.route('/bottom_info', methods=['GET', 'POST'])
 def bottom_info():
     '''修改网站底部信息'''
+    cache.delete('bottom_info')  # 删除缓存
     form = BottomInfoForm()
     is_succeed = 0  # 标志:成功为1，否则为0
     try:
@@ -158,6 +154,7 @@ def bottom_info():
 @admin_bp.route('/add_scenic_spot', methods=['GET', 'POST'])
 def add_scenic_spot():
     '''添加景点'''
+    cache.delete('scenic_spots_list')  # 删除缓存
     form = AddScenicSpotForm()
     is_succeed = 0  # 标志:添加成功为1，否则为0
 
@@ -514,6 +511,7 @@ def search_page():
 @admin_bp.route('/add_banner', methods=['GET', 'POST'])
 def add_banner():
     '''首页轮播图管理'''
+    cache.delete('image_list')  # 删除缓存
     form = BannerForm()
     # 查询所有图片，渲染到页面
     image_list = None
@@ -595,6 +593,7 @@ def delete_scenic_spots():
                 return '失败，资源不存在'
         except:
             return '失败'
+        cache.delete('scenic_spots_list')  # 删除缓存
         return 'true'
 
 
@@ -616,6 +615,7 @@ def delete_scenic_spots_image():
                 return '失败，资源不存在'
         except:
             return '失败'
+        cache.delete('scenic_spots_list')  # 删除缓存
         return 'true'
 
 
@@ -722,5 +722,6 @@ def delete_banner_img():
                 return '失败，资源不存在'
         except:
             return '失败'
+        cache.delete('image_list')  # 删除缓存
         return 'true'
 

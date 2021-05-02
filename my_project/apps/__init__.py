@@ -17,7 +17,7 @@ def create_app():
     db.init_app(app)  # 初始化数据库
     csrf.init_app(app)  # 初始化全局csrf
     mail.init_app(app)  # 初始化发送邮件类
-    cache.init_app(app, config={'CACHE_TYPE': 'simple'})  # 初始化缓存，简单缓存
+    cache.init_app(app, config=settings.CACHE_DICT)  # 初始化缓存
 
     # 注册蓝图
     app.register_blueprint(main_bp)  # 前台展示蓝图

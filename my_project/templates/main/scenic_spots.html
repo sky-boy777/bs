@@ -31,7 +31,7 @@
 {% block content %}
 <div class="container">
     {% if scenic_spots_list %}
-    {% for s in scenic_spots_list.items %}  {# 景点列表 #}
+    {% for s in scenic_spots_list %}  {# 景点列表 #}
     <a href="{{ url_for('main.scenic_spots_detail', sid=s.id) }}" class="scenic_spots">
         <div class="row s_row">
             <div class="col-md-3 col-sm-4 col-xs-6">
@@ -51,18 +51,23 @@
 {# 分页开始 #}
 <nav class="center" aria-label="Page navigation">
     <ul class="pagination">
-        {% if scenic_spots_list.has_prev %} {# 上一页 #}
-        <li><a href="{{ url_for('main.scenic_spots') }}?page={{ scenic_spots_list.prev_num }}">上一页</a></li>
+
+        {% if page != 1 %}
+        <li><a href="{{ url_for('main.scenic_spots') }}?page=1">第一页</a></li>
+        <li><a href="{{ url_for('main.scenic_spots') }}?page={{ prev_num }}">上一页</a></li>
         {% else %}
+        <li><a href="javascript:;">第一页</a></li>
         <li><a href="javascript:;">上一页</a></li>
         {% endif %}
 
-        <li><a href="javascript:;">{{ scenic_spots_list.page }}/{{ scenic_spots_list.pages }}</a></li> {# 当前页 #}
+        <li><a href="javascript:;">{{ page }}/{{ pages }}</a></li> {# 当前页 #}
 
-        {% if scenic_spots_list.has_next %} {# 下一页 #}
-        <li><a href="{{ url_for('main.scenic_spots') }}?page={{ scenic_spots_list.next_num }}">下一页</a></li>
+        {% if page != pages %}
+        <li><a href="{{ url_for('main.scenic_spots') }}?page={{ next_num }}">下一页</a></li>
+        <li><a href="{{ url_for('main.scenic_spots') }}?page={{ pages }}">尾页</a></li>
         {% else %}
-        <li><a href="javascript:;">下一页</a></li>
+         <li><a href="javascript:;">下一页</a></li>
+        <li><a href="javascript:;">尾页</a></li>
         {% endif %}
     </ul>
 </nav>

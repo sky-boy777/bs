@@ -9,6 +9,13 @@ ENV = 'development'  # 开发环境，上线部署使用生产环境：productio
 #                          数据库+驱动       用户  密码  主机      端口号 数据库名
 SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:mysql@127.0.0.1/my_project'
 
+# 缓存配置
+CACHE_DICT = {
+    'CACHE_TYPE': 'redis',
+    'CACHE_REDIS_URL': 'redis://@localhost:6379/1'
+}
+
+
 SECRET_KEY = 'kdfuiefjk434348952fdhfueybdfhue-s&fkjksjfkdsf'
 
 # 主机地址（发邮件需要用到），部署时改成服务器的地址

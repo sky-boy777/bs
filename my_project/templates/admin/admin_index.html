@@ -11,10 +11,11 @@
         border-radius: 50%;
         }
     .ml { margin-left: 10px; }
-    .img_list { width:170px; height: 113px; }    
+    .img_list { width:170px; height: 113px; }
+
+    {% block style %}  {# 样式预留位置 #}
+    {% endblock style %}
 </style>
-{% block style %}  {# 样式预留位置 #}
-{% endblock style %}
 
 {% endblock header %}
 
@@ -88,7 +89,7 @@
                     &nbsp;&nbsp;&nbsp;&nbsp;
                     <a href="javascript:;"><button class="btn btn-danger btn-xs info_id" data-info_id="{{ info.id }}">删除</button></a>
                     <a href="{{ url_for('admin.add_info', info_id=info.id) }}"><button class="btn btn-info btn-xs">编辑</button></a>
-                    <a href="{{ url_for('main.info_detail', info_id=info.id) }}"><button class="btn btn-success btn-xs">查看</button></a>
+                    <a href="{{ url_for('main.info_detail', info_id=info.id) }}" target="_blank"><button class="btn btn-success btn-xs">查看</button></a>
                     <span class="float-r">{{ info.create_time }}</span>
                 </li>
                 {% endfor %}
@@ -107,7 +108,7 @@
                     &nbsp;&nbsp;&nbsp;&nbsp;
                     <a href="javascript:;"><button class="btn btn-danger btn-xs sp_id" data-sp_id="{{ sp.id }}">删除</button></a>
                     <a href="{{ url_for('admin.add_scenic_spot', sid=sp.id) }}"><button class="btn btn-info btn-xs">编辑</button></a>
-                    <a href="{{ url_for('main.scenic_spots_detail', sid=sp.id) }}"><button class="btn btn-success btn-xs">查看</button></a>
+                    <a href="{{ url_for('main.scenic_spots_detail', sid=sp.id) }}" target="_blank"><button class="btn btn-success btn-xs">查看</button></a>
                     <span class="float-r">{{ sp.create_time }}</span>
                 </li>
 
