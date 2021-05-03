@@ -21,7 +21,7 @@ SECRET_KEY = 'kdfuiefjk434348952fdhfueybdfhue-s&fkjksjfkdsf'
 # 主机地址（发邮件需要用到），部署时改成服务器的地址
 LOCALHOST = '127.0.0.1:8000'
 
-# 上传文件大小限制，全局
+# 上传文件大小限制20M，全局
 MAX_CONTENT_LENGTH = 20 * 1024 * 1024
 
 SQLALCHEMY_TRACK_MODIFICATIONS = False  # 不追踪对象，减少内存开销，默认为True

@@ -65,7 +65,7 @@
     {% for i in item.items %}
     <div class="row">
         <div class="col-md-12 col-sm-12 col-xs-12">
-            <div style="color: #999;">
+            <div class="col999">
                 <img class="user_icon" src="{{ url_for('static', filename=i.user.icon) }}" alt="头像">
                 <span>{{ i.user.username }}</span>
                 <span class="fr h6">发表于：{{ i.create_time }}</span>

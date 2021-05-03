@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, g, url_for
+from flask import Blueprint, render_template, request, redirect, g, url_for, session
 from apps.main_app.models import *
 import os
 import uuid
@@ -123,18 +123,18 @@ def info_detail():
         except:
             return '数据加载失败'
         if item:
-            # 查询是否有缓存
-            if cache.get(info_id):
+            # 查询是否有session缓存
+            if session.get('info_id'+str(info_id)) == info_id:
                 return render_template('main/info_detail.html', item=item)
-            # 设置缓存记录浏览标记，60秒
-            cache.set(info_id, 1, 60)
+            # 设置session记录浏览标记
+            session['info_id'+str(info_id)] = info_id
             item.num += 1  # 浏览量加1
             try:
                 db.session.commit()
             except:
-                return 'a'
+                return render_template('main/info_detail.html', item=item)
             return render_template('main/info_detail.html', item=item)
-    return redirect('/')
+    return redirect(url_for('main.info'))
 
 
 @main_bp.route('/attractions_map')
@@ -168,10 +168,6 @@ def user_dynamic():
         content = request.form.get('content')
         images = request.files.getlist('images')
 
-        # 查看缓存是否有重复提交标志
-        if cache.get(content) == content:
-            return render_template('main/user_dynamic.html', form=form, item=item)
-
         # 文本内容保存到数据库
         dynamic_item = UserDynamicModel()
         dynamic_item.content = content
@@ -182,10 +178,8 @@ def user_dynamic():
         except:
             return render_template('main/user_dynamic.html', form=form, item=item, msg='发布失败')
 
-        # 判断是否上传有图片
+        # 没有上传图片直接重定向
         if images[0].filename == '':
-            # 缓存添加标志，防止重复提交，10秒后过期
-            cache.set(content, content, timeout=10)
             return redirect(url_for('main.user_dynamic'))
 
         # 图片数量限制五张
@@ -216,13 +210,10 @@ def user_dynamic():
                 image_item = UserDynamicImageModel()
                 image_item.image = '/images/upload_user_dynamic_image/' + image_filename
                 image_item.dynamic_id = dynamic_item.id
-
                 db.session.add(image_item)
                 db.session.commit()
             except:
                 return render_template('main/user_dynamic.html', form=form, item=item, msg='发布失败')
-        # 缓存添加标志，防止重复提交，10秒后过期
-        cache.set(content, content, timeout=10)
         return redirect(url_for('main.user_dynamic'))
     # get请求
     return render_template('main/user_dynamic.html', form=form, item=item)
@@ -234,7 +225,6 @@ def message_board():
     form = MessageBoradForm()
 
     # get请求
-    # 页码
     try:
         p = int(request.args.get('page', 1))  # 页码要为整形
     except:
@@ -255,10 +245,6 @@ def message_board():
         # 接收数据
         content = form.content.data
 
-        # 查看缓存是否有重复提交标志
-        if cache.get(content) == content:
-            return render_template('main/message_board.html', form=form, message_list=message_list)
-
         # 创建对象
         item = MessageBoardModel()
         item.content = content
@@ -267,11 +253,7 @@ def message_board():
         try:
             db.session.add(item)
             db.session.commit()
-            cache.set(content, content, timeout=10)
-            try:
-                message_list = MessageBoardModel.query.order_by(-MessageBoardModel.id).paginate(page=p, per_page=10)
-            except:
-                return render_template('main/message_board.html', form=form)
+            return redirect(url_for('main.message_board'))
         except:
             return render_template('main/message_board.html', form=form, message_list=message_list, msg='提交失败')
     # get请求
@@ -283,3 +265,4 @@ def message_board():
 def page_404(e):
     '''页面未找到错误'''
     return render_template('404.html'), 404
+

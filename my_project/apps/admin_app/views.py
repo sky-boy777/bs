@@ -14,30 +14,31 @@ admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 @admin_bp.route('/admin_index')
 def admin_index():
     '''后台管理首页'''
+    # 每一样查询最新的100条
 
     # 公告列表
     try:
-        info_list = InfoModel.query.order_by(-InfoModel.id).all()
+        info_list = InfoModel.query.order_by(-InfoModel.id).limit(100).all()
     except:
         info_list = None
     # 景点列表
     try:
-        scenic_spot_list = ScenicSpotsModel.query.order_by(-ScenicSpotsModel.id).all()
+        scenic_spot_list = ScenicSpotsModel.query.order_by(-ScenicSpotsModel.id).limit(100).all()
     except:
         scenic_spot_list = None
     # 用户列表
     try:
-        user_list = UserModel.query.order_by(-UserModel.id).all()
+        user_list = UserModel.query.order_by(-UserModel.id).limit(100).all()
     except:
         user_list = None
     # 动态列表
     try:
-        dynamic_list = UserDynamicModel.query.order_by(-UserDynamicModel.id).all()
+        dynamic_list = UserDynamicModel.query.order_by(-UserDynamicModel.id).limit(100).all()
     except:
         dynamic_list = None
     # 留言板列表
     try:
-        message_board_list = MessageBoardModel.query.order_by(-MessageBoardModel.id).all()
+        message_board_list = MessageBoardModel.query.order_by(-MessageBoardModel.id).limit(100).all()
     except:
         message_board_list = None
     return render_template('admin/admin_index.html',
@@ -470,8 +471,8 @@ def search_page():
         key = request.form.get('key', None)
         content = request.form.get('content', None)
 
-    # 空值处理:关键字跟搜索内容必须传
-    if not key or not content:
+    # 空值处理:关键字必须
+    if not key:
         return redirect(url_for('admin.admin_index'))
 
     # 页码
@@ -578,6 +579,8 @@ def delete_scenic_spots():
         # 根据id查询，然后删除
         try:
             item = ScenicSpotsModel.query.get(sp_id)
+            # 删除封面图
+            os.remove(settings.STATIC_DIR + item.image)
             if item:
                 # 删除对应的图集
                 item_images = ScenicSpotsImagesModel.query.filter(ScenicSpotsImagesModel.scenic_spots_id == item.id).all()

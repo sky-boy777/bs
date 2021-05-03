@@ -46,7 +46,7 @@
                             <option value="5">动态</option>
                             <option value="6">留言</option>
                         </select>
-                        <input type="text" class="form-control" placeholder="查找" name="content">
+                        <input type="text" class="form-control" placeholder="内容(不输入则查找全部)" name="content">
                     </div>
                     <button type="submit" class="btn btn-default">
                         <span class="glyphicon glyphicon-search"></span>
@@ -213,10 +213,9 @@
                 {% if dynamic_list %}
                 {% for d in dynamic_list %}
                 <li>
-                    {{ loop.index }}.
                     <img src="{{ url_for('static', filename=d.user.icon) }}" alt="头像" class="user_icon">
-                    {{ d.user.username }}
-                    <span class="float-r">{{ d.create_time }}</span>
+                    <span class="col999">{{ d.user.username }}</span>
+                    <span class="float-r col999">{{ d.create_time }}</span>
                     <p>{{ d.content }}</p>
                     {% if d.images %}
                         {% for image in d.images %}
@@ -237,10 +236,9 @@
                 {% if message_board_list %}
                 {% for message in message_board_list %}
                 <li>
-                    {{ loop.index }}.
                     <img src="{{ url_for('static', filename=message.user.icon) }}" alt="头像" class="user_icon">
-                    {{ message.user.username }}
-                    <span class="float-r">{{ message.create_time }}</span>
+                    <span class="col999">{{ message.user.username }}</span>
+                    <span class="float-r col999">{{ message.create_time }}</span>
                     <p>{{ message.content }}</p>
                     <a href="javascript:;"><button class="btn btn-danger btn-xs message_id" data-message_id="{{ message.id }}">删除</button></a>
                 </li>

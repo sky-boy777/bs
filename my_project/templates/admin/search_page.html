@@ -135,10 +135,9 @@
          {% if items and flag == 5 %}
         {% for d in items.items %}
         <li>
-            {{ loop.index }}.
             <img src="{{ url_for('static', filename=d.user.icon) }}" alt="头像" class="user_icon">
-            {{ d.user.username }}
-            <span class="float-r">{{ d.create_time }}</span>
+            <span class="col999">{{ d.user.username }}</span>
+            <span class="float-r col999">{{ d.create_time }}</span>
             <p>{{ d.content }}</p>
             {% if d.images %}
                 {% for image in d.images %}
@@ -158,10 +157,9 @@
          {% if items and flag == 6 %}
         {% for message in items.items %}
         <li>
-            {{ loop.index }}.
             <img src="{{ url_for('static', filename=message.user.icon) }}" alt="头像" class="user_icon">
-            {{ message.user.username }}
-            <span class="float-r">{{ message.create_time }}</span>
+            <span class="col999">{{ message.user.username }}</span>
+            <span class="float-r col999">{{ message.create_time }}</span>
             <p>{{ message.content }}</p>
             <a href="javascript:;"><button class="btn btn-danger btn-xs message_id" data-message_id="{{ message.id }}">删除</button></a>
         </li>

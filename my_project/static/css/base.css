@@ -9,6 +9,7 @@ a:hover {text-decoration:none !important;}
     background-color: rgb(252, 246, 246); padding: 20px;
     }
 body { background-color: rgb(228, 230, 231);}
+.col999 { color: #999; }
 /* 公共样式 */
 
 .icon{

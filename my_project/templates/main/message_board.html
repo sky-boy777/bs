@@ -47,7 +47,7 @@
     {% for message in message_list.items %}
     <div class="row">
         <div class="col-md-12 col-sm-12 col-xs-12">
-            <div style="color: #999;">
+            <div class="col999">
                 <img class="user_icon" src="{{ url_for('static', filename=message.user.icon) }}" alt="头像">
                 <span>{{ message.user.username }}</span>
                 <span class="fr h6">发布时间：{{ message.create_time }}</span>
