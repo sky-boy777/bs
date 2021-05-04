@@ -214,7 +214,7 @@ def add_scenic_spot():
                                                images_msg='只支持png,jpg,gif,jpeg格式的图片',
                                                is_succeed=is_succeed, item=item)
                     # 图片限制大小：15M
-                    size = img.read(15 * 1024 * 1024+1)
+                    size = img.read(15 * 1024 * 1024+10)  # 读取15M加10字节
                     if len(size) > 15 * 1024 * 1024:
                         return render_template('admin/add_scenic_spot.html', form=form,
                                                images_too_big='最大只支持15M的图片',

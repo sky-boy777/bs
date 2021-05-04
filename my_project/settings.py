@@ -10,19 +10,16 @@ ENV = 'development'  # 开发环境，上线部署使用生产环境：productio
 SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:mysql@127.0.0.1/my_project'
 
 # 缓存配置
-CACHE_DICT = {
-    'CACHE_TYPE': 'redis',
-    'CACHE_REDIS_URL': 'redis://@localhost:6379/1'
-}
-
+CACHE_TYPE = 'redis'
+CACHE_REDIS_URL = 'redis://@localhost:6379/1'
 
 SECRET_KEY = 'kdfuiefjk434348952fdhfueybdfhue-s&fkjksjfkdsf'
 
 # 主机地址（发邮件需要用到），部署时改成服务器的地址
 LOCALHOST = '127.0.0.1:8000'
 
-# 上传文件大小限制20M，全局
-MAX_CONTENT_LENGTH = 20 * 1024 * 1024
+# 上传文件大小限制200M，全局，因为一次会上传多个文件
+MAX_CONTENT_LENGTH = 200 * 1024 * 1024
 
 SQLALCHEMY_TRACK_MODIFICATIONS = False  # 不追踪对象，减少内存开销，默认为True
 SQLALCHEMY_ECHO = True  # 记录所有 发到标准输出(stderr)的语句，这对调试很有帮助。

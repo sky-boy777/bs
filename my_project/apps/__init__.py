@@ -6,6 +6,7 @@ from apps.admin_app.views import admin_bp  # 后台管理蓝图
 from flask_wtf.csrf import CsrfProtect  # 全局csrf
 from exts import db, mail, cache  # 数据库，邮件，缓存
 
+
 csrf = CsrfProtect()
 
 
@@ -17,7 +18,7 @@ def create_app():
     db.init_app(app)  # 初始化数据库
     csrf.init_app(app)  # 初始化全局csrf
     mail.init_app(app)  # 初始化发送邮件类
-    cache.init_app(app, config=settings.CACHE_DICT)  # 初始化缓存
+    cache.init_app(app)  # 初始化缓存
 
     # 注册蓝图
     app.register_blueprint(main_bp)  # 前台展示蓝图
