@@ -7,6 +7,7 @@ from apps.user_app.forms import UserAddDynamicForm, MessageBoradForm
 from apps.user_app.models import *
 from exts import cache
 from math import ceil
+from sqlalchemy import func
 
 # 前台展示蓝图
 main_bp = Blueprint('main', __name__)  # 前台展示蓝图，需要在create_app下注册
@@ -74,9 +75,12 @@ def scenic_spots():
         p = 1
 
     # 每页条数
-    per_page = 10
+    per_page = 15
 
-    count = ScenicSpotsModel.query.count()
+    # count = ScenicSpotsModel.query.count()  # 会生成子查询
+    # SELECT count(scenic_spots.id) AS count_1 FROM scenic_spots
+    count = db.session.query(func.count(ScenicSpotsModel.id)).scalar()
+
     # 总页数，上一页，下一页，还有景点列表
     pages = ceil(count/per_page)
     if not 0 < p <= pages:
@@ -84,7 +88,7 @@ def scenic_spots():
     prev_num = p-1
     next_num = p+1
     try:
-        scenic_spots_list = ScenicSpotsModel.query.offset((p-1)*per_page).limit(per_page)
+        scenic_spots_list = ScenicSpotsModel.query.order_by(-ScenicSpotsModel.id).offset((p-1)*per_page).limit(per_page)
     except:
         return render_template('main/scenic_spots.html')
     return render_template('main/scenic_spots.html',

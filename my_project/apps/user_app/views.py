@@ -1,4 +1,4 @@
-from flask import Blueprint, g, render_template, request, make_response, session, redirect, url_for
+from flask import Blueprint, g, render_template, request, make_response, session, redirect, url_for, abort
 from utils.create_image_code import create_image_code  # 生成图片验证码
 import io, os
 import settings
@@ -19,10 +19,13 @@ user_bp = Blueprint(name='user', import_name=__name__, url_prefix='/user')
 serializer = TimedJSONWebSignatureSerializer(secret_key=settings.SECRET_KEY,
                                              expires_in=120)
 
-# 需要登录的路径
-required_login_path = ['/user/user_center', '/user/change_password',
-                       '/user//delete_message', '/user/delete_dynamic',
-                       ]
+# 需要登录才能访问的路径
+required_login_path = [
+    '/user/user_center',
+    '/user/change_password',
+    '/user/delete_message',
+    '/user/delete_dynamic',
+]
 # 登录后不能访问的路径
 login_not_path = ['/user/login', '/user/register']
 
@@ -58,8 +61,8 @@ def my_before_request():
 
     # 不是管理员不能访问
     if re.search(r'^/admin.*', request.path):
-        if user and user.is_admin != 1:  # 已登录且是普通用户
-            return redirect(url_for('main.index'))
+        if not user or user.is_admin != 1:  # 未登录或普通用户
+            return abort(404)  # 抛出404错误，避免被发现后台管理路径
 
 
 @user_bp.route('/get_image_code')
