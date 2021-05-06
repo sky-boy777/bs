@@ -14,5 +14,5 @@ migrate = Migrate(app=app, db=db)
 manager.add_command('db', MigrateCommand)  # 数据库迁移的命令
 
 if __name__ == '__main__':
-    manager.run()  # 这是开发环境使用的
-    # app.run(debug=False)  # 上线部署后使用python app.py 启动
+    manager.run()  # 这是开发环境使用的，python app.py runserver -p 8000
+    # app.run(debug=False, port=8000, host='localhost')  # python app.py 启动

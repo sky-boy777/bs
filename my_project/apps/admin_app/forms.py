@@ -1,8 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField  # 字段
-from wtforms.validators import DataRequired, Length, ValidationError  # 验证器
-from flask import session
-import re
+from wtforms import StringField
+from wtforms.validators import DataRequired, Length  # 验证器
 from flask_wtf.file import FileField, FileAllowed  # 文件上传字段，验证
 
 
@@ -11,7 +9,7 @@ class ChangeIndexIntroductionForm(FlaskForm):
     # 标题
     title = StringField('title', validators=[DataRequired(message='请输入标题'),
                                              Length(max=30, message='最多只能输入三十个字符')])
-    # 正文
+    # 简介
     content = StringField('content', validators=[DataRequired(message='请输入正文')])
     # 门票费用说明
     rates = StringField('content', validators=[Length(max=20, message='最多只能输入二十个字符')])

@@ -1,4 +1,4 @@
-from flask import Blueprint, g, render_template, request, make_response, session, redirect, url_for, abort
+from flask import Blueprint, g, render_template, request, make_response, redirect, url_for, abort
 from utils.create_image_code import create_image_code  # 生成图片验证码
 import io, os
 import settings

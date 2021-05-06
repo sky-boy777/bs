@@ -4,7 +4,6 @@ from wtforms.validators import DataRequired, Length, ValidationError  # 验证�
 from flask import session
 import re
 from flask_wtf.file import FileField, FileAllowed  # 文件上传字段，验证
-from flask_wtf.file import FileStorage
 
 
 # 在下面定义表单验证类

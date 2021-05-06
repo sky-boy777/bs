@@ -1,22 +1,24 @@
 import os
 
 DEBUG = True
-ENV = 'development'  # 开发环境，上线部署使用生产环境：production
-# ENV = 'production'
+ENV = 'development'  # 开发环境
+
+# ENV = 'production'  # 生产环境：production
 # DEBUG = False
 
 # 数据库
 #                          数据库+驱动       用户  密码  主机      端口号 数据库名
 SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:mysql@127.0.0.1/my_project'
 
+# 主机地址（发邮件需要用到），部署时改成服务器的地址
+LOCALHOST = '127.0.0.1:8000'
+
 # 缓存配置
 CACHE_TYPE = 'redis'
 CACHE_REDIS_URL = 'redis://@localhost:6379/1'
 
-SECRET_KEY = 'kdfuiefjk434348952fdhfueybdfhue-s&fkjksjfkdsf'
 
-# 主机地址（发邮件需要用到），部署时改成服务器的地址
-LOCALHOST = '127.0.0.1:8000'
+SECRET_KEY = 'kdfuiefjk434348952fdhfueybdfhue-s&fkjksjfkdsf'
 
 # 上传文件大小限制200M，全局，因为一次会上传多个文件
 MAX_CONTENT_LENGTH = 200 * 1024 * 1024
