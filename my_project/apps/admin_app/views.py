@@ -580,7 +580,8 @@ def delete_scenic_spots():
         try:
             item = ScenicSpotsModel.query.get(sp_id)
             # 删除封面图
-            os.remove(settings.STATIC_DIR + item.image)
+            if os.path.exists(settings.STATIC_DIR + item.image):
+                os.remove(settings.STATIC_DIR + item.image)
             if item:
                 # 删除对应的图集
                 item_images = ScenicSpotsImagesModel.query.filter(ScenicSpotsImagesModel.scenic_spots_id == item.id).all()
@@ -591,7 +592,8 @@ def delete_scenic_spots():
                 db.session.commit()
                 # 删除完数据库里面的数据后，删除保存在本地的图片
                 for j in item_images:
-                    os.remove(settings.STATIC_DIR + j.image)
+                    if os.path.exists(settings.STATIC_DIR + j.image):
+                        os.remove(settings.STATIC_DIR + j.image)
             else:
                 return '失败，资源不存在'
         except:
@@ -613,7 +615,8 @@ def delete_scenic_spots_image():
                 db.session.delete(item)
                 db.session.commit()
                 # 删除完数据库里面的数据后，删除保存在本地的图片
-                os.remove(settings.STATIC_DIR + item.image)
+                if os.path.exists(settings.STATIC_DIR + item.image):
+                    os.remove(settings.STATIC_DIR + item.image)
             else:
                 return '失败，资源不存在'
         except:
@@ -680,7 +683,8 @@ def delete_dynamic():
                 db.session.commit()
                 # 删除完数据库里面的数据后，删除保存在本地的图片
                 for j in item_images:
-                    os.remove(settings.STATIC_DIR + j.image)
+                    if os.path.exists(settings.STATIC_DIR + j.image):
+                        os.remove(settings.STATIC_DIR + j.image)
             else:
                 return '失败，资源不存在'
         except:
@@ -720,7 +724,8 @@ def delete_banner_img():
                 db.session.delete(item)
                 db.session.commit()
                 # 删除本地的图片
-                os.remove(settings.STATIC_DIR + item.image)
+                if os.path.exists(settings.STATIC_DIR + item.image):
+                    os.remove(settings.STATIC_DIR + item.image)
             else:
                 return '失败，资源不存在'
         except:

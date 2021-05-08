@@ -193,7 +193,7 @@ def user_dynamic():
         # 图片处理
         for image in images:
             # 图片后缀名验证
-            if '.' not in image.filename or image.filename != '' and image.filename.rsplit('.')[1] not in ('png', 'jpg', 'gif', 'jpeg'):
+            if '.' not in image.filename or (image.filename != '' and image.filename.rsplit('.')[1] not in ('png', 'jpg', 'gif', 'jpeg')):
                 return render_template('main/user_dynamic.html', form=form, item=item, image_error='只支持png,jpg,gif,jpeg格式的图片')
 
             # 图片限制大小：10M
