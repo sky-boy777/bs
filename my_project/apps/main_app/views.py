@@ -172,6 +172,10 @@ def user_dynamic():
         content = request.form.get('content')
         images = request.files.getlist('images')
 
+        # 查看缓存，判断是否重复提交
+        if cache.get(str(g.user.id)+content+request.path) == 1:
+            return redirect(url_for('main.user_dynamic'))
+
         # 文本内容保存到数据库
         dynamic_item = UserDynamicModel()
         dynamic_item.content = content
@@ -179,6 +183,8 @@ def user_dynamic():
         try:
             db.session.add(dynamic_item)
             db.session.commit()
+            # 缓存，10秒内不能重复提交，唯一标识key：用户id+内容+请求路径
+            cache.set(str(g.user.id)+content+request.path, 1, timeout=10)
         except:
             return render_template('main/user_dynamic.html', form=form, item=item, msg='发布失败')
 
@@ -248,6 +254,9 @@ def message_board():
     if request.method == 'POST' and form.validate_on_submit():
         # 接收数据
         content = form.content.data
+        # 查看缓存判断是否重复提交
+        if cache.get(str(g.user.id) + content + request.path) == 1:
+            return redirect(url_for('main.message_board'))
 
         # 创建对象
         item = MessageBoardModel()
@@ -257,6 +266,8 @@ def message_board():
         try:
             db.session.add(item)
             db.session.commit()
+            # 缓存，10秒内不能重复提交，唯一标识key：用户id+内容+请求路径
+            cache.set(str(g.user.id) + content + request.path, 1, timeout=10)
             return redirect(url_for('main.message_board'))
         except:
             return render_template('main/message_board.html', form=form, message_list=message_list, msg='提交失败')
