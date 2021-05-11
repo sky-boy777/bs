@@ -1,14 +1,14 @@
 import os
 
-DEBUG = True
-ENV = 'development'  # 开发环境
+# DEBUG = True
+# ENV = 'development'  # 开发环境
 
-# ENV = 'production'  # 生产环境：production
-# DEBUG = False
+ENV = 'production'  # 生产环境：production
+DEBUG = False
 
 # 数据库
 #                          数据库+驱动       用户  密码  主机      端口号 数据库名
-SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:mysql@127.0.0.1/my_project'
+SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:mysql@127.0.0.1:3306/my_project'
 
 # 主机地址（发邮件需要用到），部署时改成服务器的地址
 LOCALHOST = '127.0.0.1:8000'

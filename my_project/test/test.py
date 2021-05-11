@@ -1,45 +1,60 @@
-# num = 9966
-# d = {
-#             0: 'ling',
-#             1: 'yi',
-#             2: 'er',
-#             3: 'san',
-#             4: 'si',
-#             5: 'wu',
-#             6: 'liu',
-#             7: 'qi',
-#             8: 'ba',
-#             9: 'jiu'
-#         }
-# str_num = str(num)
-# if len(str_num) > 1:
-#     l = []
-#     for i in str_num:
-#         l.append(d[int(i)])
-#     l.insert(1, 'shi')
-#     print(''.join(l))
-# else:
-#     print(d[num])
+# arr1 = input().split(',')
+# arr2 = input().split(',')
+# arr1 = '3,2,1'.split(',')
+# arr2 = '4,5,6'.split(',')
+# l = arr1+arr2
+# l.sort(reverse=True)
+# l = ','.join(l)
+# print(type(l))
 
-numstr = "213334152226"
-s = set(numstr)
-d = {}
-for i in s:
-    d[i] = 0
+# s = 'abcaABC'
+# d = dict()
+#
+# for i in s:
+#     if d.get(i):
+#         d[i] += 1
+#     else:
+#         d[i] = 1
+# max_d = dict()
+# max_d['d'] = 1
+# for j in d:
+#     if d[j] > max_d['d']:
+#         max_d['d'] = d[j]
+#
+# print(max_d['d'])
 
-for j in numstr:
-    d[j] += 1
+# input = '"[()]{}"'
+# s = '[({'
+# l = list()
+# flag = True
+# for i in input:
+#     if i in s:
+#         l.append(i)
+#     elif len(l) <= 0:
+#         flag = False
+#         break
+#     elif i == l.pop():
+#         flag = True
+#         continue
+#     else:
+#         flag = False
+#         break
 
-m = max(d.values())
-for n in numstr:
-    if d[n] == m:
-        ll = [n, m]
-        print(ll)
-        break
+# n = 2
+# l = []
+# i = 0
+# while i < n:
+#     s = input().split()
+#     l.append(s)
+#     i += 1
+#
+# max_l = []
+# for j in l:
+#     j.sort(reverse=True)
+#     max_l.append(j[0])
+# print(max_l)
 
-
-
-
-
-
-
+import hashlib
+a = hashlib.sha256('123'.encode()).hexdigest()
+b = hashlib.sha256('123'.encode()).hexdigest()
+print(a==b)

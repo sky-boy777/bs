@@ -52,6 +52,8 @@ class ScenicSpotsModel(BaseModel):
     rates = db.Column(db.String(20), default='免费')
     # 开放时间
     opening_hours = db.Column(db.String(50), default='24小时开放')
+    # 浏览量
+    num = db.Column(db.Integer, nullable=False, default=0)
 
     # 跟景点图集表建立关系，删除景点时也删除对应的图片，不会在数据库生成字段
     images = db.relationship('ScenicSpotsImagesModel', backref='scenic_spots')

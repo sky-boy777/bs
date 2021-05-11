@@ -31,8 +31,8 @@ def index():
     # 查询景点数据
     if not scenic_spots_list:
         try:
-            scenic_spots_list = ScenicSpotsModel.query.filter().all()
-            cache.set('scenic_spots_list', scenic_spots_list, timeout=1800)  # 30分钟
+            scenic_spots_list = ScenicSpotsModel.query.order_by(-ScenicSpotsModel.num).limit(4).all()
+            cache.set('scenic_spots_list', scenic_spots_list, timeout=60)  # 60秒
         except:
             scenic_spots_list = None
 
@@ -61,6 +61,18 @@ def scenic_spots_detail():
         except:
             return '数据加载失败'
         if item:
+            # 查询是否有session缓存
+            if session.get('scenic_spots' + str(sid)) == sid:
+                return render_template('main/scenic_spots_detail.html', item=item)
+
+            item.num += 1  # 浏览量加1
+            try:
+                db.session.commit()
+            except:
+                return render_template('main/scenic_spots_detail.html', item=item)
+
+            # 设置session记录浏览标记
+            session['scenic_spots' + str(sid)] = sid
             return render_template('main/scenic_spots_detail.html', item=item)
     return redirect('/')
 
@@ -130,13 +142,14 @@ def info_detail():
             # 查询是否有session缓存
             if session.get('info_id'+str(info_id)) == info_id:
                 return render_template('main/info_detail.html', item=item)
-            # 设置session记录浏览标记
-            session['info_id'+str(info_id)] = info_id
+
             item.num += 1  # 浏览量加1
             try:
                 db.session.commit()
             except:
                 return render_template('main/info_detail.html', item=item)
+            # 设置session记录浏览标记
+            session['info_id' + str(info_id)] = info_id
             return render_template('main/info_detail.html', item=item)
     return redirect(url_for('main.info'))
 
