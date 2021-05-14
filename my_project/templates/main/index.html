@@ -27,6 +27,9 @@
         color: white;
     }
 
+    .thumbnail { transition: .3s; }
+    .thumbnail:hover { transform: scale(1.1); }
+
     .swiper-button-prev:after, 
     .swiper-button-next:after { color:rgba(255, 255, 255, .6); }
 </style>
@@ -96,8 +99,7 @@
                     <h3>{{ scenic_spots_list[i].name }}</h3>
                     <p class="red">{{ scenic_spots_list[i].rates }}</p>
                     <p>开放时间：{{ scenic_spots_list[i].opening_hours }}</p>
-                    <p><a href="{{ url_for('main.scenic_spots_detail', sid=scenic_spots_list[i].id) }}"
-                            class="btn btn-primary" role="button">详情</a></p>
+                    <p><a href="{{ url_for('main.scenic_spots_detail', sid=scenic_spots_list[i].id) }}" class="btn btn-primary" role="button">详情</a></p>
                 </div>
             </div>
         </div>
